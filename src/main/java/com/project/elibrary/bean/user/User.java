@@ -7,8 +7,9 @@ public class User {
 	private String password;
 	private Role role;
 	private AccountStatus status;
-	
-	public User() {}
+
+	public User() {
+	}
 
 	User(String name, String email, String password, Role role, AccountStatus status) {
 		super();
@@ -67,8 +68,4 @@ public class User {
 		this.status = status;
 	}
 
-	
-	 
-	
-	
 }
