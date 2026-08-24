@@ -1,5 +1,8 @@
 package com.project.elibrary.bean.user;
 
+import com.project.elibrary.bean.enums.AccountStatus;
+import com.project.elibrary.bean.enums.Role;
+
 public class User {
 	private String userId;
 	private String name;
