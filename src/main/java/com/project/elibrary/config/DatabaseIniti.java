@@ -1,21 +1,41 @@
 package com.project.elibrary.config;
 
 import java.sql.Connection;
+
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.project.elibrary.bean.enums.AccountStatus;
+import com.project.elibrary.bean.enums.Role;
+import com.project.elibrary.util.PasswordUtil;
+
+/**
+ * Initialize the database 
+ * this class is responsible for 
+ * Creating the databse if not exists
+ * creating the required tables currently it just create usertable we will add other tables later 
+ * creating the default admin account if it does not exist.
+ */
 public final class DatabaseIniti {
 
 	private DatabaseIniti() {
-		// Prevent object creation
+		   // Prevent object creation because this class only contains
+	    // static methods and is used as a utility class.
 	}
-
+// Runs all db init steps , this is called when the application starts 
 	public static void initialize() {
 		createDatabase();
 		createTables();
+		createDefaultAdmin();
 	}
-
+	 /**
+     * Creates the E-Library database if it does not already exist.
+     *
+     * This connection is made to the MySQL server instead of the
+     * E-Library database because the database may not exist yet.
+     */
 	private static void createDatabase() {
 
 		try {
@@ -44,6 +64,13 @@ public final class DatabaseIniti {
 			throw new RuntimeException("Failed to create database.", e);
 		}
 	}
+
+    /**
+     * Creates all required application tables.
+     *
+     * New table creation methods should be added here as
+     * the E-Library project grows.
+     */
 
 	private static void createTables() {
 
@@ -78,5 +105,41 @@ public final class DatabaseIniti {
 
 			throw new RuntimeException("Failed to create users table.", e);
 		}
+	}
+	
+	public static void createDefaultAdmin() {
+		String sql = """
+					INSERT INTO users (name,email,password,role,status)
+					SELECT ?,?,?,?,?
+					WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = ? )
+				""";
+		
+		  String hashedPassword =
+		            PasswordUtil.hasPassword(
+		                    DatabaseConfig.getAdminPassword());
+
+		    try (Connection connection =
+		                 DatabaseConnection.getConnection();
+
+		         PreparedStatement statement =
+		                 connection.prepareStatement(sql)) {
+
+		        statement.setString(1, "E-Library Admin");
+		        statement.setString(2, DatabaseConfig.getAdminEmail());
+		        statement.setString(3, hashedPassword);
+		        statement.setString(4, Role.ADMIN.name());
+		        statement.setString(5, AccountStatus.ACTIVE.name());
+		        statement.setString(6, DatabaseConfig.getAdminEmail());
+
+		        int rowsAffected = statement.executeUpdate();
+
+		        if (rowsAffected > 0) {
+		            System.out.println("Default admin account created.");
+		        }
+
+		    } catch (SQLException e) {
+		        throw new RuntimeException(
+		                "Failed to create default admin.", e);
+		    }
 	}
 }

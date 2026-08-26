@@ -30,6 +30,11 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>src/main/webapp/WEB-INF/lib/jbcrypt-0.4.jar</name>
+			<type>1</type>
+			<location>C:/Users/LENOVO/Downloads/jbcrypt-0.4.jar</location>
+		</link>
+		<link>
 			<name>src/main/webapp/WEB-INF/lib/mysql-connector-j-26.7.0.jar</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/mysql-connector-j-26.7.0/mysql-connector-j-26.7.0.jar</locationURI>

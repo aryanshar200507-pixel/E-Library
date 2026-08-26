@@ -4,7 +4,7 @@ import com.project.elibrary.bean.enums.AccountStatus;
 import com.project.elibrary.bean.enums.Role;
 
 public class User {
-	private String userId;
+	private Long userId;
 	private String name;
 	private String email;
 	private String password;
@@ -23,11 +23,11 @@ public class User {
 		this.status = status;
 	}
 
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 
