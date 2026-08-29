@@ -1,5 +1,7 @@
 package com.project.elibrary.service.userservice;
 
+import java.util.List;
+
 import com.project.elibrary.bean.user.User;
 
 public interface UserService {
@@ -9,4 +11,11 @@ public interface UserService {
 	User findById(Long userId);
 	boolean emailExists(String email);
 	boolean updatePassword(Long userId, String newPassword);
+	
+	
+	int countAllUsers();
+	List<User> findAllUsers();
+	List<User> searchUsers(String keyword);
+	boolean deactivateUser(Long userId);
+	boolean recoverUser(Long userId);
 }

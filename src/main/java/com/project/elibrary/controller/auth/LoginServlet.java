@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+import com.project.elibrary.bean.enums.Role;
 import com.project.elibrary.bean.user.User;
 import com.project.elibrary.service.authservice.AuthService;
 import com.project.elibrary.service.authservice.AuthServiceImpl;
@@ -48,7 +49,15 @@ public class LoginServlet extends HttpServlet {
 		 HttpSession session = request.getSession();
 		 session.setAttribute("loggedInUser", user);
 		 
-		 response.sendRedirect(request.getContextPath() + "/home");
+		 if (user.getRole() == Role.ADMIN) {
+			    response.sendRedirect(
+			        request.getContextPath() + "/admin/dashboard"
+			    );
+			} else {
+			    response.sendRedirect(
+			        request.getContextPath() + "/home"
+			    );
+			}
 	}
 
 }

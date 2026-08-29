@@ -1,5 +1,7 @@
 package com.project.elibrary.service.userservice;
 
+import java.util.List;
+
 import com.project.elibrary.bean.enums.AccountStatus;
 import com.project.elibrary.bean.enums.Role;
 import com.project.elibrary.bean.user.User;
@@ -217,4 +219,36 @@ public class UserServiceImpl implements UserService {
 
 		return userDao.updateStatus(userId, AccountStatus.INACTIVE);
 	}
+	@Override
+	public int countAllUsers() 
+	{
+		
+		return userDao.countAllUsers();
+	}
+	
+	@Override
+	public List<User> findAllUsers()
+	{
+		return userDao.findAllUsers();
+	}
+	@Override
+	public List<User> searchUsers(String keyword)
+	{
+		return userDao.searchUsers(keyword);
+	}
+	@Override
+	public boolean deactivateUser(Long userId) {
+		
+		return userDao.deactivateUser(userId);
+	}
+	
+	@Override
+	public boolean recoverUser(Long userId) {
+		
+		return userDao.recoverUser(userId);
+	}
+	
+	
+	
 }
+

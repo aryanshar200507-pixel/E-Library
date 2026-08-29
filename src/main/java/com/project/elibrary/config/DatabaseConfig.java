@@ -16,7 +16,7 @@ public class DatabaseConfig {
 
 	// For the final project, use application_example.properties ,so change
 	// application.properties to the example one here
-	private static final String configFile = "application.properties";
+	private static final String configFile = "application_example.properties";
 
 	// Stores all key-value pairs loaded from the properties file.
 	private static final Properties PROPERTIES = new Properties();

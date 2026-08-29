@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.project.elibrary.bean.enums.AccountStatus;
 import com.project.elibrary.bean.enums.Role;
@@ -386,5 +388,175 @@ public class UserDaoImpl implements UserDao {
 		} catch (SQLException e) {
 			throw new RuntimeException("Failed to check email for another user.", e);
 		}
+	}
+	
+	@Override
+	public int countAllUsers() {
+
+	    String sql = """
+	            SELECT COUNT(*) AS total
+	            FROM users
+	            """;
+
+	    try (Connection connection = DatabaseConnection.getConnection();
+	         PreparedStatement statement = connection.prepareStatement(sql);
+	         ResultSet resultSet = statement.executeQuery()) {
+
+	        if (resultSet.next()) {
+	            return resultSet.getInt("total");
+	        }
+
+	        return 0;
+
+	    } catch (SQLException e) {
+	        throw new RuntimeException("Failed to count users.", e);
+	    }
+	}
+	
+	@Override
+	public List<User> findAllUsers() {
+
+	    List<User> users = new ArrayList<>();
+
+	    String sql = """
+	            SELECT user_id, name, email, password, role, status
+	            FROM users
+	            ORDER BY user_id DESC
+	            """;
+
+	    try (Connection connection = DatabaseConnection.getConnection();
+	         PreparedStatement statement = connection.prepareStatement(sql);
+	         ResultSet resultSet = statement.executeQuery()) {
+
+	        while (resultSet.next()) {
+
+	            User user = new User();
+
+	            user.setUserId(resultSet.getLong("user_id"));
+	            user.setName(resultSet.getString("name"));
+	            user.setEmail(resultSet.getString("email"));
+	            user.setPassword(resultSet.getString("password"));
+	            user.setRole(Role.valueOf(resultSet.getString("role")));
+	            user.setStatus(
+	                    AccountStatus.valueOf(resultSet.getString("status"))
+	            );
+
+	            users.add(user);
+	        }
+
+	        return users;
+
+	    } catch (SQLException e) {
+	        throw new RuntimeException("Failed to retrieve users.", e);
+	    }
+	}
+	
+	@Override
+	public List<User> searchUsers(String keyword){
+		 List<User> users = new ArrayList<>();
+
+
+		    String sql;
+
+		    boolean isIdSearch = false;
+		    Long userId = null;
+
+		    try {
+		        userId = Long.parseLong(keyword);
+		        isIdSearch = true;
+		    } catch (NumberFormatException e) {
+		        // Keyword is not a number, so search by name/email only
+		    }
+
+		    if (isIdSearch) {
+
+		        sql = """
+		                SELECT user_id, name, email, password, role, status
+		                FROM users
+		                WHERE name LIKE ?
+		                   OR email LIKE ?
+		                   OR user_id = ?
+		                ORDER BY user_id DESC
+		                """;
+
+		    } else {
+
+		        sql = """
+		                SELECT user_id, name, email, password, role, status
+		                FROM users
+		                WHERE name LIKE ?
+		                   OR email LIKE ?
+		                ORDER BY user_id DESC
+		                """;
+		    }
+
+
+		    try (Connection connection = DatabaseConnection.getConnection();
+		         PreparedStatement statement = connection.prepareStatement(sql);){
+		    	
+		    	   statement.setString(1, "%" + keyword + "%");
+		           statement.setString(2, "%" + keyword + "%");
+		           
+		           if(isIdSearch) {statement.setLong(3, userId);}
+		    
+		      try( ResultSet resultSet = statement.executeQuery()) {
+		    	 while (resultSet.next()) {
+
+			            User user = new User();
+
+			            user.setUserId(resultSet.getLong("user_id"));
+			            user.setName(resultSet.getString("name"));
+			            user.setEmail(resultSet.getString("email"));
+			            user.setPassword(resultSet.getString("password"));
+			            user.setRole(Role.valueOf(resultSet.getString("role")));
+			            user.setStatus(
+			                    AccountStatus.valueOf(resultSet.getString("status"))
+			            );
+
+			            users.add(user);
+			        }
+		          }
+			        return users;
+
+			    } catch (SQLException e) {
+			        throw new RuntimeException("Failed to find user", e);
+			    }
+		
+		
+	}
+	@Override
+	public boolean deactivateUser(Long userId) {
+		String sql;
+		 sql = """
+	               UPDATE users SET status = ? WHERE user_id = ?
+		 		""" ;
+		 try (Connection connection = DatabaseConnection.getConnection();
+		         PreparedStatement statement = connection.prepareStatement(sql);){
+			 statement.setString(1,AccountStatus.BLOCKED.name());
+			 statement.setLong(2, userId);
+				int rowsUpdated = statement.executeUpdate();
+				return rowsUpdated > 0;
+		 }catch(SQLException e) {
+			 throw new RuntimeException("Failed to Block user", e);
+		 }
+		 
+	
+	}
+	
+	@Override
+	public boolean recoverUser(Long userId) {
+		String sql;
+		 sql = """
+	               UPDATE users SET status = ? WHERE user_id = ?
+		 		""" ;
+		 try (Connection connection = DatabaseConnection.getConnection();
+		         PreparedStatement statement = connection.prepareStatement(sql);){
+			 statement.setString(1,AccountStatus.ACTIVE.name());
+			 statement.setLong(2, userId);
+				int rowsUpdated = statement.executeUpdate();
+				return rowsUpdated > 0;
+		 }catch(SQLException e) {
+			 throw new RuntimeException("Failed to Block user", e);
+		 }
 	}
 }
