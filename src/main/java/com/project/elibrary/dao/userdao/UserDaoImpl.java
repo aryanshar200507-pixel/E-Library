@@ -556,7 +556,7 @@ public class UserDaoImpl implements UserDao {
 				int rowsUpdated = statement.executeUpdate();
 				return rowsUpdated > 0;
 		 }catch(SQLException e) {
-			 throw new RuntimeException("Failed to Block user", e);
+			 throw new RuntimeException("Failed to recover user", e);
 		 }
 	}
 }

@@ -22,6 +22,8 @@
     <button type="submit">
         Login
     </button>
+    
+    <a href="forgotPassword.jsp">FORGOT PASSWORD ?</a>
 
 </form>
 </body>

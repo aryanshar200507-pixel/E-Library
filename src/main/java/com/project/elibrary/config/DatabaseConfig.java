@@ -16,7 +16,7 @@ public class DatabaseConfig {
 
 	// For the final project, use application_example.properties ,so change
 	// application.properties to the example one here
-	private static final String configFile = "application_example.properties";
+	private static final String configFile = "application.properties";
 
 	// Stores all key-value pairs loaded from the properties file.
 	private static final Properties PROPERTIES = new Properties();
@@ -83,5 +83,21 @@ public class DatabaseConfig {
 
 	public static String getAdminPassword() {
 		return PROPERTIES.getProperty("admin.password");
+	}
+	
+	public static String getMailUsername() {
+	    return PROPERTIES.getProperty("mail.username");
+	}
+
+	public static String getMailPassword() {
+	    return PROPERTIES.getProperty("mail.password");
+	}
+
+	public static String getMailSmtpHost() {
+	    return PROPERTIES.getProperty("mail.smtp.host");
+	}
+
+	public static String getMailSmtpPort() {
+	    return PROPERTIES.getProperty("mail.smtp.port");
 	}
 }
