@@ -1,16 +1,21 @@
 package com.project.elibrary.controller.admin;
 
+import java.io.IOException;
+//import java.util.ArrayList;
+import java.util.List;
+
+import com.project.elibrary.bean.category.Category;
+import com.project.elibrary.bean.user.User;
+import com.project.elibrary.service.categoryservice.CategoryService;
+import com.project.elibrary.service.categoryservice.CategoryServiceImpl;
+import com.project.elibrary.service.userservice.UserService;
+import com.project.elibrary.service.userservice.UserServiceImpl;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-//import java.util.ArrayList;
-import java.util.List;
-import com.project.elibrary.bean.user.User;
-import com.project.elibrary.service.userservice.UserService;
-import com.project.elibrary.service.userservice.UserServiceImpl;
 
 /**
  * Servlet implementation class AdminDashboardServlet
@@ -18,7 +23,10 @@ import com.project.elibrary.service.userservice.UserServiceImpl;
 @WebServlet("/admin/dashboard")
 public class AdminDashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private final UserService userService = new UserServiceImpl();   
+	
+	private final UserService userService = new UserServiceImpl();  
+	private final Category category = new Category();
+	private final CategoryService categoryService = new CategoryServiceImpl();
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -32,6 +40,8 @@ public class AdminDashboardServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		loadTotalUsers(request);
+		loadTotalCategories(request);
+		
         //loadUsers(request);
             
         String keyword = request.getParameter("keyword");
@@ -45,6 +55,8 @@ public class AdminDashboardServlet extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/admin/dashboard.jsp")
                .forward(request, response);
     }
+	
+	
 	// Method to search users
     private void loadSearchUsers(HttpServletRequest request) {
     	
@@ -75,17 +87,17 @@ public class AdminDashboardServlet extends HttpServlet {
         System.out.println("Users found: " + users.size());
     }
     
+    
+    
     //Method to get the userId to block
-   private void loadIdToBlock(HttpServletRequest request) {
-	   
-//	   System.out.println("BLOCK CALLED");
-	   
+   private void loadIdToBlock(HttpServletRequest request) {	   
 	   String userIdParam = request.getParameter("userId");
 	   long userId = Long.parseLong(userIdParam);
 	    userService.deactivateUser(userId);
-	   
-	  
-   }
+	}
+   
+   
+   //Method to get the userId to Recover
    private void loadIdToRecover(HttpServletRequest request) {
 	   String userIdParam = request.getParameter("userId");
 	   long userId = Long.parseLong(userIdParam);
@@ -93,17 +105,35 @@ public class AdminDashboardServlet extends HttpServlet {
 	  
    }
    
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
+   //Method to count Categories
+   private void loadTotalCategories(HttpServletRequest request) {
+
+       int totalCategories = categoryService.countAllCategories();
+
+       request.setAttribute("totalCategories", totalCategories);
+	}
+	
+ //Method to add category
+ 	private void addCategory(HttpServletRequest request) {
+
+ 	    String categoryName = request.getParameter("category");
+
+ 	    Category category = new Category();
+ 	    category.setCategoryName(categoryName);
+
+ 	    boolean added = categoryService.addCategories(category);
+
+ 	    if (added) {
+ 	        System.out.println("Category added successfully");
+ 	    } else {
+ 	        System.out.println("Failed to add category");
+ 	    }
+ 	}
+   
+   
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response)
 		throws ServletException, IOException {
-    	
-//    	System.out.println("DOPOST CALLED");
-//    	System.out.println("Action = " + request.getParameter("action"));
-//    	System.out.println("User ID = " + request.getParameter("userId"));
-    	
     	
     	String action = request.getParameter("action");
 
@@ -114,7 +144,9 @@ public class AdminDashboardServlet extends HttpServlet {
     	} else if ("recover".equals(action)) {
 
     	    loadIdToRecover(request);
-    	}
+    	}else if ("addCategory".equals(action)) {
+            addCategory(request);
+        }
 
     	response.sendRedirect(
     	    request.getContextPath() + "/admin/dashboard"

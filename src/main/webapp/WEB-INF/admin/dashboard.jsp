@@ -11,12 +11,21 @@
 
     <h1>Admin Dashboard</h1>
     <h2>Total Users: ${totalUsers}</h2>
+    <h2>Total Categories: ${totalCategories}</h2>
+    <h2></h2>
    
     <form action="${pageContext.request.contextPath}/admin/dashboard" method="get">
 
-    <input type="text" name="keyword" placeholder="Search user">
+   <h2> Search User:</h2><input type="text" name="keyword" placeholder="Search user">
+  
+  <button type="submit">Search</button>
 
-    <button type="submit">Search</button>
+</form>
+<form action="${pageContext.request.contextPath}/admin/dashboard" method="post">
+
+   <h2> Add Category:</h2><input type="text" name="category" placeholder="Add">
+   <input type="hidden" name="action" value="addCategory">
+  <button type="submit">Add</button>
 
 </form>
     <h2>View Users:</h2>

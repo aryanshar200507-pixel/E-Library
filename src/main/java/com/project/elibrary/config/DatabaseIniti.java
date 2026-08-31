@@ -1,7 +1,6 @@
 package com.project.elibrary.config;
 
 import java.sql.Connection;
-
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -75,6 +74,7 @@ public final class DatabaseIniti {
 	private static void createTables() {
 
 		createUserTable();
+		createCategoryTable();
 
 		// Other table creation methods will be added here.
 	}
@@ -141,5 +141,27 @@ public final class DatabaseIniti {
 		        throw new RuntimeException(
 		                "Failed to create default admin.", e);
 		    }
+	}
+	
+	public static void createCategoryTable() {
+		String sql = """
+				CREATE TABLE IF NOT EXISTS category  (
+    category_id INT PRIMARY KEY AUTO_INCREMENT,
+    category_name VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);""";
+
+		try (Connection connection = DatabaseConnection.getConnection();
+
+				Statement statement = connection.createStatement()) {
+
+			statement.executeUpdate(sql);
+
+			System.out.println("Category table is ready.");
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException("Failed to create category table.", e);
+		}
 	}
 }
