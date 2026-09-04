@@ -11,30 +11,32 @@ import com.project.elibrary.bean.enums.Role;
 import com.project.elibrary.util.PasswordUtil;
 
 /**
- * Initialize the database 
- * this class is responsible for 
- * Creating the databse if not exists
- * creating the required tables currently it just create usertable we will add other tables later 
- * creating the default admin account if it does not exist.
+ * Initialize the database this class is responsible for Creating the databse if
+ * not exists creating the required tables currently it just create usertable we
+ * will add other tables later creating the default admin account if it does not
+ * exist.
  */
 public final class DatabaseIniti {
 
 	private DatabaseIniti() {
-		   // Prevent object creation because this class only contains
-	    // static methods and is used as a utility class.
+		// Prevent object creation because this class only contains
+		// static methods and is used as a utility class.
 	}
+
 // Runs all db init steps , this is called when the application starts 
 	public static void initialize() {
 		createDatabase();
 		createTables();
+		DatabaseMigration.migrate();
 		createDefaultAdmin();
 	}
-	 /**
-     * Creates the E-Library database if it does not already exist.
-     *
-     * This connection is made to the MySQL server instead of the
-     * E-Library database because the database may not exist yet.
-     */
+
+	/**
+	 * Creates the E-Library database if it does not already exist.
+	 *
+	 * This connection is made to the MySQL server instead of the E-Library database
+	 * because the database may not exist yet.
+	 */
 	private static void createDatabase() {
 
 		try {
@@ -64,17 +66,18 @@ public final class DatabaseIniti {
 		}
 	}
 
-    /**
-     * Creates all required application tables.
-     *
-     * New table creation methods should be added here as
-     * the E-Library project grows.
-     */
+	/**
+	 * Creates all required application tables.
+	 *
+	 * New table creation methods should be added here as the E-Library project
+	 * grows.
+	 */
 
 	private static void createTables() {
 
 		createUserTable();
 		createCategoryTable();
+		createBookTable();
 
 		// Other table creation methods will be added here.
 	}
@@ -83,7 +86,7 @@ public final class DatabaseIniti {
 
 		String sql = """
 				CREATE TABLE IF NOT EXISTS users (
-				    user_id INT PRIMARY KEY AUTO_INCREMENT,
+				    user_id BIGINT PRIMARY KEY AUTO_INCREMENT,
 				    name VARCHAR(255) NOT NULL,
 				    email VARCHAR(255) NOT NULL UNIQUE,
 				    password VARCHAR(255) NOT NULL,
@@ -106,50 +109,45 @@ public final class DatabaseIniti {
 			throw new RuntimeException("Failed to create users table.", e);
 		}
 	}
-	
+
 	public static void createDefaultAdmin() {
 		String sql = """
 					INSERT INTO users (name,email,password,role,status)
 					SELECT ?,?,?,?,?
 					WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = ? )
 				""";
-		
-		  String hashedPassword =
-		            PasswordUtil.hasPassword(
-		                    DatabaseConfig.getAdminPassword());
 
-		    try (Connection connection =
-		                 DatabaseConnection.getConnection();
+		String hashedPassword = PasswordUtil.hasPassword(DatabaseConfig.getAdminPassword());
 
-		         PreparedStatement statement =
-		                 connection.prepareStatement(sql)) {
+		try (Connection connection = DatabaseConnection.getConnection();
 
-		        statement.setString(1, "E-Library Admin");
-		        statement.setString(2, DatabaseConfig.getAdminEmail());
-		        statement.setString(3, hashedPassword);
-		        statement.setString(4, Role.ADMIN.name());
-		        statement.setString(5, AccountStatus.ACTIVE.name());
-		        statement.setString(6, DatabaseConfig.getAdminEmail());
+				PreparedStatement statement = connection.prepareStatement(sql)) {
 
-		        int rowsAffected = statement.executeUpdate();
+			statement.setString(1, "E-Library Admin");
+			statement.setString(2, DatabaseConfig.getAdminEmail());
+			statement.setString(3, hashedPassword);
+			statement.setString(4, Role.ADMIN.name());
+			statement.setString(5, AccountStatus.ACTIVE.name());
+			statement.setString(6, DatabaseConfig.getAdminEmail());
 
-		        if (rowsAffected > 0) {
-		            System.out.println("Default admin account created.");
-		        }
+			int rowsAffected = statement.executeUpdate();
 
-		    } catch (SQLException e) {
-		        throw new RuntimeException(
-		                "Failed to create default admin.", e);
-		    }
+			if (rowsAffected > 0) {
+				System.out.println("Default admin account created.");
+			}
+
+		} catch (SQLException e) {
+			throw new RuntimeException("Failed to create default admin.", e);
+		}
 	}
-	
+
 	public static void createCategoryTable() {
 		String sql = """
-				CREATE TABLE IF NOT EXISTS category  (
-    category_id INT PRIMARY KEY AUTO_INCREMENT,
-    category_name VARCHAR(100) NOT NULL UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);""";
+								CREATE TABLE IF NOT EXISTS category  (
+				    category_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+				    category_name VARCHAR(100) NOT NULL UNIQUE,
+				    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+				);""";
 
 		try (Connection connection = DatabaseConnection.getConnection();
 
@@ -163,5 +161,36 @@ public final class DatabaseIniti {
 
 			throw new RuntimeException("Failed to create category table.", e);
 		}
+	}
+
+	public static void createBookTable() {
+		String sql = """
+									CREATE TABLE IF NOT EXISTS books (
+				    book_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+				    title VARCHAR(255) NOT NULL,
+				    author VARCHAR(255) NOT NULL,
+				    description TEXT,
+				    category_id BIGINT NOT NULL,
+				    published_at DATE,
+				    cover_storage_key VARCHAR(500),
+				    pdf_storage_key VARCHAR(500),
+				    views BIGINT DEFAULT 0,
+				    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+				    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+				    CONSTRAINT fk_books_category
+				        FOREIGN KEY (category_id)
+				        REFERENCES category(category_id)
+				);
+								""";
+		
+		try(Connection connection = DatabaseConnection.getConnection();
+					Statement statement = connection.createStatement()){
+						statement.executeUpdate(sql);
+						System.out.println("Book Table is created");
+					}catch (SQLException e) {
+						throw new RuntimeException("Book table not created" , e);
+					}
+				
 	}
 }

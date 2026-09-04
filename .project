@@ -45,14 +45,14 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Downloads/jakarta.mail-api-2.1.5.jar</locationURI>
 		</link>
 		<link>
-			<name>src/main/webapp/WEB-INF/lib/jbcrypt-0.4 (1).jar</name>
+			<name>src/main/webapp/WEB-INF/lib/jbcrypt-0.4.jar</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Downloads/jbcrypt-0.4%20(1).jar</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/Downloads/jbcrypt-0.4.jar</locationURI>
 		</link>
 		<link>
 			<name>src/main/webapp/WEB-INF/lib/mysql-connector-j-26.7.0.jar</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Downloads/mysql-connector-j-26.7.0/mysql-connector-j-26.7.0.jar</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/mysql-connector-j-26.7.0/mysql-connector-j-26.7.0.jar</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
