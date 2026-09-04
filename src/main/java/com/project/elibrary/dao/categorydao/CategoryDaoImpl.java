@@ -10,7 +10,7 @@ import com.project.elibrary.config.DatabaseConnection;
 //import java.util.List;
 
 //import com.project.elibrary.bean.category.Category;
-//import com.project.elibrary.config.DatabaseConnection;
+import com.project.elibrary.config.DatabaseConnection;
 
 public class CategoryDaoImpl implements CategoryDao {
 

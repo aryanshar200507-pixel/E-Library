@@ -2,7 +2,7 @@ package com.project.elibrary.bean.category;
 
 public class Category 
 {
-	private long categoryId;
+	private Long  categoryId;
 	private String categoryName;
 	
 	public Category() {}
