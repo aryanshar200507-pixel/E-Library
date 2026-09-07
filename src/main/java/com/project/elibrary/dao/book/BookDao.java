@@ -24,5 +24,9 @@ public interface BookDao {
 	boolean update(Book book);
 
 	boolean delete(Long bookId);
+	
+	boolean incrementViews(Long bookId);
+	
+	Book findHighestRatedBookByCategory(Long categoryId);
 
 }

@@ -78,6 +78,8 @@ public final class DatabaseIniti {
 		createUserTable();
 		createCategoryTable();
 		createBookTable();
+		createRatingTable();
+		createCommentTable();
 
 		// Other table creation methods will be added here.
 	}
@@ -183,14 +185,98 @@ public final class DatabaseIniti {
 				        REFERENCES category(category_id)
 				);
 								""";
-		
-		try(Connection connection = DatabaseConnection.getConnection();
-					Statement statement = connection.createStatement()){
-						statement.executeUpdate(sql);
-						System.out.println("Book Table is created");
-					}catch (SQLException e) {
-						throw new RuntimeException("Book table not created" , e);
-					}
-				
+
+		try (Connection connection = DatabaseConnection.getConnection();
+				Statement statement = connection.createStatement()) {
+			statement.executeUpdate(sql);
+			System.out.println("Book Table is created");
+		} catch (SQLException e) {
+			throw new RuntimeException("Book table not created", e);
+		}
+
+	}
+
+	public static void createRatingTable() {
+		String sql = """
+				CREATE TABLE IF NOT EXISTS ratings (
+				    rating_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+				    user_id BIGINT NOT NULL,
+
+				    book_id BIGINT NOT NULL,
+
+				    rating INT NOT NULL,
+
+				    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+				    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+				        ON UPDATE CURRENT_TIMESTAMP,
+
+				    CONSTRAINT fk_ratings_user
+				        FOREIGN KEY (user_id)
+				        REFERENCES users(user_id)
+				        ON DELETE CASCADE,
+
+				    CONSTRAINT fk_ratings_book
+				        FOREIGN KEY (book_id)
+				        REFERENCES books(book_id)
+				        ON DELETE CASCADE,
+
+				    CONSTRAINT chk_rating_value
+				        CHECK (rating BETWEEN 1 AND 5),
+
+				    CONSTRAINT unique_user_book_rating
+				        UNIQUE (user_id, book_id)
+				);
+				""";
+
+		try (Connection connection = DatabaseConnection.getConnection();
+				Statement statement = connection.createStatement()) {
+
+			statement.executeUpdate(sql);
+
+			System.out.println("Rating table is ready.");
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException("Failed to create rating table.", e);
+		}
+
+	}
+
+	public static void createCommentTable() {
+		String sql = """
+				  CREATE TABLE IF NOT EXISTS comments (
+				            comment_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+				            user_id BIGINT NOT NULL,
+				            book_id BIGINT NOT NULL,
+				            comment TEXT NOT NULL,
+				            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+				            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+				                ON UPDATE CURRENT_TIMESTAMP,
+
+				            CONSTRAINT fk_comments_user
+				                FOREIGN KEY (user_id)
+				                REFERENCES users(user_id)
+				                ON DELETE CASCADE,
+
+				            CONSTRAINT fk_comments_book
+				                FOREIGN KEY (book_id)
+				                REFERENCES books(book_id)
+				                ON DELETE CASCADE
+				        );
+				""";
+
+		try (Connection connection = DatabaseConnection.getConnection();
+				Statement statement = connection.createStatement()) {
+
+			statement.executeUpdate(sql);
+
+			System.out.println("Comment table is ready.");
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException("Failed to create comment table.", e);
+		}
 	}
 }

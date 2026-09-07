@@ -124,4 +124,27 @@ public class BookServiceImpl implements BookService {
 		}
 	}
 
+	@Override
+	public boolean incrementVIews(Long bookId) {
+		// Make sure the book ID is valid before accessing the database.
+		if (bookId == null || bookId <= 0) {
+			throw new IllegalArgumentException("Invalid book Id");
+		}
+
+		// Ask the DAO to increase the view count.
+		return bookDao.incrementViews(bookId);
+	}
+
+	@Override
+	public Book getHighestRatedBookByCategory(Long categoryId) {
+
+		// Make sure the category ID is valid before accessing the database.
+		if (categoryId == null || categoryId <= 0) {
+			throw new IllegalArgumentException("Invalid category ID.");
+		}
+
+		// Ask the DAO to find the highest-rated book in this category.
+		return bookDao.findHighestRatedBookByCategory(categoryId);
+	}
+
 }

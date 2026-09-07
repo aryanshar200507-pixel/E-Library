@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.project.elibrary.bean.category.Category;
 import com.project.elibrary.bean.user.User;
+import com.project.elibrary.service.bookservice.BookService;
+import com.project.elibrary.service.bookservice.BookServiceImpl;
 import com.project.elibrary.service.categoryservice.CategoryService;
 import com.project.elibrary.service.categoryservice.CategoryServiceImpl;
 import com.project.elibrary.service.userservice.UserService;
@@ -23,136 +25,137 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/admin/dashboard")
 public class AdminDashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
-	private final UserService userService = new UserServiceImpl();  
+
+	private final UserService userService = new UserServiceImpl();
 	private final Category category = new Category();
 	private final CategoryService categoryService = new CategoryServiceImpl();
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public AdminDashboardServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	private final BookService bookService = new BookServiceImpl();
+	
+	public AdminDashboardServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		// Load dashboard statistics
 		loadTotalUsers(request);
 		loadTotalCategories(request);
-		
-        //loadUsers(request);
-            
-        String keyword = request.getParameter("keyword");
+		loadTotalBooks(request);
 
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            loadSearchUsers(request);
-        } else {
-            loadUsers(request);
-        }
-       
-        request.getRequestDispatcher("/WEB-INF/admin/dashboard.jsp")
-               .forward(request, response);
-    }
-	
-	
+		String keyword = request.getParameter("keyword");
+
+		// Load users according to search
+		if (keyword != null && !keyword.trim().isEmpty()) {
+			loadSearchUsers(request);
+		} else {
+			loadUsers(request);
+		}
+
+		request.getRequestDispatcher("/WEB-INF/admin/dashboard.jsp").forward(request, response);
+	}
+
 	// Method to search users
-    private void loadSearchUsers(HttpServletRequest request) {
-    	
-    	String keyword = request.getParameter("keyword");
-    	 List<User> users = userService.searchUsers(keyword);
+	private void loadSearchUsers(HttpServletRequest request) {
 
-         request.setAttribute("users", users);
+		String keyword = request.getParameter("keyword");
+		List<User> users = userService.searchUsers(keyword);
 
-         System.out.println("Users found: " + users.size());
-		
+		request.setAttribute("users", users);
+
+		System.out.println("Users found: " + users.size());
+
 	}
 
 	// Method to count users
-    private void loadTotalUsers(HttpServletRequest request) {
+	private void loadTotalUsers(HttpServletRequest request) {
 
-        int totalUsers = userService.countAllUsers();
+		int totalUsers = userService.countAllUsers();
 
-        request.setAttribute("totalUsers", totalUsers);
-    }
-
-    // Method to get all users
-    private void loadUsers(HttpServletRequest request) {
-
-        List<User> users = userService.findAllUsers();
-
-        request.setAttribute("users", users);
-
-        System.out.println("Users found: " + users.size());
-    }
-    
-    
-    
-    //Method to get the userId to block
-   private void loadIdToBlock(HttpServletRequest request) {	   
-	   String userIdParam = request.getParameter("userId");
-	   long userId = Long.parseLong(userIdParam);
-	    userService.deactivateUser(userId);
+		request.setAttribute("totalUsers", totalUsers);
 	}
-   
-   
-   //Method to get the userId to Recover
-   private void loadIdToRecover(HttpServletRequest request) {
-	   String userIdParam = request.getParameter("userId");
-	   long userId = Long.parseLong(userIdParam);
-	   userService.recoverUser(userId);
-	  
-   }
-   
-   //Method to count Categories
-   private void loadTotalCategories(HttpServletRequest request) {
 
-       int totalCategories = categoryService.countAllCategories();
+	// Method to get all users
+	private void loadUsers(HttpServletRequest request) {
 
-       request.setAttribute("totalCategories", totalCategories);
+		List<User> users = userService.findAllUsers();
+
+		request.setAttribute("users", users);
+
+		System.out.println("Users found: " + users.size());
 	}
-	
- //Method to add category
- 	private void addCategory(HttpServletRequest request) {
 
- 	    String categoryName = request.getParameter("category");
+	// Method to get the userId to block
+	private void loadIdToBlock(HttpServletRequest request) {
+		String userIdParam = request.getParameter("userId");
+		long userId = Long.parseLong(userIdParam);
+		userService.deactivateUser(userId);
+	}
 
- 	    Category category = new Category();
- 	    category.setCategoryName(categoryName);
+	// Method to get the userId to Recover
+	private void loadIdToRecover(HttpServletRequest request) {
+		String userIdParam = request.getParameter("userId");
+		long userId = Long.parseLong(userIdParam);
+		userService.recoverUser(userId);
 
- 	    boolean added = categoryService.addCategories(category);
+	}
 
- 	    if (added) {
- 	        System.out.println("Category added successfully");
- 	    } else {
- 	        System.out.println("Failed to add category");
- 	    }
- 	}
-   
-   
-    protected void doPost(HttpServletRequest request,
-            HttpServletResponse response)
-		throws ServletException, IOException {
-    	
-    	String action = request.getParameter("action");
+	// Method to count Categories
+	private void loadTotalCategories(HttpServletRequest request) {
 
-    	if ("block".equals(action)) {
+		int totalCategories = categoryService.countAllCategories();
 
-    	    loadIdToBlock(request);
+		request.setAttribute("totalCategories", totalCategories);
+	}
 
-    	} else if ("recover".equals(action)) {
+	// Method to add category
+	private void addCategory(HttpServletRequest request) {
 
-    	    loadIdToRecover(request);
-    	}else if ("addCategory".equals(action)) {
-            addCategory(request);
-        }
+		String categoryName = request.getParameter("category");
 
-    	response.sendRedirect(
-    	    request.getContextPath() + "/admin/dashboard"
-    	);
-		//doGet(request, response);
-		
+		Category category = new Category();
+		category.setCategoryName(categoryName);
+
+		boolean added = categoryService.addCategories(category);
+
+		if (added) {
+			System.out.println("Category added successfully");
+		} else {
+			System.out.println("Failed to add category");
 		}
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		String action = request.getParameter("action");
+
+		if ("block".equals(action)) {
+
+			loadIdToBlock(request);
+
+		} else if ("recover".equals(action)) {
+
+			loadIdToRecover(request);
+		} else if ("addCategory".equals(action)) {
+			addCategory(request);
+		}
+
+		response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+		// doGet(request, response);
+
+	}
+
+	private void loadTotalBooks(HttpServletRequest request) {
+
+		int totalBooks = bookService.getTotalBooks();
+
+		request.setAttribute("totalBooks", totalBooks);
+	}
 
 }

@@ -24,5 +24,9 @@ public interface BookService {
 	boolean updateBook(Book book);
 
 	boolean deleteBook(Long bookId);
+	
+	boolean incrementVIews(Long bookId);
+	
+	Book getHighestRatedBookByCategory(Long categoryId);
 
 }
