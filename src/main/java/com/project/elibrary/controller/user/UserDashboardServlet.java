@@ -7,12 +7,15 @@ import java.util.Map;
 
 import com.project.elibrary.bean.book.Book;
 import com.project.elibrary.bean.category.Category;
+import com.project.elibrary.bean.user.User;
 import com.project.elibrary.service.bookservice.BookService;
 import com.project.elibrary.service.bookservice.BookServiceImpl;
 import com.project.elibrary.service.categoryservice.CategoryService;
 import com.project.elibrary.service.categoryservice.CategoryServiceImpl;
 import com.project.elibrary.service.ratingservice.RatingService;
 import com.project.elibrary.service.ratingservice.RatingServiceImpl;
+import com.project.elibrary.service.readingprogressservice.ReadingProgressService;
+import com.project.elibrary.service.readingprogressservice.ReadingProgressServiceImpl;
 import com.project.elibrary.service.storageservice.S3StorageServiceImpl;
 import com.project.elibrary.service.storageservice.StorageService;
 
@@ -21,126 +24,319 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/user/dashboard")
 public class UserDashboardServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private CategoryService categoryService;
-	private BookService bookService;
-	private RatingService ratingService;
-	private StorageService storageService;
+    private CategoryService categoryService;
+    private BookService bookService;
+    private RatingService ratingService;
+    private StorageService storageService;
+    private ReadingProgressService readingProgressService;
 
-	@Override
-	public void init() throws ServletException {
+    
+    public UserDashboardServlet() {
 
-		categoryService = new CategoryServiceImpl();
-		bookService = new BookServiceImpl();
-		ratingService = new RatingServiceImpl();
-		storageService = new S3StorageServiceImpl();
-	}
+        categoryService = new CategoryServiceImpl();
+        bookService = new BookServiceImpl();
+        ratingService = new RatingServiceImpl();
+        storageService = new S3StorageServiceImpl();
+        readingProgressService = new ReadingProgressServiceImpl();
+    }
 
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-		/*
-		 * Get the 3 categories having the highest average rating.
-		 */
-		List<Category> topCategories = categoryService.getTopRatedCategories(3);
+        /*
+         * ============================================
+         * GET LOGGED-IN USER
+         * ============================================
+         */
 
-		/*
-		 * Stores the books belonging to each category.
-		 *
-		 * Key = category ID Value = list of 5 books
-		 */
-		Map<Long, List<Book>> categoryBooksMap = new HashMap<>();
+        HttpSession session = request.getSession(false);
 
-		/*
-		 * Stores the average rating of each book.
-		 *
-		 * Key = book ID Value = average rating
-		 */
-		Map<Long, Double> bookAverageRatingMap = new HashMap<>();
+        if (session == null) {
+            response.sendRedirect(
+                request.getContextPath() + "/login.jsp"
+            );
+            return;
+        }
 
-		/*
-		 * Stores the number of ratings for each book.
-		 *
-		 * Key = book ID Value = rating count
-		 */
-		Map<Long, Integer> bookRatingCountMap = new HashMap<>();
+        User loggedInUser =
+            (User) session.getAttribute("loggedInUser");
 
-		/*
-		 * Stores the S3 cover URL for each book.
-		 *
-		 * Key = book ID Value = cover URL
-		 */
-		Map<Long, String> bookCoverUrlMap = new HashMap<>();
+        if (loggedInUser == null) {
+            response.sendRedirect(
+                request.getContextPath() + "/login.jsp"
+            );
+            return;
+        }
 
-		/*
-		 * Get 5 books for every top-rated category.
-		 */
-		for (Category category : topCategories) {
+        Long userId = loggedInUser.getUserId();
 
-			Long categoryId = category.getCategoryId();
 
-			List<Book> books = bookService.getBookByCategory(categoryId, 1, 5);
+        /*
+         * ============================================
+         * RECENTLY READ BOOKS
+         * ============================================
+         *
+         * Get the last 5 books opened by this user.
+         *
+         * The ReadingProgress DAO uses:
+         *
+         * reading_progress.updated_at
+         *
+         * to determine the most recently read books.
+         */
 
-			categoryBooksMap.put(categoryId, books);
+        List<Book> recentlyReadBooks =
+            readingProgressService.getRecentlyRead(userId, 5);
 
-			/*
-			 * Get additional information for every book.
-			 */
-			for (Book book : books) {
 
-				Long bookId = book.getBookId();
+        /*
+         * ============================================
+         * TOP RATED CATEGORIES
+         * ============================================
+         */
 
-				// Average rating
-				Double averageRating = ratingService.getAverageRating(bookId);
+        List<Category> topCategories =
+            categoryService.getTopRatedCategories(3);
 
-				bookAverageRatingMap.put(bookId, averageRating);
 
-				// Rating count
-				int ratingCount = ratingService.getRatingCount(bookId);
+        /*
+         * ============================================
+         * CATEGORY BOOK MAP
+         * ============================================
+         *
+         * Key   = category ID
+         * Value = list of books
+         */
 
-				bookRatingCountMap.put(bookId, ratingCount);
+        Map<Long, List<Book>> categoryBooksMap =
+            new HashMap<>();
 
-				// Cover URL
-				String storageKey = book.getCoverStorageKey();
 
-				if (storageKey != null && !storageKey.isBlank()) {
+        /*
+         * ============================================
+         * BOOK AVERAGE RATING MAP
+         * ============================================
+         */
 
-					String coverUrl = storageService.getFileUrl(storageKey);
+        Map<Long, Double> bookAverageRatingMap =
+            new HashMap<>();
 
-					bookCoverUrlMap.put(bookId, coverUrl);
-				}
-			}
-		}
 
-		/*
-		 * Send everything to the JSP.
-		 */
-		request.setAttribute("topCategories", topCategories);
+        /*
+         * ============================================
+         * BOOK RATING COUNT MAP
+         * ============================================
+         */
 
-		request.setAttribute("categoryBooksMap", categoryBooksMap);
+        Map<Long, Integer> bookRatingCountMap =
+            new HashMap<>();
 
-		request.setAttribute("bookAverageRatingMap", bookAverageRatingMap);
 
-		request.setAttribute("bookRatingCountMap", bookRatingCountMap);
+        /*
+         * ============================================
+         * BOOK COVER URL MAP
+         * ============================================
+         */
 
-		request.setAttribute("bookCoverUrlMap", bookCoverUrlMap);
+        Map<Long, String> bookCoverUrlMap =
+            new HashMap<>();
 
-		/*
-		 * Display the User Dashboard.
-		 */
-		request.getRequestDispatcher("/WEB-INF/user/dashboard.jsp").forward(request, response);
-	}
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+        /*
+         * ============================================
+         * PROCESS RECENTLY READ BOOKS
+         * ============================================
+         */
 
-		doGet(request, response);
-	}
+        for (Book book : recentlyReadBooks) {
+
+            Long bookId = book.getBookId();
+
+            /*
+             * Average rating
+             */
+            Double averageRating =
+                ratingService.getAverageRating(bookId);
+
+            bookAverageRatingMap.put(
+                bookId,
+                averageRating
+            );
+
+
+            /*
+             * Rating count
+             */
+            int ratingCount =
+                ratingService.getRatingCount(bookId);
+
+            bookRatingCountMap.put(
+                bookId,
+                ratingCount
+            );
+
+
+            /*
+             * Cover URL
+             */
+            String storageKey =
+                book.getCoverStorageKey();
+
+            if (storageKey != null && !storageKey.isBlank()) {
+
+                String coverUrl =
+                    storageService.getFileUrl(storageKey);
+
+                bookCoverUrlMap.put(
+                    bookId,
+                    coverUrl
+                );
+            }
+        }
+
+
+        /*
+         * ============================================
+         * GET BOOKS FOR TOP CATEGORIES
+         * ============================================
+         */
+
+        for (Category category : topCategories) {
+
+            Long categoryId =
+                category.getCategoryId();
+
+            List<Book> books =
+                bookService.getBookByCategory(
+                    categoryId,
+                    1,
+                    5
+                );
+
+            categoryBooksMap.put(
+                categoryId,
+                books
+            );
+
+
+            /*
+             * Get additional information for
+             * every category book.
+             */
+
+            for (Book book : books) {
+
+                Long bookId =
+                    book.getBookId();
+
+
+                /*
+                 * Average rating
+                 */
+                Double averageRating =
+                    ratingService.getAverageRating(bookId);
+
+                bookAverageRatingMap.put(
+                    bookId,
+                    averageRating
+                );
+
+
+                /*
+                 * Rating count
+                 */
+                int ratingCount =
+                    ratingService.getRatingCount(bookId);
+
+                bookRatingCountMap.put(
+                    bookId,
+                    ratingCount
+                );
+
+
+                /*
+                 * Cover URL
+                 */
+                String storageKey =
+                    book.getCoverStorageKey();
+
+                if (storageKey != null && !storageKey.isBlank()) {
+
+                    String coverUrl =
+                        storageService.getFileUrl(storageKey);
+
+                    bookCoverUrlMap.put(
+                        bookId,
+                        coverUrl
+                    );
+                }
+            }
+        }
+
+
+        /*
+         * ============================================
+         * SEND DATA TO JSP
+         * ============================================
+         */
+
+        request.setAttribute(
+            "recentlyReadBooks",
+            recentlyReadBooks
+        );
+
+        request.setAttribute(
+            "topCategories",
+            topCategories
+        );
+
+        request.setAttribute(
+            "categoryBooksMap",
+            categoryBooksMap
+        );
+
+        request.setAttribute(
+            "bookAverageRatingMap",
+            bookAverageRatingMap
+        );
+
+        request.setAttribute(
+            "bookRatingCountMap",
+            bookRatingCountMap
+        );
+
+        request.setAttribute(
+            "bookCoverUrlMap",
+            bookCoverUrlMap
+        );
+
+
+        /*
+         * ============================================
+         * FORWARD TO DASHBOARD
+         * ============================================
+         */
+
+        request.getRequestDispatcher(
+            "/WEB-INF/user/dashboard.jsp"
+        ).forward(request, response);
+    }
+
+
+    @Override
+    protected void doPost(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        doGet(request, response);
+    }
 }

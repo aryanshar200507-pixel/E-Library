@@ -36,8 +36,11 @@ public class ViewBookServlet extends HttpServlet {
     public void init() throws ServletException {
 
         bookService = new BookServiceImpl();
+
         categoryService = new CategoryServiceImpl();
+
         ratingService = new RatingServiceImpl();
+
         storageService = new S3StorageServiceImpl();
     }
 
@@ -48,11 +51,11 @@ public class ViewBookServlet extends HttpServlet {
             throws ServletException, IOException {
 
         /*
-         * Get the search keyword.
-         *
-         * If there is no keyword, the page behaves exactly as before
-         * and displays categories.
+         * =========================================================
+         * SEARCH KEYWORD
+         * =========================================================
          */
+
         String keyword = request.getParameter("keyword");
 
         if (keyword != null) {
@@ -60,8 +63,11 @@ public class ViewBookServlet extends HttpServlet {
         }
 
         /*
-         * Get page number.
+         * =========================================================
+         * PAGINATION
+         * =========================================================
          */
+
         int page = 1;
         int pageSize = 6;
 
@@ -70,8 +76,11 @@ public class ViewBookServlet extends HttpServlet {
         if (pageParameter != null && !pageParameter.isBlank()) {
 
             try {
+
                 page = Integer.parseInt(pageParameter);
+
             } catch (NumberFormatException e) {
+
                 page = 1;
             }
         }
@@ -85,33 +94,49 @@ public class ViewBookServlet extends HttpServlet {
          * SEARCH MODE
          * =========================================================
          *
-         * If the user entered a search keyword, search books.
+         * Search only our local MySQL books.
+         * External APIs have been removed.
          */
+
         if (keyword != null && !keyword.isBlank()) {
 
-            List<Book> books =
-                    bookService.searchBooks(
-                            keyword,
-                            page,
-                            pageSize
-                    );
+            /*
+             * -----------------------------------------------------
+             * LOCAL BOOKS
+             * -----------------------------------------------------
+             */
 
-            int totalBooks =
-                    bookService.getTotalSearchResults(keyword);
+            List<Book> books = bookService.searchBooks(
+                    keyword,
+                    page,
+                    pageSize
+            );
 
-            int totalPages =
-                    (int) Math.ceil(
-                            (double) totalBooks / pageSize
-                    );
+            int totalBooks = bookService.getTotalSearchResults(
+                    keyword
+            );
+
+            int totalPages = (int) Math.ceil(
+                    (double) totalBooks / pageSize
+            );
 
             /*
-             * Maps used by the JSP to display rating information.
+             * -----------------------------------------------------
+             * LOCAL BOOK RATINGS
+             * -----------------------------------------------------
              */
+
             Map<Long, Double> bookAverageRatingMap =
                     new HashMap<>();
 
             Map<Long, Integer> bookRatingCountMap =
                     new HashMap<>();
+
+            /*
+             * -----------------------------------------------------
+             * LOCAL BOOK COVERS
+             * -----------------------------------------------------
+             */
 
             Map<Long, String> bookCoverUrlMap =
                     new HashMap<>();
@@ -121,8 +146,9 @@ public class ViewBookServlet extends HttpServlet {
                 Long bookId = book.getBookId();
 
                 /*
-                 * Get average rating.
+                 * Average rating
                  */
+
                 Double averageRating =
                         ratingService.getAverageRating(bookId);
 
@@ -132,8 +158,9 @@ public class ViewBookServlet extends HttpServlet {
                 );
 
                 /*
-                 * Get number of ratings.
+                 * Rating count
                  */
+
                 int ratingCount =
                         ratingService.getRatingCount(bookId);
 
@@ -143,8 +170,9 @@ public class ViewBookServlet extends HttpServlet {
                 );
 
                 /*
-                 * Generate temporary S3 URL for cover.
+                 * S3 cover
                  */
+
                 String storageKey =
                         book.getCoverStorageKey();
 
@@ -152,9 +180,7 @@ public class ViewBookServlet extends HttpServlet {
                         && !storageKey.isBlank()) {
 
                     String coverUrl =
-                            storageService.getFileUrl(
-                                    storageKey
-                            );
+                            storageService.getFileUrl(storageKey);
 
                     bookCoverUrlMap.put(
                             bookId,
@@ -164,8 +190,11 @@ public class ViewBookServlet extends HttpServlet {
             }
 
             /*
-             * Send search results to JSP.
+             * -----------------------------------------------------
+             * SEND SEARCH DATA TO JSP
+             * -----------------------------------------------------
              */
+
             request.setAttribute(
                     "searchMode",
                     true
@@ -221,8 +250,13 @@ public class ViewBookServlet extends HttpServlet {
          * CATEGORY MODE
          * =========================================================
          *
-         * No search keyword means /books behaves as before.
+         * No search keyword:
+         *
+         * /books
+         *
+         * Displays categories only.
          */
+
         List<Category> categories =
                 categoryService.getCategories(
                         page,
@@ -232,20 +266,21 @@ public class ViewBookServlet extends HttpServlet {
         int totalCategories =
                 categoryService.getTotalCategories();
 
-        int totalPages =
-                (int) Math.ceil(
-                        (double) totalCategories / pageSize
-                );
+        int totalPages = (int) Math.ceil(
+                (double) totalCategories / pageSize
+        );
 
         /*
-         * categoryId -> highest-rated book
+         * categoryId -> highest-rated local book
          */
+
         Map<Long, Book> highestRatedBookMap =
                 new HashMap<>();
 
         /*
-         * categoryId -> S3 cover URL
+         * categoryId -> S3 cover
          */
+
         Map<Long, String> categoryCoverUrlMap =
                 new HashMap<>();
 
@@ -286,8 +321,11 @@ public class ViewBookServlet extends HttpServlet {
         }
 
         /*
-         * Send category data to JSP.
+         * =========================================================
+         * SEND CATEGORY DATA
+         * =========================================================
          */
+
         request.setAttribute(
                 "searchMode",
                 false
@@ -332,6 +370,9 @@ public class ViewBookServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        doGet(request, response);
+        doGet(
+                request,
+                response
+        );
     }
 }

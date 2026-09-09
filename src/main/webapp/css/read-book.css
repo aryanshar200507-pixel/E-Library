@@ -1,0 +1,1152 @@
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #111827;
+    color: #ffffff;
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   READER
+   ========================================================= */
+
+.reader {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =========================================================
+   TOP TOOLBAR
+   ========================================================= */
+
+.toolbar {
+    height: 58px;
+    min-height: 58px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 0 12px;
+
+    background: #1f2937;
+
+    border-bottom: 1px solid #374151;
+
+    z-index: 1000;
+}
+
+
+/* =========================================================
+   TOOLBAR BUTTONS
+   ========================================================= */
+
+.toolbar button {
+    width: 38px;
+    height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 7px;
+
+    background: transparent;
+
+    color: #e5e7eb;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.toolbar button:hover {
+    background: #374151;
+    color: #ffffff;
+}
+
+.toolbar button:active {
+    transform: scale(0.94);
+}
+
+
+/* =========================================================
+   LUCIDE ICONS
+   ========================================================= */
+
+.toolbar button svg,
+.mobile-controls button svg,
+.search-row button svg,
+.search-navigation button svg,
+.highlight-toolbar button svg,
+.sidebar-tab svg {
+    width: 19px;
+    height: 19px;
+
+    stroke-width: 2;
+
+    display: block;
+}
+
+
+.reader-tool-button svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.back-button {
+    margin-right: 4px;
+}
+
+
+/* =========================================================
+   BOOK TITLE
+   ========================================================= */
+
+.book-title {
+    flex: 1;
+
+    min-width: 100px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    color: #f3f4f6;
+
+    padding: 0 8px;
+}
+
+
+/* =========================================================
+   HIGHLIGHT HEADER BUTTON
+   ========================================================= */
+
+.highlight-header-button.active {
+    background: #374151;
+    color: #facc15;
+}
+
+.highlight-header-button.active:hover {
+    background: #4b5563;
+    color: #fde047;
+}
+
+
+/* =========================================================
+   BOOKMARK BUTTON
+   ========================================================= */
+
+.bookmark-button.bookmarked {
+    color: #facc15;
+}
+
+.bookmark-button.bookmarked:hover {
+    color: #fde047;
+}
+
+
+/* =========================================================
+   PAGE CONTROLS
+   ========================================================= */
+
+.page-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.page-input {
+    width: 48px;
+    height: 32px;
+
+    border: 1px solid #4b5563;
+    border-radius: 5px;
+
+    background: #111827;
+    color: #ffffff;
+
+    text-align: center;
+
+    outline: none;
+}
+
+.page-input:focus {
+    border-color: #6b7280;
+}
+
+.page-count {
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   VIEW MODE
+   ========================================================= */
+
+#viewMode {
+    height: 36px;
+
+    padding: 0 8px;
+
+    border: 1px solid #4b5563;
+    border-radius: 6px;
+
+    background: #111827;
+    color: #ffffff;
+
+    cursor: pointer;
+
+    outline: none;
+}
+
+#viewMode:hover {
+    background: #374151;
+}
+
+
+/* =========================================================
+   READER CONTENT
+   ========================================================= */
+
+.reader-content {
+    position: relative;
+
+    flex: 1;
+
+    min-height: 0;
+
+    display: flex;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.sidebar {
+    width: 270px;
+
+    flex-shrink: 0;
+
+    background: #1f2937;
+
+    border-right: 1px solid #374151;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    transition:
+        width 0.25s ease,
+        margin-left 0.25s ease;
+}
+
+.sidebar:not(.active) {
+    width: 0;
+    margin-left: 0;
+    border-right: none;
+}
+
+
+/* =========================================================
+   SIDEBAR TABS
+   ========================================================= */
+
+.sidebar-tabs {
+    display: flex;
+
+    border-bottom: 1px solid #374151;
+}
+
+.sidebar-tab {
+    flex: 1;
+
+    min-height: 48px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #9ca3af;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    cursor: pointer;
+
+    font-size: 13px;
+}
+
+.sidebar-tab:hover {
+    background: #374151;
+    color: #ffffff;
+}
+
+.sidebar-tab.active {
+    color: #ffffff;
+
+    background: #374151;
+
+    box-shadow:
+        inset 0 -2px 0 #ffffff;
+}
+
+
+/* =========================================================
+   SIDEBAR CONTENT
+   ========================================================= */
+
+.sidebar-content {
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: 10px;
+}
+
+
+/* =========================================================
+   THUMBNAILS
+   ========================================================= */
+
+.thumbnail {
+    position: relative;
+
+    margin-bottom: 12px;
+
+    padding: 6px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+
+    background: #111827;
+
+    border: 1px solid transparent;
+}
+
+.thumbnail:hover {
+    border-color: #6b7280;
+}
+
+.thumbnail.selected {
+    border-color: #ffffff;
+}
+
+.thumbnail canvas {
+    width: 100%;
+    height: auto;
+
+    display: block;
+}
+
+.thumbnail-page-number {
+    text-align: center;
+
+    padding-top: 5px;
+
+    font-size: 12px;
+
+    color: #9ca3af;
+}
+
+
+/* =========================================================
+   VIEWER
+   ========================================================= */
+
+.viewer {
+    position: relative;
+
+    flex: 1;
+
+    min-width: 0;
+    min-height: 0;
+
+    background: #525252;
+
+    overflow: auto;
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.loading {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    color: #ffffff;
+
+    font-size: 15px;
+
+    z-index: 20;
+}
+
+.loading.hidden {
+    display: none;
+}
+
+
+/* =========================================================
+   SEARCH PANEL
+   ========================================================= */
+
+.search-panel {
+    position: absolute;
+
+    top: 12px;
+    right: 15px;
+
+    width: 330px;
+
+    padding: 12px;
+
+    background: #1f2937;
+
+    border: 1px solid #374151;
+
+    border-radius: 9px;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.35);
+
+    z-index: 500;
+
+    display: none;
+}
+
+.search-panel.active {
+    display: block;
+}
+
+
+/* =========================================================
+   SEARCH ROW
+   ========================================================= */
+
+.search-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.search-input {
+    flex: 1;
+
+    min-width: 0;
+
+    height: 36px;
+
+    padding: 0 10px;
+
+    border: 1px solid #4b5563;
+
+    border-radius: 6px;
+
+    background: #111827;
+
+    color: #ffffff;
+
+    outline: none;
+}
+
+.search-input:focus {
+    border-color: #9ca3af;
+}
+
+
+/* =========================================================
+   SEARCH BUTTONS
+   ========================================================= */
+
+.search-row button,
+.search-navigation button {
+    width: 36px;
+    height: 36px;
+
+    padding: 0;
+
+    border: none;
+
+    border-radius: 6px;
+
+    background: #374151;
+
+    color: #ffffff;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+.search-row button:hover,
+.search-navigation button:hover {
+    background: #4b5563;
+}
+
+
+/* =========================================================
+   SEARCH INFO
+   ========================================================= */
+
+.search-info {
+    margin-top: 8px;
+
+    color: #9ca3af;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   SEARCH NAVIGATION
+   ========================================================= */
+
+.search-navigation {
+    display: flex;
+
+    gap: 5px;
+
+    margin-top: 8px;
+}
+
+
+/* =========================================================
+   PDF PAGES
+   ========================================================= */
+
+.pages-container {
+    min-height: 100%;
+
+    padding: 25px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 25px;
+}
+
+.pages-container.spread-mode {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+
+/* =========================================================
+   PDF PAGE
+   ========================================================= */
+
+.page-wrapper {
+    position: relative;
+
+    flex-shrink: 0;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.35);
+}
+
+.pdf-canvas {
+    display: block;
+}
+
+
+/* =========================================================
+   TEXT LAYER
+   ========================================================= */
+
+.textLayer {
+    position: absolute;
+
+    inset: 0;
+
+    overflow: hidden;
+
+    line-height: 1;
+}
+
+.textLayer span,
+.textLayer br {
+    color: transparent;
+
+    position: absolute;
+
+    white-space: pre;
+
+    cursor: text;
+
+    transform-origin: 0% 0%;
+}
+
+
+/* =========================================================
+   HIGHLIGHT LAYER
+   ========================================================= */
+
+.highlight-layer {
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    z-index: 2;
+}
+
+.pdf-highlight {
+    position: absolute;
+
+    pointer-events: auto;
+
+    border-radius: 2px;
+
+    cursor: pointer;
+
+    transition:
+        outline 0.15s ease,
+        opacity 0.15s ease;
+}
+
+.pdf-highlight:hover {
+    opacity: 0.75;
+}
+
+.pdf-highlight.selected-highlight {
+    outline: 2px solid #ffffff;
+    outline-offset: 1px;
+}
+
+
+/* =========================================================
+   HIGHLIGHT COLORS
+   ========================================================= */
+
+.highlight-yellow {
+    background: rgba(255, 224, 102, 0.45);
+}
+
+.highlight-green {
+    background: rgba(112, 224, 0, 0.35);
+}
+
+.highlight-blue {
+    background: rgba(116, 192, 252, 0.40);
+}
+
+.highlight-pink {
+    background: rgba(255, 143, 171, 0.40);
+}
+
+
+/* =========================================================
+   HIGHLIGHT TOOLBAR
+   ========================================================= */
+
+.highlight-toolbar {
+    position: fixed;
+
+    display: none;
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 6px;
+
+    background: #1f2937;
+
+    border: 1px solid #4b5563;
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.35);
+
+    z-index: 2000;
+}
+
+
+/* =========================================================
+   HIGHLIGHT TOOLBAR BUTTON
+   ========================================================= */
+
+.highlight-toolbar button {
+    width: 32px;
+    height: 32px;
+
+    padding: 0;
+
+    border: none;
+
+    border-radius: 6px;
+
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+.highlight-toolbar button:hover {
+    background: #374151;
+}
+
+
+/* =========================================================
+   COLOR DOTS
+   ========================================================= */
+
+.highlight-color-dot {
+    width: 18px;
+    height: 18px;
+
+    display: block;
+
+    border-radius: 50%;
+
+    border: 2px solid rgba(255, 255, 255, 0.55);
+}
+
+.color-yellow .highlight-color-dot {
+    background: #ffe066;
+}
+
+.color-green .highlight-color-dot {
+    background: #70e000;
+}
+
+.color-blue .highlight-color-dot {
+    background: #74c0fc;
+}
+
+.color-pink .highlight-color-dot {
+    background: #ff8fab;
+}
+
+
+/* =========================================================
+   DELETE HIGHLIGHT
+   ========================================================= */
+
+.highlight-toolbar .remove-button {
+    color: #f87171;
+}
+
+.highlight-toolbar .remove-button:hover {
+    color: #fca5a5;
+}
+
+
+/* =========================================================
+   HIGHLIGHT SIDEBAR
+   ========================================================= */
+
+.highlight-list-item {
+    padding: 10px;
+
+    margin-bottom: 8px;
+
+    background: #111827;
+
+    border-radius: 6px;
+
+    border-left: 4px solid #ffe066;
+
+    cursor: pointer;
+}
+
+.highlight-list-item:hover {
+    background: #374151;
+}
+
+.highlight-page {
+    font-size: 11px;
+
+    color: #9ca3af;
+
+    margin-bottom: 5px;
+}
+
+.highlight-text {
+    font-size: 13px;
+
+    line-height: 1.4;
+
+    color: #f3f4f6;
+}
+
+.highlight-list-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 4px;
+
+    margin-top: 8px;
+}
+
+.highlight-list-color {
+    width: 18px;
+    height: 18px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    cursor: pointer;
+}
+
+.highlight-list-delete {
+    width: 28px;
+    height: 28px;
+
+    margin-left: auto;
+
+    border: none;
+
+    background: transparent;
+
+    color: #f87171;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   BOOKMARK SIDEBAR
+   ========================================================= */
+
+.bookmark-list-item {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 8px;
+
+    padding: 10px;
+
+    margin-bottom: 7px;
+
+    background: #111827;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+}
+
+.bookmark-list-item:hover {
+    background: #374151;
+}
+
+.bookmark-page-text {
+    flex: 1;
+
+    color: #e5e7eb;
+
+    font-size: 13px;
+}
+
+.bookmark-remove {
+    width: 28px;
+    height: 28px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #f87171;
+
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   EMPTY SIDEBAR
+   ========================================================= */
+
+.empty-sidebar-message {
+    padding: 25px 10px;
+
+    text-align: center;
+
+    color: #9ca3af;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   MOBILE CONTROLS
+   ========================================================= */
+
+.mobile-controls {
+    display: none;
+
+    position: fixed;
+
+    left: 50%;
+
+    bottom: 15px;
+
+    transform: translateX(-50%);
+
+    gap: 10px;
+
+    z-index: 1500;
+}
+
+.mobile-controls button {
+    width: 46px;
+    height: 46px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: rgba(31, 41, 55, 0.92);
+
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.35);
+}
+
+.mobile-controls button:hover {
+    background: #374151;
+}
+
+
+/* =========================================================
+   PAGE TOUCH ZONES
+   ========================================================= */
+
+.page-zone {
+    position: fixed;
+
+    top: 58px;
+    bottom: 0;
+
+    width: 70px;
+
+    z-index: 10;
+
+    pointer-events: none;
+}
+
+.previous-zone {
+    left: 0;
+}
+
+.next-zone {
+    right: 0;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.viewer::-webkit-scrollbar,
+.sidebar-content::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+}
+
+.viewer::-webkit-scrollbar-track,
+.sidebar-content::-webkit-scrollbar-track {
+    background: #1f2937;
+}
+
+.viewer::-webkit-scrollbar-thumb,
+.sidebar-content::-webkit-scrollbar-thumb {
+    background: #4b5563;
+
+    border-radius: 10px;
+}
+
+.viewer::-webkit-scrollbar-thumb:hover,
+.sidebar-content::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .toolbar {
+        height: 52px;
+        min-height: 52px;
+
+        gap: 3px;
+
+        padding: 0 6px;
+    }
+
+    .toolbar button {
+        width: 34px;
+        height: 34px;
+    }
+
+    .toolbar button svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .book-title {
+        font-size: 13px;
+        padding: 0 4px;
+    }
+
+    .desktop-only {
+        display: none !important;
+    }
+
+    #viewMode {
+        display: none;
+    }
+
+    .page-input {
+        width: 42px;
+        height: 30px;
+    }
+
+    .sidebar {
+        position: fixed;
+
+        top: 52px;
+        left: 0;
+        bottom: 0;
+
+        z-index: 1800;
+
+        width: 270px;
+    }
+
+    .sidebar:not(.active) {
+        width: 0;
+    }
+
+    .mobile-controls {
+        display: flex;
+    }
+
+    .pages-container {
+        padding: 15px;
+    }
+
+    .highlight-toolbar {
+        max-width: calc(100vw - 20px);
+    }
+
+    .search-panel {
+        top: 8px;
+        left: 8px;
+        right: 8px;
+
+        width: auto;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .toolbar button {
+        width: 31px;
+        height: 31px;
+    }
+
+    .toolbar button svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    .book-title {
+        font-size: 12px;
+    }
+
+    .page-controls {
+        gap: 2px;
+    }
+
+    .page-input {
+        width: 38px;
+    }
+
+}

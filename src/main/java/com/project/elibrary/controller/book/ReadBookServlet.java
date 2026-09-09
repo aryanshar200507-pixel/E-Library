@@ -3,8 +3,12 @@ package com.project.elibrary.controller.book;
 import java.io.IOException;
 
 import com.project.elibrary.bean.book.Book;
+import com.project.elibrary.bean.readingprogress.ReadingProgress;
+import com.project.elibrary.bean.user.User;
 import com.project.elibrary.service.bookservice.BookService;
 import com.project.elibrary.service.bookservice.BookServiceImpl;
+import com.project.elibrary.service.readingprogressservice.ReadingProgressService;
+import com.project.elibrary.service.readingprogressservice.ReadingProgressServiceImpl;
 import com.project.elibrary.service.storageservice.S3StorageServiceImpl;
 import com.project.elibrary.service.storageservice.StorageService;
 
@@ -13,79 +17,133 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/books/read")
 public class ReadBookServlet extends HttpServlet {
 
-	private BookService bookService;
-	private StorageService storageService;
+    private BookService bookService;
+    private StorageService storageService;
+    private ReadingProgressService readingProgressService;
 
+    public ReadBookServlet() {
 
-	public ReadBookServlet() {
+        bookService = new BookServiceImpl();
+        storageService = new S3StorageServiceImpl();
+        readingProgressService = new ReadingProgressServiceImpl();
+    }
 
-		// Service used to get book information from the database.
-		bookService = new BookServiceImpl();
+    @Override
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
 
-		// Service used to generate the PDF URL from S3.
-		storageService = new S3StorageServiceImpl();
-	}
+        // Get the existing session.
+        // We don't create a new session here because the user
+        // should already be logged in.
+        HttpSession session = request.getSession(false);
 
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+        User user = null;
 
-		// Get the book ID from the URL.
-		// Example: /books/read?id=5
-		String idParam = request.getParameter("id");
+        if (session != null) {
+            user = (User) session.getAttribute("loggedInUser");
+        }
 
-		// Check whether the ID was provided.
-		if (idParam == null || idParam.isBlank()) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Book ID is required.");
-			return;
-		}
+        // User must be logged in to read a book.
+        if (user == null) {
 
-		Long bookId;
+            response.sendRedirect(
+                    request.getContextPath() + "/login.jsp");
 
-		try {
+            return;
+        }
 
-			// Convert the ID from String to Long.
-			bookId = Long.parseLong(idParam);
+        // Get book ID from URL.
+        String idParam = request.getParameter("id");
 
-		} catch (NumberFormatException e) {
+        if (idParam == null || idParam.isBlank()) {
 
-			// The user provided something that is not a valid number.
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid book ID.");
-			return;
-		}
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Book ID is required.");
 
-		// Get the book from the database.
-		Book book = bookService.getBookById(bookId);
+            return;
+        }
 
-		// Check whether the book actually exists.
-		if (book == null) {
-			response.sendError(HttpServletResponse.SC_NOT_FOUND, "Book not found.");
-			return;
-		}
+        Long bookId;
 
-		// Get the PDF's storage key from the Book object.
-		String pdfStorageKey = book.getPdfStorageKey();
+        try {
 
-		// Make sure the book actually has a PDF.
-		if (pdfStorageKey == null || pdfStorageKey.isBlank()) {
-			response.sendError(HttpServletResponse.SC_NOT_FOUND, "PDF file not found for this book.");
-			return;
-		}
-		
-		// Increase the view count before opening the PDF.
-		//
-		// Every time a user clicks "Read Book",
-		// the book's views will increase by 1.
-		bookService.incrementVIews(bookId);
+            bookId = Long.parseLong(idParam);
 
-		// Generate a temporary presigned URL for the PDF.
-		String pdfUrl = storageService.getFileUrl(pdfStorageKey);
+        } catch (NumberFormatException e) {
 
-		// Send the user to the PDF.
-		response.sendRedirect(pdfUrl);
-	}
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid book ID.");
+
+            return;
+        }
+
+        // Find the requested book.
+        Book book = bookService.getBookById(bookId);
+
+        if (book == null) {
+
+            response.sendError(
+                    HttpServletResponse.SC_NOT_FOUND,
+                    "Book not found.");
+
+            return;
+        }
+
+        // Check whether the book has a PDF.
+        String pdfStorageKey = book.getPdfStorageKey();
+
+        if (pdfStorageKey == null || pdfStorageKey.isBlank()) {
+
+            response.sendError(
+                    HttpServletResponse.SC_NOT_FOUND,
+                    "PDF file not found for this book.");
+
+            return;
+        }
+
+        /*
+         * Increment book views.
+         *
+         * This happens only when the actual reader is opened,
+         * not when the user visits the book details page.
+         */
+        bookService.incrementVIews(bookId);
+
+        /*
+         * Get the user's saved reading progress.
+         *
+         * Each user has separate progress for each book.
+         */
+        ReadingProgress progress =
+                readingProgressService.getProgress(
+                        user.getUserId(),
+                        bookId);
+
+        int currentPage = 1;
+
+        if (progress != null) {
+            currentPage = progress.getCurrentPage();
+        }
+
+        // Generate the temporary S3 URL for the PDF.
+        String pdfUrl =
+                storageService.getFileUrl(pdfStorageKey);
+
+        // Send data to JSP.
+        request.setAttribute("book", book);
+        request.setAttribute("pdfUrl", pdfUrl);
+        request.setAttribute("currentPage", currentPage);
+
+        // Open our PDF.js reader.
+        request.getRequestDispatcher("/read-book.jsp")
+                .forward(request, response);
+    }
 }

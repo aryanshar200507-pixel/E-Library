@@ -80,7 +80,9 @@ public final class DatabaseIniti {
 		createBookTable();
 		createRatingTable();
 		createCommentTable();
-
+		createReadingProgressTable();
+		createBookmarkTable();
+		createHighlightTable();
 		// Other table creation methods will be added here.
 	}
 
@@ -278,5 +280,142 @@ public final class DatabaseIniti {
 
 			throw new RuntimeException("Failed to create comment table.", e);
 		}
+		
+		
+	}
+	
+	public static void createReadingProgressTable() {
+
+	    String sql = """
+	            CREATE TABLE IF NOT EXISTS reading_progress (
+	                progress_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+	                user_id BIGINT NOT NULL,
+
+	                book_id BIGINT NOT NULL,
+
+	                current_page INT NOT NULL DEFAULT 1,
+
+	                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	                    ON UPDATE CURRENT_TIMESTAMP,
+
+	                CONSTRAINT fk_progress_user
+	                    FOREIGN KEY (user_id)
+	                    REFERENCES users(user_id)
+	                    ON DELETE CASCADE,
+
+	                CONSTRAINT fk_progress_book
+	                    FOREIGN KEY (book_id)
+	                    REFERENCES books(book_id)
+	                    ON DELETE CASCADE,
+
+	                CONSTRAINT unique_user_book_progress
+	                    UNIQUE (user_id, book_id)
+	            );
+	            """;
+
+	    try (Connection connection = DatabaseConnection.getConnection();
+	            Statement statement = connection.createStatement()) {
+
+	        statement.executeUpdate(sql);
+
+	        System.out.println("Reading progress table is ready.");
+
+	    } catch (SQLException e) {
+
+	        throw new RuntimeException(
+	                "Failed to create reading progress table.", e);
+	    }
+	}
+	
+	public static void createBookmarkTable() {
+
+	    String sql = """
+	            CREATE TABLE IF NOT EXISTS bookmark (
+	                bookmark_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+	                user_id BIGINT NOT NULL,
+	                book_id BIGINT NOT NULL,
+	                page_number INT NOT NULL,
+	                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+	                CONSTRAINT fk_bookmark_user
+	                    FOREIGN KEY (user_id)
+	                    REFERENCES users(user_id)
+	                    ON DELETE CASCADE,
+
+	                CONSTRAINT fk_bookmark_book
+	                    FOREIGN KEY (book_id)
+	                    REFERENCES books(book_id)
+	                    ON DELETE CASCADE,
+
+	                CONSTRAINT unique_user_book_page
+	                    UNIQUE (user_id, book_id, page_number)
+	            );
+	            """;
+
+	    try (Connection connection = DatabaseConnection.getConnection();
+	         Statement statement = connection.createStatement()) {
+
+	        statement.executeUpdate(sql);
+
+	        System.out.println("Bookmark table is ready.");
+
+	    } catch (SQLException e) {
+
+	        throw new RuntimeException(
+	                "Failed to create bookmark table.", e);
+	    }
+	}
+	
+	public static void createHighlightTable() {
+
+	    String sql = """
+	            CREATE TABLE IF NOT EXISTS highlight (
+	                highlight_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+	                user_id BIGINT NOT NULL,
+
+	                book_id BIGINT NOT NULL,
+
+	                page_number INT NOT NULL,
+
+	                selected_text TEXT NOT NULL,
+
+	                start_offset INT NOT NULL,
+
+	                end_offset INT NOT NULL,
+	                
+	                rectangles_json TEXT NULL,
+
+	                color VARCHAR(20) NOT NULL DEFAULT 'yellow',
+
+	                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+	                CONSTRAINT fk_highlight_user
+	                    FOREIGN KEY (user_id)
+	                    REFERENCES users(user_id)
+	                    ON DELETE CASCADE,
+
+	                CONSTRAINT fk_highlight_book
+	                    FOREIGN KEY (book_id)
+	                    REFERENCES books(book_id)
+	                    ON DELETE CASCADE
+	            );
+	            """;
+
+	    try (Connection connection = DatabaseConnection.getConnection();
+	         Statement statement = connection.createStatement()) {
+
+	        statement.executeUpdate(sql);
+
+	        System.out.println("Highlight table is ready.");
+
+	    } catch (SQLException e) {
+
+	        throw new RuntimeException(
+	                "Failed to create highlight table.",
+	                e
+	        );
+	    }
 	}
 }

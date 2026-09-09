@@ -1,12 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Map"%>
+
 <%@ page import="com.project.elibrary.bean.category.Category"%>
 <%@ page import="com.project.elibrary.bean.book.Book"%>
+<%@ page import="com.project.elibrary.bean.externalbook.ExternalBook"%>
 
 <!DOCTYPE html>
+
 <html>
 
 <head>
@@ -18,246 +21,325 @@
 <style>
 
 /* ================= BODY ================= */
+
 body {
-	font-family: Arial, sans-serif;
-	margin: 0;
-	padding: 0;
-	background: #f5f5f5;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f5f5f5;
 }
 
+
 /* ================= HEADER ================= */
+
 header {
-	padding: 20px 40px;
-	background: white;
-	border-bottom: 1px solid #ddd;
+    padding: 20px 40px;
+    background: white;
+    border-bottom: 1px solid #ddd;
 }
 
 header h1 {
-	margin: 0 0 15px 0;
+    margin: 0 0 15px 0;
 }
 
 header a {
-	margin-right: 20px;
-	text-decoration: none;
-	color: #333;
+    margin-right: 20px;
+    text-decoration: none;
+    color: #333;
 }
 
+
 /* ================= SEARCH ================= */
+
 .search-container {
-	margin-top: 20px;
+    margin-top: 20px;
 }
 
 .search-form {
-	display: flex;
-	max-width: 600px;
+    display: flex;
+    max-width: 600px;
 }
 
 .search-form input {
-	flex: 1;
-	padding: 12px;
-	border: 1px solid #ccc;
-	border-radius: 6px 0 0 6px;
-	font-size: 15px;
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px 0 0 6px;
+    font-size: 15px;
 }
 
 .search-form button {
-	padding: 12px 20px;
-	border: none;
-	background: #333;
-	color: white;
-	border-radius: 0 6px 6px 0;
-	cursor: pointer;
+    padding: 12px 20px;
+    border: none;
+    background: #333;
+    color: white;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
 }
 
 .search-form button:hover {
-	background: #555;
+    background: #555;
 }
 
+
 /* ================= CONTAINER ================= */
+
 .container {
-	padding: 40px;
+    padding: 40px;
 }
 
 .container h2 {
-	margin-bottom: 30px;
+    margin-bottom: 30px;
 }
+
+
+/* ================= SECTION TITLE ================= */
+
+.section-title {
+    margin-top: 40px;
+    margin-bottom: 25px;
+}
+
 
 /* ================= CATEGORY GRID ================= */
+
 .category-grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-	gap: 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
 }
 
+
 /* ================= CATEGORY CARD ================= */
+
 .category-card {
-	background: white;
-	border: 1px solid #ddd;
-	border-radius: 10px;
-	overflow: hidden;
-	text-decoration: none;
-	color: #222;
-	transition: transform 0.2s, box-shadow 0.2s;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    color: #222;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .category-card:hover {
-	transform: translateY(-5px);
-	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
+
 
 /* ================= CATEGORY COVER ================= */
+
 .category-cover {
-	width: 100%;
-	height: 280px;
-	object-fit: cover;
-	display: block;
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    display: block;
 }
 
+
 /* ================= CATEGORY NAME ================= */
+
 .category-name {
-	padding: 18px;
-	text-align: center;
+    padding: 18px;
+    text-align: center;
 }
 
 .category-name h3 {
-	margin: 0;
-	font-size: 20px;
+    margin: 0;
+    font-size: 20px;
 }
+
 
 /* ================= NO COVER ================= */
+
 .no-cover {
-	height: 280px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: #eee;
-	color: #777;
+    height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eee;
+    color: #777;
 }
+
 
 /* ================= BOOK GRID ================= */
+
 .book-grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-	gap: 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 25px;
 }
 
+
 /* ================= BOOK CARD ================= */
+
 .book-card {
-	background: white;
-	border: 1px solid #ddd;
-	border-radius: 10px;
-	overflow: hidden;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 .book-cover {
-	width: 100%;
-	height: 280px;
-	object-fit: cover;
-	display: block;
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    display: block;
 }
 
 .book-info {
-	padding: 18px;
+    padding: 18px;
 }
 
 .book-info h3 {
-	margin: 0 0 8px 0;
+    margin: 0 0 8px 0;
 }
 
 .book-author {
-	color: #666;
-	margin-bottom: 10px;
+    color: #666;
+    margin-bottom: 10px;
 }
 
 .book-description {
-	color: #555;
-	font-size: 14px;
-	line-height: 1.5;
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
+
+/* ================= EXTERNAL BOOK ================= */
+
+.external-card {
+    position: relative;
+}
+
+.external-source {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 4px 8px;
+    background: #eee;
+    color: #555;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
 /* ================= RATING ================= */
+
 .rating {
-	margin: 10px 0;
+    margin: 10px 0;
 }
 
 .stars {
-	color: #f5b301;
-	font-size: 18px;
+    color: #f5b301;
+    font-size: 18px;
 }
 
 .rating-count {
-	color: #777;
-	font-size: 13px;
+    color: #777;
+    font-size: 13px;
 }
 
+
 /* ================= READ MORE ================= */
+
 .read-button {
-	display: inline-block;
-	margin-top: 10px;
-	padding: 9px 15px;
-	background: #333;
-	color: white;
-	text-decoration: none;
-	border-radius: 5px;
+    display: inline-block;
+    margin-top: 10px;
+    padding: 9px 15px;
+    background: #333;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
 }
 
 .read-button:hover {
-	background: #555;
+    background: #555;
 }
 
+
+/* ================= EXTERNAL READ BUTTON ================= */
+
+.external-read-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 9px 15px;
+    background: #333;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.external-read-button:hover {
+    background: #555;
+}
+
+
 /* ================= ADMIN BUTTONS ================= */
+
 .admin-actions {
-	margin-top: 15px;
+    margin-top: 15px;
 }
 
 .admin-actions a {
-	text-decoration: none;
-	color: #333;
-	margin-right: 10px;
+    text-decoration: none;
+    color: #333;
+    margin-right: 10px;
 }
 
 .admin-actions a:hover {
-	text-decoration: underline;
+    text-decoration: underline;
 }
+
 
 /* ================= PAGINATION ================= */
+
 .pagination {
-	margin-top: 40px;
-	text-align: center;
+    margin-top: 40px;
+    text-align: center;
 }
 
-.pagination a, .pagination span {
-	display: inline-block;
-	padding: 8px 12px;
-	margin: 0 4px;
-	border: 1px solid #ddd;
-	text-decoration: none;
-	border-radius: 5px;
+.pagination a,
+.pagination span {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 0 4px;
+    border: 1px solid #ddd;
+    text-decoration: none;
+    border-radius: 5px;
 }
 
 .pagination a {
-	background: white;
-	color: #333;
+    background: white;
+    color: #333;
 }
 
 .pagination .current {
-	background: #333;
-	color: white;
-	border-color: #333;
+    background: #333;
+    color: white;
+    border-color: #333;
 }
 
+
 /* ================= MOBILE ================= */
-@media ( max-width : 600px) {
-	header {
-		padding: 20px;
-	}
-	.container {
-		padding: 20px;
-	}
-	.search-form {
-		width: 100%;
-	}
+
+@media (max-width: 600px) {
+
+    header {
+        padding: 20px;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    .search-form {
+        width: 100%;
+    }
 }
+
 </style>
 
 </head>
@@ -266,595 +348,1047 @@ header a {
 <body>
 
 
-	<%
-	/*
-	 * ============================================================
-	 * GET SEARCH MODE
-	 * ============================================================
-	 *
-	 * false = display categories
-	 * true  = display book search results
-	 */
+<%
 
-	Boolean searchModeAttribute = (Boolean) request.getAttribute("searchMode");
+/*
+ * ============================================================
+ * GET SEARCH MODE
+ * ============================================================
+ */
 
-	boolean searchMode = searchModeAttribute != null && searchModeAttribute;
+Boolean searchModeAttribute =
+        (Boolean) request.getAttribute("searchMode");
 
-	/*
-	 * ============================================================
-	 * GET LOGGED-IN USER
-	 * ============================================================
-	 */
+boolean searchMode =
+        searchModeAttribute != null
+        && searchModeAttribute;
 
-	com.project.elibrary.bean.user.User loggedInUser = (com.project.elibrary.bean.user.User) session
-			.getAttribute("loggedInUser");
 
-	/*
-	 * ============================================================
-	 * CHECK ADMIN
-	 * ============================================================
-	 */
+/*
+ * ============================================================
+ * GET LOGGED-IN USER
+ * ============================================================
+ */
 
-	boolean isAdmin = loggedInUser != null && loggedInUser.getRole() == com.project.elibrary.bean.enums.Role.ADMIN;
-	%>
+com.project.elibrary.bean.user.User loggedInUser =
+        (com.project.elibrary.bean.user.User)
+        session.getAttribute("loggedInUser");
 
 
-	<!-- ================= HEADER ================= -->
+/*
+ * ============================================================
+ * CHECK ADMIN
+ * ============================================================
+ */
 
-	<header>
+boolean isAdmin =
+        loggedInUser != null
+        && loggedInUser.getRole()
+                == com.project.elibrary.bean.enums.Role.ADMIN;
 
-		<h1>E-Library</h1>
+%>
 
-		<a href="${pageContext.request.contextPath}/books"> Categories </a>
 
+<!-- ================= HEADER ================= -->
 
-		<%
-		if (isAdmin) {
-		%>
+<header>
 
-		<a href="${pageContext.request.contextPath}/admin/books/add"> Add
-			Book </a>
+    <h1>E-Library</h1>
 
-		<%
-		}
-		%>
+    <a href="${pageContext.request.contextPath}/books">
+        Categories
+    </a>
 
 
-		<!-- ================= SEARCH ================= -->
+    <%
 
-		<div class="search-container">
+    if (isAdmin) {
 
-			<form class="search-form"
-				action="${pageContext.request.contextPath}/books" method="get">
+    %>
 
-				<input type="text" name="keyword"
-					placeholder="Search books by title or author..."
-					value="<%=request.getAttribute("keyword") != null ? request.getAttribute("keyword") : ""%>">
+        <a href="${pageContext.request.contextPath}/admin/books/add">
+            Add Book
+        </a>
 
-				<button type="submit">Search</button>
+    <%
 
-			</form>
+    }
 
-		</div>
+    %>
 
-	</header>
 
+    <!-- ================= SEARCH ================= -->
 
+    <div class="search-container">
 
-	<%
-	/*
-	 * ============================================================
-	 * SEARCH MODE
-	 * ============================================================
-	 */
+        <form
+            class="search-form"
+            action="${pageContext.request.contextPath}/books"
+            method="get">
 
-	if (searchMode) {
+            <input
+                type="text"
+                name="keyword"
+                placeholder="Search books by title or author..."
+                value="<%= request.getAttribute("keyword") != null
+                        ? request.getAttribute("keyword")
+                        : "" %>">
 
-		List<Book> books = (List<Book>) request.getAttribute("books");
+            <button type="submit">
+                Search
+            </button>
 
-		Map<Long, Double> bookAverageRatingMap = (Map<Long, Double>) request.getAttribute("bookAverageRatingMap");
+        </form>
 
-		Map<Long, Integer> bookRatingCountMap = (Map<Long, Integer>) request.getAttribute("bookRatingCountMap");
+    </div>
 
-		Map<Long, String> bookCoverUrlMap = (Map<Long, String>) request.getAttribute("bookCoverUrlMap");
+</header>
 
-		String keyword = (String) request.getAttribute("keyword");
-	%>
 
+<%
 
-	<!-- ================= SEARCH RESULTS ================= -->
+/*
+ * ============================================================
+ * SEARCH MODE
+ * ============================================================
+ */
 
-	<div class="container">
+if (searchMode) {
 
-		<h2>
-			Search Results for "<%=keyword%>"
-		</h2>
 
+    /*
+     * ========================================================
+     * LOCAL BOOKS
+     * ========================================================
+     */
 
-		<%
-		/*
-		 * ========================================================
-		 * NO SEARCH RESULTS
-		 * ========================================================
-		 */
+    List<Book> books =
+            (List<Book>) request.getAttribute("books");
 
-		if (books == null || books.isEmpty()) {
-		%>
 
-		<p>
-			No books found for "<%=keyword%>".
-		</p>
+    /*
+     * ========================================================
+     * EXTERNAL BOOKS
+     * ========================================================
+     */
 
-		<%
-		} else {
-		%>
+    List<ExternalBook> externalBooks =
+            (List<ExternalBook>)
+            request.getAttribute("externalBooks");
 
 
-		<!-- ================= BOOK GRID ================= -->
+    /*
+     * ========================================================
+     * LOCAL BOOK RATING MAPS
+     * ========================================================
+     */
 
-		<div class="book-grid">
+    Map<Long, Double> bookAverageRatingMap =
+            (Map<Long, Double>)
+            request.getAttribute(
+                    "bookAverageRatingMap"
+            );
 
 
-			<%
-			/*
-			 * ====================================================
-			 * LOOP THROUGH SEARCH RESULTS
-			 * ====================================================
-			 */
+    Map<Long, Integer> bookRatingCountMap =
+            (Map<Long, Integer>)
+            request.getAttribute(
+                    "bookRatingCountMap"
+            );
 
-			for (Book book : books) {
 
-				Long bookId = book.getBookId();
+    Map<Long, String> bookCoverUrlMap =
+            (Map<Long, String>)
+            request.getAttribute(
+                    "bookCoverUrlMap"
+            );
 
-				String coverUrl = bookCoverUrlMap.get(bookId);
 
-				Double averageRating = bookAverageRatingMap.get(bookId);
+    String keyword =
+            (String) request.getAttribute(
+                    "keyword"
+            );
 
-				Integer ratingCount = bookRatingCountMap.get(bookId);
-			%>
+%>
 
 
-			<!-- ================= BOOK CARD ================= -->
+<!-- ================= SEARCH RESULTS ================= -->
 
-			<div class="book-card">
+<div class="container">
 
+    <h2>
+        Search Results for "<%= keyword %>"
+    </h2>
 
-				<!-- ================= COVER ================= -->
 
-				<%
-				if (coverUrl != null && !coverUrl.isBlank()) {
-				%>
+    <!-- =====================================================
+         LOCAL BOOKS
+         ===================================================== -->
 
-				<img class="book-cover" src="<%=coverUrl%>"
-					alt="<%=book.getTitle()%>">
+    <h2 class="section-title">
+        Your Library
+    </h2>
 
-				<%
-				} else {
-				%>
 
-				<div class="no-cover">No cover available</div>
+    <%
 
-				<%
-				}
-				%>
+    if (books != null && !books.isEmpty()) {
 
+    %>
 
-				<!-- ================= BOOK INFO ================= -->
 
-				<div class="book-info">
+    <div class="book-grid">
 
 
-					<h3>
-						<%=book.getTitle()%>
-					</h3>
+    <%
 
+    for (Book book : books) {
 
-					<div class="book-author">
+        Long bookId =
+                book.getBookId();
 
-						Author:
-						<%=book.getAuthor()%>
+        String coverUrl =
+                bookCoverUrlMap.get(bookId);
 
-					</div>
+        Double averageRating =
+                bookAverageRatingMap.get(bookId);
 
+        Integer ratingCount =
+                bookRatingCountMap.get(bookId);
 
-					<!-- ================= RATING ================= -->
+    %>
 
-					<div class="rating">
 
-						<span class="stars"> <%
- if (averageRating != null) {
+        <!-- ================= LOCAL BOOK CARD ================= -->
 
- 	int roundedRating = (int) Math.round(averageRating);
+        <div class="book-card">
 
- 	for (int i = 1; i <= 5; i++) {
 
- 		if (i <= roundedRating) {
- %> ★ <%
- } else {
- %> ☆ <%
- }
+            <!-- ================= COVER ================= -->
 
- }
+            <%
 
- } else {
- %> ☆☆☆☆☆ <%
- }
- %>
+            if (coverUrl != null
+                    && !coverUrl.isBlank()) {
 
-						</span> <span class="rating-count"> <%
- if (averageRating != null) {
- %> <%=String.format("%.1f", averageRating)%> <%
- } else {
- %> No rating <%
- }
- %> ( <%=ratingCount != null ? ratingCount : 0%> )
+            %>
 
-						</span>
+                <img
+                    class="book-cover"
+                    src="<%= coverUrl %>"
+                    alt="<%= book.getTitle() %>">
 
-					</div>
+            <%
 
+            } else {
 
-					<!-- ================= DESCRIPTION ================= -->
+            %>
 
-					<div class="book-description">
+                <div class="no-cover">
+                    No cover available
+                </div>
 
-						<%
-						String description = book.getDescription();
+            <%
 
-						if (description != null && description.length() > 120) {
-						%>
+            }
 
-						<%=description.substring(0, 120)%>...
+            %>
 
-						<%
-						} else {
-						%>
 
-						<%=description != null ? description : "No description available."%>
+            <!-- ================= BOOK INFO ================= -->
 
-						<%
-						}
-						%>
+            <div class="book-info">
 
-					</div>
 
+                <h3>
+                    <%= book.getTitle() %>
+                </h3>
 
-					<!-- ================= READ MORE ================= -->
 
-					<a class="read-button"
-						href="${pageContext.request.contextPath}/books/details?id=<%= bookId %>">
-						Read More </a>
+                <div class="book-author">
 
+                    Author:
+                    <%= book.getAuthor() %>
 
-					<!-- ================= ADMIN ACTIONS ================= -->
+                </div>
 
-					<%
-					if (isAdmin) {
-					%>
 
-					<div class="admin-actions">
+                <!-- ================= RATING ================= -->
 
-						<a
-							href="${pageContext.request.contextPath}/admin/books/edit?id=<%= bookId %>">
-							Edit </a> <a
-							href="${pageContext.request.contextPath}/admin/books/delete?id=<%= bookId %>">
-							Delete </a>
+                <div class="rating">
 
-					</div>
+                    <span class="stars">
 
-					<%
-					}
-					%>
+                    <%
 
+                    if (averageRating != null) {
 
-				</div>
+                        int roundedRating =
+                                (int) Math.round(
+                                        averageRating
+                                );
 
-			</div>
+                        for (
+                            int i = 1;
+                            i <= 5;
+                            i++
+                        ) {
 
+                            if (i <= roundedRating) {
 
-			<%
-			/*
-			 * Close for(Book book : books)
-			 */
+                    %>
 
-			}
-			%>
+                                ★
 
+                    <%
 
-		</div>
+                            } else {
 
+                    %>
 
-		<!-- ================= SEARCH PAGINATION ================= -->
+                                ☆
 
-		<%
-		Integer currentPage = (Integer) request.getAttribute("currentPage");
+                    <%
 
-		Integer totalPages = (Integer) request.getAttribute("totalPages");
+                            }
 
-		if (totalPages != null && totalPages >= 1) {
-		%>
+                        }
 
+                    } else {
 
-		<div class="pagination">
+                    %>
 
+                        ☆☆☆☆☆
 
-			<!-- ================= PREVIOUS ================= -->
+                    <%
 
-			<%
-			if (currentPage > 1) {
-			%>
+                    }
 
-			<a
-				href="${pageContext.request.contextPath}/books?keyword=<%= java.net.URLEncoder.encode(keyword, "UTF-8") %>&page=<%= currentPage - 1 %>">
-				Previous </a>
+                    %>
 
-			<%
-			}
-			%>
+                    </span>
 
 
-			<!-- ================= PAGE NUMBERS ================= -->
+                    <span class="rating-count">
 
-			<%
-			for (int i = 1; i <= totalPages; i++) {
+                    <%
 
-				if (i == currentPage) {
-			%>
+                    if (averageRating != null) {
 
-			<span class="current"> <%=i%>
-			</span>
+                    %>
 
-			<%
-			} else {
-			%>
+                        <%= String.format(
+                                "%.1f",
+                                averageRating
+                        ) %>
 
-			<a
-				href="${pageContext.request.contextPath}/books?keyword=<%= java.net.URLEncoder.encode(keyword, "UTF-8") %>&page=<%= i %>">
-				<%=i%>
-			</a>
+                    <%
 
-			<%
-			}
+                    } else {
 
-			}
-			%>
+                    %>
 
+                        No rating
 
-			<!-- ================= NEXT ================= -->
+                    <%
 
-			<%
-			if (currentPage < totalPages) {
-			%>
+                    }
 
-			<a
-				href="${pageContext.request.contextPath}/books?keyword=<%= java.net.URLEncoder.encode(keyword, "UTF-8") %>&page=<%= currentPage + 1 %>">
-				Next </a>
+                    %>
 
-			<%
-			}
-			%>
+                    (
+                    <%= ratingCount != null
+                            ? ratingCount
+                            : 0 %>
+                    )
 
+                    </span>
 
-		</div>
+                </div>
 
 
-		<%
-		}
-		%>
+                <!-- ================= DESCRIPTION ================= -->
 
+                <div class="book-description">
 
-		<%
-		/*
-		 * IMPORTANT:
-		 * This closes:
-		 *
-		 * if (books == null || books.isEmpty())
-		 * else
-		 */
+                <%
 
-		}
-		%>
+                String description =
+                        book.getDescription();
 
+                if (description != null
+                        && description.length() > 120) {
 
-	</div>
+                %>
 
+                    <%= description.substring(
+                            0,
+                            120
+                    ) %>...
 
-	<%
-	/*
-	 * ============================================================
-	 * CATEGORY MODE
-	 * ============================================================
-	 *
-	 * This is the ELSE belonging to:
-	 *
-	 * if (searchMode)
-	 */
+                <%
 
-	} else {
+                } else {
 
-	List<Category> categories = (List<Category>) request.getAttribute("categories");
+                %>
 
-	Map<Long, Book> highestRatedBookMap = (Map<Long, Book>) request.getAttribute("highestRatedBookMap");
+                    <%= description != null
+                            ? description
+                            : "No description available." %>
 
-	Map<Long, String> categoryCoverUrlMap = (Map<Long, String>) request.getAttribute("categoryCoverUrlMap");
-	%>
+                <%
 
+                }
 
-	<!-- ================= CATEGORIES ================= -->
+                %>
 
-	<div class="container">
+                </div>
 
-		<h2>Browse Categories</h2>
 
+                <!-- ================= READ MORE ================= -->
 
-		<%
-		if (categories == null || categories.isEmpty()) {
-		%>
+                <a
+                    class="read-button"
+                    href="${pageContext.request.contextPath}/books/details?id=<%= bookId %>">
 
-		<p>No categories available.</p>
+                    Read More
 
-		<%
-		} else {
-		%>
+                </a>
 
 
-		<!-- ================= CATEGORY GRID ================= -->
+                <!-- ================= ADMIN ACTIONS ================= -->
 
-		<div class="category-grid">
+                <%
 
+                if (isAdmin) {
 
-			<%
-			for (Category category : categories) {
+                %>
 
-				Long categoryId = category.getCategoryId();
+                    <div class="admin-actions">
 
-				String coverUrl = categoryCoverUrlMap.get(categoryId);
-			%>
+                        <a
+                            href="${pageContext.request.contextPath}/admin/books/edit?id=<%= bookId %>">
 
+                            Edit
 
-			<!-- ================= CATEGORY CARD ================= -->
+                        </a>
 
-			<a class="category-card"
-				href="${pageContext.request.contextPath}/books/category?id=<%= categoryId %>">
 
+                        <a
+                            href="${pageContext.request.contextPath}/admin/books/delete?id=<%= bookId %>">
 
-				<%
-				if (coverUrl != null && !coverUrl.isBlank()) {
-				%> <img class="category-cover" src="<%=coverUrl%>"
-				alt="<%=category.getCategoryName()%>">
+                            Delete
 
-				<%
-				} else {
-				%>
+                        </a>
 
-				<div class="no-cover">No cover available</div> <%
- }
- %>
+                    </div>
 
+                <%
 
-				<div class="category-name">
+                }
 
-					<h3>
-						<%=category.getCategoryName()%>
-					</h3>
+                %>
 
-				</div>
 
+            </div>
 
-			</a>
+        </div>
 
 
-			<%
-			}
-			%>
+    <%
 
+    }
 
-		</div>
+    %>
 
 
-		<!-- ================= CATEGORY PAGINATION ================= -->
+    </div>
 
-		<%
-		Integer currentPage = (Integer) request.getAttribute("currentPage");
 
-		Integer totalPages = (Integer) request.getAttribute("totalPages");
+    <%
 
-		if (totalPages != null && totalPages >= 1) {
-		%>
+    } else {
 
+    %>
 
-		<div class="pagination">
+        <p>
+            No books from your library found.
+        </p>
 
+    <%
 
-			<!-- ================= PREVIOUS ================= -->
+    }
 
-			<%
-			if (currentPage > 1) {
-			%>
+    %>
 
-			<a
-				href="${pageContext.request.contextPath}/books?page=<%= currentPage - 1 %>">
-				Previous </a>
 
-			<%
-			}
-			%>
+    <!-- =====================================================
+         EXTERNAL BOOKS
+         ===================================================== -->
 
+    <%
 
-			<!-- ================= PAGE NUMBERS ================= -->
+    if (externalBooks != null
+            && !externalBooks.isEmpty()) {
 
-			<%
-			for (int i = 1; i <= totalPages; i++) {
+    %>
 
-				if (i == currentPage) {
-			%>
 
-			<span class="current"> <%=i%>
-			</span>
+    <h2 class="section-title">
+        External Books
+    </h2>
 
-			<%
-			} else {
-			%>
 
-			<a href="${pageContext.request.contextPath}/books?page=<%= i %>">
-				<%=i%>
-			</a>
+    <div class="book-grid">
 
-			<%
-			}
 
-			}
-			%>
+    <%
 
+    for (ExternalBook book : externalBooks) {
 
-			<!-- ================= NEXT ================= -->
+        String coverUrl =
+                book.getCoverUrl();
 
-			<%
-			if (currentPage < totalPages) {
-			%>
+        String source =
+                book.getSource();
 
-			<a
-				href="${pageContext.request.contextPath}/books?page=<%= currentPage + 1 %>">
-				Next </a>
+    %>
 
-			<%
-			}
-			%>
 
+        <!-- ================= EXTERNAL BOOK CARD ================= -->
 
-		</div>
+        <div class="book-card external-card">
 
 
-		<%
-		}
-		%>
+            <!-- ================= COVER ================= -->
 
+            <%
 
-		<%
-		/*
-		 * Close:
-		 *
-		 * if (categories == null || categories.isEmpty())
-		 * else
-		 */
+            if (coverUrl != null
+                    && !coverUrl.isBlank()) {
 
-		}
-		%>
+            %>
 
+                <img
+                    class="book-cover"
+                    src="<%= coverUrl %>"
+                    alt="<%= book.getTitle() %>">
 
-	</div>
+            <%
 
+            } else {
 
-	<%
-	/*
-	 * Close:
-	 *
-	 * if (searchMode)
-	 * else
-	 */
+            %>
 
-	}
-	%>
+                <div class="no-cover">
+                    No cover available
+                </div>
+
+            <%
+
+            }
+
+            %>
+
+
+            <!-- ================= EXTERNAL BOOK INFO ================= -->
+
+            <div class="book-info">
+
+
+                <!-- SOURCE -->
+
+                <span class="external-source">
+
+                    <%= source != null
+                            ? source
+                            : "EXTERNAL" %>
+
+                </span>
+
+
+                <!-- TITLE -->
+
+                <h3>
+                    <%= book.getTitle() %>
+                </h3>
+
+
+                <!-- AUTHOR -->
+
+                <div class="book-author">
+
+                    Author:
+                    <%= book.getAuthor() != null
+                            ? book.getAuthor()
+                            : "Unknown" %>
+
+                </div>
+
+
+                <!-- LANGUAGE -->
+
+                <%
+
+                if (book.getLanguage() != null
+                        && !book.getLanguage().isBlank()) {
+
+                %>
+
+                    <div class="book-description">
+
+                        Language:
+                        <%= book.getLanguage() %>
+
+                    </div>
+
+                <%
+
+                }
+
+                %>
+
+
+                <!-- ================= READ ================= -->
+
+                <%
+
+                if (book.getReadUrl() != null
+                        && !book.getReadUrl().isBlank()) {
+
+                %>
+
+                    <a
+                        class="external-read-button"
+                        href="<%= book.getReadUrl() %>"
+                        target="_blank"
+                        rel="noopener noreferrer">
+
+                        Read Book
+
+                    </a>
+
+                <%
+
+                }
+
+                %>
+
+
+            </div>
+
+        </div>
+
+
+    <%
+
+    }
+
+    %>
+
+
+    </div>
+
+
+    <%
+
+    }
+
+    %>
+
+
+    <!-- =====================================================
+         LOCAL SEARCH PAGINATION
+         ===================================================== -->
+
+    <%
+
+    Integer currentPage =
+            (Integer) request.getAttribute(
+                    "currentPage"
+            );
+
+    Integer totalPages =
+            (Integer) request.getAttribute(
+                    "totalPages"
+            );
+
+
+    if (totalPages != null
+            && totalPages >= 1) {
+
+    %>
+
+
+    <div class="pagination">
+
+
+        <!-- ================= PREVIOUS ================= -->
+
+        <%
+
+        if (currentPage > 1) {
+
+        %>
+
+            <a
+                href="${pageContext.request.contextPath}/books?keyword=<%= java.net.URLEncoder.encode(keyword, "UTF-8") %>&page=<%= currentPage - 1 %>">
+
+                Previous
+
+            </a>
+
+        <%
+
+        }
+
+        %>
+
+
+        <!-- ================= PAGE NUMBERS ================= -->
+
+        <%
+
+        for (
+            int i = 1;
+            i <= totalPages;
+            i++
+        ) {
+
+            if (i == currentPage) {
+
+        %>
+
+                <span class="current">
+                    <%= i %>
+                </span>
+
+        <%
+
+            } else {
+
+        %>
+
+                <a
+                    href="${pageContext.request.contextPath}/books?keyword=<%= java.net.URLEncoder.encode(keyword, "UTF-8") %>&page=<%= i %>">
+
+                    <%= i %>
+
+                </a>
+
+        <%
+
+            }
+
+        }
+
+        %>
+
+
+        <!-- ================= NEXT ================= -->
+
+        <%
+
+        if (currentPage < totalPages) {
+
+        %>
+
+            <a
+                href="${pageContext.request.contextPath}/books?keyword=<%= java.net.URLEncoder.encode(keyword, "UTF-8") %>&page=<%= currentPage + 1 %>">
+
+                Next
+
+            </a>
+
+        <%
+
+        }
+
+        %>
+
+
+    </div>
+
+
+    <%
+
+    }
+
+    %>
+
+
+</div>
+
+
+<%
+
+/*
+ * ============================================================
+ * CATEGORY MODE
+ * ============================================================
+ */
+
+} else {
+
+    List<Category> categories =
+            (List<Category>)
+            request.getAttribute(
+                    "categories"
+            );
+
+
+    Map<Long, Book> highestRatedBookMap =
+            (Map<Long, Book>)
+            request.getAttribute(
+                    "highestRatedBookMap"
+            );
+
+
+    Map<Long, String> categoryCoverUrlMap =
+            (Map<Long, String>)
+            request.getAttribute(
+                    "categoryCoverUrlMap"
+            );
+
+%>
+
+
+<!-- ================= CATEGORIES ================= -->
+
+<div class="container">
+
+    <h2>
+        Browse Categories
+    </h2>
+
+
+    <%
+
+    if (categories == null
+            || categories.isEmpty()) {
+
+    %>
+
+        <p>
+            No categories available.
+        </p>
+
+    <%
+
+    } else {
+
+    %>
+
+
+        <div class="category-grid">
+
+
+        <%
+
+        for (Category category : categories) {
+
+            Long categoryId =
+                    category.getCategoryId();
+
+            String coverUrl =
+                    categoryCoverUrlMap.get(
+                            categoryId
+                    );
+
+        %>
+
+
+            <!-- ================= CATEGORY CARD ================= -->
+
+            <a
+                class="category-card"
+                href="${pageContext.request.contextPath}/books/category?id=<%= categoryId %>">
+
+
+                <%
+
+                if (coverUrl != null
+                        && !coverUrl.isBlank()) {
+
+                %>
+
+                    <img
+                        class="category-cover"
+                        src="<%= coverUrl %>"
+                        alt="<%= category.getCategoryName() %>">
+
+                <%
+
+                } else {
+
+                %>
+
+                    <div class="no-cover">
+                        No cover available
+                    </div>
+
+                <%
+
+                }
+
+                %>
+
+
+                <div class="category-name">
+
+                    <h3>
+                        <%= category.getCategoryName() %>
+                    </h3>
+
+                </div>
+
+
+            </a>
+
+
+        <%
+
+        }
+
+        %>
+
+
+        </div>
+
+
+        <!-- ================= CATEGORY PAGINATION ================= -->
+
+        <%
+
+        Integer currentPage =
+                (Integer) request.getAttribute(
+                        "currentPage"
+                );
+
+        Integer totalPages =
+                (Integer) request.getAttribute(
+                        "totalPages"
+                );
+
+
+        if (totalPages != null
+                && totalPages >= 1) {
+
+        %>
+
+
+            <div class="pagination">
+
+
+                <!-- PREVIOUS -->
+
+                <%
+
+                if (currentPage > 1) {
+
+                %>
+
+                    <a
+                        href="${pageContext.request.contextPath}/books?page=<%= currentPage - 1 %>">
+
+                        Previous
+
+                    </a>
+
+                <%
+
+                }
+
+                %>
+
+
+                <!-- PAGE NUMBERS -->
+
+                <%
+
+                for (
+                    int i = 1;
+                    i <= totalPages;
+                    i++
+                ) {
+
+                    if (i == currentPage) {
+
+                %>
+
+                        <span class="current">
+                            <%= i %>
+                        </span>
+
+                <%
+
+                    } else {
+
+                %>
+
+                        <a
+                            href="${pageContext.request.contextPath}/books?page=<%= i %>">
+
+                            <%= i %>
+
+                        </a>
+
+                <%
+
+                    }
+
+                }
+
+                %>
+
+
+                <!-- NEXT -->
+
+                <%
+
+                if (currentPage < totalPages) {
+
+                %>
+
+                    <a
+                        href="${pageContext.request.contextPath}/books?page=<%= currentPage + 1 %>">
+
+                        Next
+
+                    </a>
+
+                <%
+
+                }
+
+                %>
+
+
+            </div>
+
+
+        <%
+
+        }
+
+        %>
+
+
+    <%
+
+    }
+
+    %>
+
+
+</div>
+
+
+<%
+
+}
+
+%>
 
 
 </body>
