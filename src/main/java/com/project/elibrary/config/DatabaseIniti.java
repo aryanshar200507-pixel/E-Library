@@ -26,8 +26,8 @@ public final class DatabaseIniti {
 // Runs all db init steps , this is called when the application starts 
 	public static void initialize() {
 		createDatabase();
-		createTables();
 		DatabaseMigration.migrate();
+		createTables();
 		createDefaultAdmin();
 	}
 

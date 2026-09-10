@@ -138,7 +138,7 @@ public class AddBookServlet extends HttpServlet {
 				return;
 			}
 
-			response.sendRedirect(request.getContextPath() + "/admin/books");
+			response.sendRedirect(request.getContextPath() + "/books");
 
 		} catch (Exception e) {
 			// If something fails after uploading,
