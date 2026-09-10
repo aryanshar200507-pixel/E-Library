@@ -372,6 +372,68 @@ function showSidebarTab(tab) {
 }
 
 
+/* ==================== MORE OPTIONS MENU (mobile) ====================
+   On desktop #toolbarOverflow renders inline via CSS
+   (display:contents) so this menu never shows there — the
+   button itself is hidden above 768px too. On mobile, this
+   is the only way to reach bookmark, highlight, zoom, rotate,
+   view mode, and fullscreen, so keep this working.
+   ==================================================================== */
+
+function toggleMoreMenu() {
+    const menu = $("toolbarOverflow");
+
+    if (!menu) return;
+
+    menu.classList.toggle("open");
+}
+
+
+function closeMoreMenu() {
+    const menu = $("toolbarOverflow");
+
+    if (menu)
+        menu.classList.remove("open");
+}
+
+
+(function setupMoreMenu() {
+    const menu = $("toolbarOverflow");
+    const trigger = $("moreOptionsButton");
+
+    if (!menu) return;
+
+    /* Close the menu right after any button inside it is used,
+       so the dropdown doesn't stay open after e.g. Zoom In. */
+    menu.addEventListener("click", function(event) {
+        if (event.target.closest("button"))
+            closeMoreMenu();
+    });
+
+    /* Close on outside tap/click */
+    document.addEventListener("click", function(event) {
+        if (!menu.classList.contains("open"))
+            return;
+
+        if (
+            menu.contains(event.target) ||
+            (trigger && trigger.contains(event.target))
+        ) {
+            return;
+        }
+
+        closeMoreMenu();
+    });
+
+    /* Close if the viewport is resized past the mobile
+       breakpoint (e.g. device rotation) */
+    window.addEventListener("resize", function() {
+        if (window.innerWidth > 768)
+            closeMoreMenu();
+    });
+})();
+
+
 /* ==================== THUMBNAILS ==================== */
 
 async function generateThumbnails() {
@@ -972,7 +1034,7 @@ async function createHighlight(color) {
 
     hideHighlightToolbar();
 
-    
+
 
     await loadHighlights();
 
@@ -1606,6 +1668,7 @@ document.addEventListener(
 
         if (event.key === "Escape") {
             hideHighlightToolbar();
+            closeMoreMenu();
             selectedRange = null;
             selectedText = "";
             selectedHighlightId = null;
@@ -1614,7 +1677,7 @@ document.addEventListener(
 );
 
 
-/* ==================== TOUCH / SWIPE ==================== */
+/* ==================== TOUCH / SWIPE (drag gestures) ==================== */
 
 let touchStartX = 0;
 let touchStartY = 0;
@@ -1687,37 +1750,93 @@ function handleSwipe() {
 }
 
 
-/* ==================== PAGE ZONES ==================== */
+/* ==================== TAP / CLICK EDGE NAVIGATION ====================
+   Works for both mouse clicks (desktop browser) and touch taps
+   (mobile) via a single handler on the viewer. A tap/click in the
+   left ~18% of the viewer goes to the previous page, right ~18%
+   goes to the next page. Middle area, buttons, sidebar, search
+   panel, and highlight toolbar are all excluded, and an active
+   text selection (from highlighting) is never treated as a nav tap.
+   ==================================================================== */
 
-const previousZone = $("previousZone");
+let pointerDownX = 0;
+let pointerDownY = 0;
 
-if (previousZone) {
-    previousZone.addEventListener(
-        "click",
-        function() {
-            if (wasSwipe) {
-                wasSwipe = false;
-                return;
-            }
+const viewerElement = $("viewer");
 
-            previousPage();
-        }
+function isNavExcludedTarget(target) {
+    return Boolean(
+        target.closest(".highlight-toolbar") ||
+        target.closest(".sidebar") ||
+        target.closest(".search-panel") ||
+        target.closest(".toolbar") ||
+        target.closest("button") ||
+        target.closest("input") ||
+        target.closest("select") ||
+        target.closest(".thumbnail")
     );
 }
 
+if (viewerElement) {
 
-const nextZone = $("nextZone");
+    viewerElement.addEventListener(
+        "mousedown",
+        function(event) {
+            pointerDownX = event.clientX;
+            pointerDownY = event.clientY;
+        }
+    );
 
-if (nextZone) {
-    nextZone.addEventListener(
+    viewerElement.addEventListener(
         "click",
-        function() {
+        function(event) {
+
             if (wasSwipe) {
                 wasSwipe = false;
                 return;
             }
 
-            nextPage();
+            if (isNavExcludedTarget(event.target))
+                return;
+
+            const selection = window.getSelection();
+
+            if (
+                selection &&
+                selection.toString().trim().length > 0
+            ) {
+                return;
+            }
+
+            const movedX =
+                Math.abs(event.clientX - pointerDownX);
+
+            const movedY =
+                Math.abs(event.clientY - pointerDownY);
+
+            /* Ignore drags (text selection, scroll-drag) */
+            if (movedX > 10 || movedY > 10)
+                return;
+
+            const viewerRect =
+                viewerElement.getBoundingClientRect();
+
+            const clickX =
+                event.clientX - viewerRect.left;
+
+            const zoneWidth =
+                Math.min(
+                    110,
+                    viewerRect.width * 0.18
+                );
+
+            if (clickX <= zoneWidth) {
+                previousPage();
+            } else if (
+                clickX >= viewerRect.width - zoneWidth
+            ) {
+                nextPage();
+            }
         }
     );
 }
@@ -1772,8 +1891,6 @@ window.addEventListener(
     }
 );
 
-
-/* ==================== START READER ==================== */
 
 /* ==================== START READER ==================== */
 

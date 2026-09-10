@@ -93,7 +93,7 @@ boolean isAdmin =
          ===================================================== -->
 
     <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/css/read-book.css">
+          href="<%=contextPath%>/css/read-book.css">
 
 </head>
 
@@ -106,6 +106,18 @@ boolean isAdmin =
 
     <!-- =====================================================
          TOP TOOLBAR
+
+         Layout strategy:
+         - Buttons that stay ALWAYS in the toolbar (mobile +
+           desktop): back, title, sidebar toggle, search,
+           prev, page number, next.
+         - Everything else (bookmark, highlight, zoom, rotate,
+           view mode, fullscreen) lives inside
+           #toolbarOverflow. On desktop it renders inline
+           (display:contents — visually identical to before).
+           On mobile it becomes a dropdown opened by the
+           "More" (⋮) button, so every feature stays reachable
+           on a phone screen instead of being hidden.
          ===================================================== -->
 
     <div class="toolbar">
@@ -135,11 +147,10 @@ boolean isAdmin =
         </div>
 
 
-        <!-- SIDEBAR -->
+        <!-- SIDEBAR (always visible — mobile users need this too) -->
 
         <button
             type="button"
-            class="desktop-only"
             onclick="toggleSidebar()"
             title="Sidebar">
 
@@ -208,127 +219,156 @@ boolean isAdmin =
 
 
         <!-- =================================================
-             BOOKMARK
+             OVERFLOW GROUP
+             Desktop: renders inline, same as before.
+             Mobile: becomes the dropdown opened by "More".
              ================================================= -->
 
-        <%
-        if (isNormalUser) {
-        %>
+        <div class="toolbar-overflow" id="toolbarOverflow">
+
+
+            <!-- BOOKMARK -->
+
+            <%
+            if (isNormalUser) {
+            %>
+
+            <button
+                type="button"
+                id="bookmarkButton"
+                class="bookmark-button"
+                onclick="toggleBookmark()"
+                title="Bookmark this page">
+
+                <i data-lucide="bookmark"></i>
+                <span class="label">Bookmark Page</span>
+
+            </button>
+
+            <%
+            }
+            %>
+
+
+            <!-- HIGHLIGHT -->
+
+            <%
+            if (isNormalUser) {
+            %>
+
+            <button
+                type="button"
+                id="highlightHeaderButton"
+                class="highlight-header-button active"
+                onclick="activateHighlightMode()"
+                title="Select text to highlight">
+
+                <i data-lucide="highlighter"></i>
+                <span class="label">Highlight Text</span>
+
+            </button>
+
+            <%
+            }
+            %>
+
+
+            <!-- ZOOM OUT -->
+
+            <button
+                type="button"
+                onclick="zoomOut()"
+                title="Zoom Out">
+
+                <i data-lucide="zoom-out"></i>
+                <span class="label">Zoom Out</span>
+
+            </button>
+
+
+            <!-- ZOOM IN -->
+
+            <button
+                type="button"
+                onclick="zoomIn()"
+                title="Zoom In">
+
+                <i data-lucide="zoom-in"></i>
+                <span class="label">Zoom In</span>
+
+            </button>
+
+
+            <!-- FIT WIDTH -->
+
+            <button
+                type="button"
+                onclick="fitWidth()"
+                title="Fit Width">
+
+                <i data-lucide="move-horizontal"></i>
+                <span class="label">Fit Width</span>
+
+            </button>
+
+
+            <!-- ROTATE -->
+
+            <button
+                type="button"
+                onclick="rotatePage()"
+                title="Rotate">
+
+                <i data-lucide="rotate-cw"></i>
+                <span class="label">Rotate</span>
+
+            </button>
+
+
+            <!-- VIEW MODE -->
+
+            <select
+                id="viewMode"
+                onchange="changeViewMode()"
+                title="View Mode">
+
+                <option value="single">
+                    Single Page
+                </option>
+
+                <option value="spread">
+                    Spread
+                </option>
+
+            </select>
+
+
+            <!-- FULLSCREEN -->
+
+            <button
+                type="button"
+                onclick="toggleFullscreen()"
+                title="Fullscreen">
+
+                <i data-lucide="maximize"></i>
+                <span class="label">Fullscreen</span>
+
+            </button>
+
+
+        </div>
+
+
+        <!-- MORE (mobile only — opens the overflow group above) -->
 
         <button
             type="button"
-            id="bookmarkButton"
-            class="bookmark-button"
-            onclick="toggleBookmark()"
-            title="Bookmark this page">
+            id="moreOptionsButton"
+            class="more-options-button mobile-only"
+            onclick="toggleMoreMenu()"
+            title="More options">
 
-            <i data-lucide="bookmark"></i>
-
-        </button>
-
-        <%
-        }
-        %>
-
-
-        <!-- =================================================
-             HIGHLIGHT
-             ================================================= -->
-
-        <%
-        if (isNormalUser) {
-        %>
-
-        <button
-            type="button"
-            id="highlightHeaderButton"
-            class="highlight-header-button active"
-            onclick="activateHighlightMode()"
-            title="Select text to highlight">
-
-            <i data-lucide="highlighter"></i>
-
-        </button>
-
-        <%
-        }
-        %>
-
-
-        <!-- ZOOM OUT -->
-
-        <button
-            type="button"
-            onclick="zoomOut()"
-            title="Zoom Out">
-
-            <i data-lucide="zoom-out"></i>
-
-        </button>
-
-
-        <!-- ZOOM IN -->
-
-        <button
-            type="button"
-            onclick="zoomIn()"
-            title="Zoom In">
-
-            <i data-lucide="zoom-in"></i>
-
-        </button>
-
-
-        <!-- FIT WIDTH -->
-
-        <button
-            type="button"
-            onclick="fitWidth()"
-            title="Fit Width">
-
-            <i data-lucide="move-horizontal"></i>
-
-        </button>
-
-
-        <!-- ROTATE -->
-
-        <button
-            type="button"
-            onclick="rotatePage()"
-            title="Rotate">
-
-            <i data-lucide="rotate-cw"></i>
-
-        </button>
-
-
-        <!-- VIEW MODE -->
-
-        <select
-            id="viewMode"
-            onchange="changeViewMode()"
-            title="View Mode">
-
-            <option value="single">
-                Single
-            </option>
-
-            <option value="spread">
-                Spread
-            </option>
-
-        </select>
-
-
-        <!-- FULLSCREEN -->
-
-        <button
-            type="button"
-            onclick="toggleFullscreen()"
-            title="Fullscreen">
-
-            <i data-lucide="maximize"></i>
+            <i data-lucide="more-vertical"></i>
 
         </button>
 
@@ -453,6 +493,8 @@ boolean isAdmin =
 
         <!-- =================================================
              PDF VIEWER
+             (tap/click on the left or right edge of this
+             element turns the page — see read-book.js)
              ================================================= -->
 
         <div
@@ -607,22 +649,6 @@ boolean isAdmin =
     </button>
 
 
-</div>
-
-
-<!-- =====================================================
-     PAGE TOUCH ZONES
-     ===================================================== -->
-
-<div
-    id="previousZone"
-    class="page-zone previous-zone">
-</div>
-
-
-<div
-    id="nextZone"
-    class="page-zone next-zone">
 </div>
 
 

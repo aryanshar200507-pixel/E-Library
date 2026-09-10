@@ -39,6 +39,8 @@ body {
    ========================================================= */
 
 .toolbar {
+    position: relative;
+
     height: 58px;
     min-height: 58px;
 
@@ -62,6 +64,8 @@ body {
    ========================================================= */
 
 .toolbar button {
+    flex-shrink: 0;
+
     width: 38px;
     height: 38px;
 
@@ -138,7 +142,7 @@ body {
 .book-title {
     flex: 1;
 
-    min-width: 100px;
+    min-width: 40px;
 
     white-space: nowrap;
     overflow: hidden;
@@ -186,6 +190,8 @@ body {
    ========================================================= */
 
 .page-controls {
+    flex-shrink: 0;
+
     display: flex;
     align-items: center;
     gap: 4px;
@@ -217,10 +223,33 @@ body {
 
 
 /* =========================================================
+   OVERFLOW GROUP (bookmark, highlight, zoom, rotate,
+   view mode, fullscreen)
+
+   Desktop: display:contents makes the wrapper invisible to
+   layout — its children sit inline in the toolbar exactly
+   like before.
+
+   Mobile: becomes a dropdown panel, toggled by the
+   "More" button.
+   ========================================================= */
+
+.toolbar-overflow {
+    display: contents;
+}
+
+.toolbar-overflow .label {
+    display: none;
+}
+
+
+/* =========================================================
    VIEW MODE
    ========================================================= */
 
 #viewMode {
+    flex-shrink: 0;
+
     height: 36px;
 
     padding: 0 8px;
@@ -238,6 +267,15 @@ body {
 
 #viewMode:hover {
     background: #374151;
+}
+
+
+/* =========================================================
+   MORE OPTIONS BUTTON (mobile only)
+   ========================================================= */
+
+.more-options-button {
+    display: none;
 }
 
 
@@ -409,6 +447,8 @@ body {
     background: #525252;
 
     overflow: auto;
+
+    cursor: pointer;
 }
 
 
@@ -576,6 +616,8 @@ body {
     align-items: center;
 
     gap: 25px;
+
+    cursor: default;
 }
 
 .pages-container.spread-mode {
@@ -598,6 +640,8 @@ body {
 
     box-shadow:
         0 5px 20px rgba(0, 0, 0, 0.35);
+
+    cursor: text;
 }
 
 .pdf-canvas {
@@ -986,32 +1030,6 @@ body {
 
 
 /* =========================================================
-   PAGE TOUCH ZONES
-   ========================================================= */
-
-.page-zone {
-    position: fixed;
-
-    top: 58px;
-    bottom: 0;
-
-    width: 70px;
-
-    z-index: 10;
-
-    pointer-events: none;
-}
-
-.previous-zone {
-    left: 0;
-}
-
-.next-zone {
-    right: 0;
-}
-
-
-/* =========================================================
    SCROLLBAR
    ========================================================= */
 
@@ -1069,14 +1087,6 @@ body {
         padding: 0 4px;
     }
 
-    .desktop-only {
-        display: none !important;
-    }
-
-    #viewMode {
-        display: none;
-    }
-
     .page-input {
         width: 42px;
         height: 30px;
@@ -1118,6 +1128,80 @@ body {
         width: auto;
     }
 
+
+    /* -----------------------------------------------------
+       MORE OPTIONS BUTTON — visible on mobile
+       ----------------------------------------------------- */
+
+    .more-options-button {
+        display: inline-flex;
+    }
+
+
+    /* -----------------------------------------------------
+       OVERFLOW GROUP becomes a dropdown panel
+       ----------------------------------------------------- */
+
+    .toolbar-overflow {
+        display: none;
+        flex-direction: column;
+
+        position: absolute;
+
+        top: 52px;
+        right: 8px;
+
+        min-width: 210px;
+
+        padding: 6px;
+
+        gap: 2px;
+
+        background: #1f2937;
+
+        border: 1px solid #374151;
+
+        border-radius: 10px;
+
+        box-shadow:
+            0 12px 28px rgba(0, 0, 0, 0.45);
+
+        z-index: 1700;
+    }
+
+    .toolbar-overflow.open {
+        display: flex;
+    }
+
+    .toolbar-overflow button {
+        width: 100%;
+        height: 42px;
+
+        justify-content: flex-start;
+
+        gap: 10px;
+
+        padding: 0 10px;
+
+        border-radius: 6px;
+    }
+
+    .toolbar-overflow .label {
+        display: inline;
+
+        font-size: 13.5px;
+
+        color: #e5e7eb;
+
+        white-space: nowrap;
+    }
+
+    .toolbar-overflow #viewMode {
+        width: 100%;
+        height: 42px;
+        margin-top: 2px;
+    }
+
 }
 
 
@@ -1147,6 +1231,13 @@ body {
 
     .page-input {
         width: 38px;
+    }
+
+    .toolbar-overflow {
+        right: 4px;
+        left: 4px;
+
+        min-width: 0;
     }
 
 }
