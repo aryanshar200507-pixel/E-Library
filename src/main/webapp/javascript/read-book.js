@@ -80,17 +80,25 @@ async function loadPdf() {
             Math.min(currentPage, pdfDoc.numPages)
         );
 
-        if (isNormalUser)
-            await loadHighlights();
+		if (isNormalUser) {
+		    loadHighlights();
+		}
 
-        await renderPage(currentPage);
-        generateThumbnails();
+		await renderPage(currentPage);
 
-        if (isNormalUser) {
-            await loadBookmarkState();
-            await loadBookmarks();
-            renderHighlightList();
-        }
+		/*
+		 * Do not block the reader while generating
+		 * all page thumbnails.
+		 */
+		setTimeout(function() {
+		    generateThumbnails();
+		}, 100);
+
+		if (isNormalUser) {
+		    loadBookmarkState();
+		    loadBookmarks();
+		    renderHighlightList();
+		}
     } catch (error) {
         console.error("PDF loading error:", error);
         $("loading").classList.remove("hidden");
@@ -433,13 +441,16 @@ function closeMoreMenu() {
     });
 })();
 
-
 /* ==================== THUMBNAILS ==================== */
 
-async function generateThumbnails() {
+function generateThumbnails() {
+
     if (!pdfDoc) return;
 
     const container = $("pagesContainerSidebar");
+
+    if (!container) return;
+
     container.innerHTML = "";
 
     for (
@@ -447,45 +458,197 @@ async function generateThumbnails() {
         pageNumber <= pdfDoc.numPages;
         pageNumber++
     ) {
-        const page = await pdfDoc.getPage(pageNumber);
-
-        const viewport = page.getViewport({
-            scale: 0.18
-        });
 
         const thumbnail = document.createElement("div");
+
         thumbnail.className = "thumbnail";
+
         thumbnail.dataset.page = pageNumber;
 
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
+        /*
+         * Placeholder while thumbnail is loading.
+         */
 
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
+        const canvas = document.createElement("canvas");
+
+        canvas.className = "thumbnail-canvas";
 
         thumbnail.appendChild(canvas);
 
-        const pageNumberText = document.createElement("div");
-        pageNumberText.className = "thumbnail-page-number";
-        pageNumberText.textContent = "Page " + pageNumber;
+
+        /*
+         * Page number.
+         */
+
+        const pageNumberText =
+            document.createElement("div");
+
+        pageNumberText.className =
+            "thumbnail-page-number";
+
+        pageNumberText.textContent =
+            "Page " + pageNumber;
 
         thumbnail.appendChild(pageNumberText);
 
-        thumbnail.addEventListener("click", function() {
-            renderPage(pageNumber);
-        });
+
+        /*
+         * Click thumbnail → go to page.
+         */
+
+        thumbnail.addEventListener(
+            "click",
+            function() {
+
+                renderPage(pageNumber);
+
+            }
+        );
+
 
         container.appendChild(thumbnail);
+    }
+
+
+    /*
+     * Render only thumbnails that are visible.
+     */
+
+    setupThumbnailObserver();
+
+    updateThumbnailSelection();
+}
+
+/* ==================== THUMBNAIL OBSERVER ==================== */
+
+function setupThumbnailObserver() {
+
+    const thumbnails =
+        document.querySelectorAll(".thumbnail");
+
+    if (!thumbnails.length) return;
+
+
+    /*
+     * IntersectionObserver detects when
+     * a thumbnail enters the sidebar viewport.
+     */
+
+    const observer =
+        new IntersectionObserver(
+            function(entries) {
+
+                entries.forEach(
+                    function(entry) {
+
+                        if (!entry.isIntersecting)
+                            return;
+
+                        const thumbnail =
+                            entry.target;
+
+                        const pageNumber =
+                            Number(
+                                thumbnail.dataset.page
+                            );
+
+                        /*
+                         * Prevent rendering
+                         * the same thumbnail twice.
+                         */
+
+                        if (
+                            thumbnail.dataset.loaded ===
+                            "true"
+                        ) {
+
+                            observer.unobserve(
+                                thumbnail
+                            );
+
+                            return;
+                        }
+
+                        thumbnail.dataset.loaded =
+                            "true";
+
+                        renderThumbnail(
+                            pageNumber,
+                            thumbnail
+                        );
+
+                        observer.unobserve(
+                            thumbnail
+                        );
+                    }
+                );
+            },
+            {
+                root: $("pagesContainerSidebar"),
+
+                rootMargin: "300px"
+            }
+        );
+
+
+    thumbnails.forEach(
+        function(thumbnail) {
+
+            observer.observe(thumbnail);
+
+        }
+    );
+}
+
+/* ==================== RENDER THUMBNAIL ==================== */
+
+async function renderThumbnail(
+    pageNumber,
+    thumbnail
+) {
+
+    if (!pdfDoc) return;
+
+    try {
+
+        const page =
+            await pdfDoc.getPage(pageNumber);
+
+        const viewport =
+            page.getViewport({
+                scale: 0.18
+            });
+
+        const canvas =
+            thumbnail.querySelector(
+                ".thumbnail-canvas"
+            );
+
+        if (!canvas) return;
+
+        const context =
+            canvas.getContext("2d");
+
+        canvas.width =
+            viewport.width;
+
+        canvas.height =
+            viewport.height;
 
         await page.render({
             canvasContext: context,
             viewport: viewport
         }).promise;
+
+    } catch (error) {
+
+        console.error(
+            "Thumbnail error for page:",
+            pageNumber,
+            error
+        );
     }
-
-    updateThumbnailSelection();
 }
-
 
 function updateThumbnailSelection() {
     document.querySelectorAll(".thumbnail").forEach(function(item) {

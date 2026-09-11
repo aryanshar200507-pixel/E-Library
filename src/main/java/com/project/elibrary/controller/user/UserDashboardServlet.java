@@ -68,6 +68,8 @@ public class UserDashboardServlet extends HttpServlet {
 
         User loggedInUser =
             (User) session.getAttribute("loggedInUser");
+        
+       
 
         if (loggedInUser == null) {
             response.sendRedirect(

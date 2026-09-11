@@ -83,6 +83,7 @@ public final class DatabaseIniti {
 		createReadingProgressTable();
 		createBookmarkTable();
 		createHighlightTable();
+		createRememberMeTable();
 		// Other table creation methods will be added here.
 	}
 
@@ -414,6 +415,43 @@ public final class DatabaseIniti {
 
 	        throw new RuntimeException(
 	                "Failed to create highlight table.",
+	                e
+	        );
+	    }
+	}
+	
+	public static void createRememberMeTable() {
+
+	    String sql = """
+	            CREATE TABLE IF NOT EXISTS remember_me (
+	                token_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+	                user_id BIGINT NOT NULL,
+
+	                token_hash VARCHAR(255) NOT NULL UNIQUE,
+
+	                expires_at TIMESTAMP NOT NULL,
+
+	                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+	                CONSTRAINT fk_remember_me_user
+	                    FOREIGN KEY (user_id)
+	                    REFERENCES users(user_id)
+	                    ON DELETE CASCADE
+	            );
+	            """;
+
+	    try (Connection connection = DatabaseConnection.getConnection();
+	         Statement statement = connection.createStatement()) {
+
+	        statement.executeUpdate(sql);
+
+	        System.out.println("Remember Me table is ready.");
+
+	    } catch (SQLException e) {
+
+	        throw new RuntimeException(
+	                "Failed to create remember me table.",
 	                e
 	        );
 	    }
