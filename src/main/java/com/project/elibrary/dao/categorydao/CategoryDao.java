@@ -15,4 +15,8 @@ public interface CategoryDao {
 	List<Category> findCategories(int offset, int limit);
 	
 	List<Category> findTopRatedCategories(int limit);
+	
+	boolean update(Category category);
+	
+	boolean delete(Category category);
 }

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-
+<%@ page import="com.project.elibrary.bean.category.Category" %>
 <%@ page import="com.project.elibrary.bean.user.User"%>
 <%@ page import="java.util.List"%>
 
@@ -255,6 +255,47 @@ td form {
 		padding: 20px;
 	}
 }
+
+.category-edit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.edit-icon,
+.save-icon,
+.cancel-icon {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px;
+}
+
+.edit-icon:hover {
+    transform: scale(1.15);
+}
+
+.edit-form {
+    display: none;
+    align-items: center;
+    gap: 5px;
+}
+
+.edit-form input {
+    width: 150px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.save-icon {
+    color: green;
+}
+
+.cancel-icon {
+    color: red;
+}
 </style>
 
 </head>
@@ -379,29 +420,153 @@ td form {
          CATEGORY MANAGEMENT
          ========================= -->
 
-		<section class="dashboard-section">
+<section class="dashboard-section">
 
-			<h2>Category Management</h2>
+    <h2>Category Management</h2>
 
+    <!-- ADD CATEGORY -->
+    <form action="${pageContext.request.contextPath}/admin/dashboard"
+        method="post">
 
-			<form action="${pageContext.request.contextPath}/admin/dashboard"
-				method="post">
+        <div class="form-row">
 
-				<div class="form-row">
+            <input type="text"
+                   name="category"
+                   placeholder="Enter category name"
+                   required>
 
-					<input type="text" name="category"
-						placeholder="Enter category name" required> <input
-						type="hidden" name="action" value="addCategory">
+            <input type="hidden"
+                   name="action"
+                   value="addCategory">
 
-					<button type="submit" class="primary-button">Add Category
+            <button type="submit" class="primary-button">
+                Add Category
+            </button>
 
-					</button>
+        </div>
 
-				</div>
+    </form>
 
-			</form>
+    <br>
 
-		</section>
+    <!-- CATEGORY TABLE -->
+
+    <h3>Categories</h3>
+
+    <%
+    List<Category> categories =
+        (List<Category>) request.getAttribute("categories");
+
+    if (categories != null && !categories.isEmpty()) {
+    %>
+
+    <div class="table-container">
+
+        <table>
+
+            <tr>
+                
+                <th>Category Name</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+
+            <%
+            for (Category category : categories) {
+            %>
+
+            <tr>
+
+                <td>
+                    <%= category.getCategoryName() %>
+                </td>
+
+<td>
+
+    <!-- Pencil button -->
+    <button type="button"
+            class="edit-icon" onclick="editCategory(<%= category.getCategoryId() %>)"
+            title="Edit category">
+        ✏️
+    </button>
+
+    <!-- Edit form, hidden initially -->
+    <form id="edit-form-<%= category.getCategoryId() %>"
+          action="${pageContext.request.contextPath}/admin/dashboard"
+          method="post"
+          class="edit-form">
+
+        <input type="hidden"
+               name="action"
+               value="updateCategory">
+
+        <input type="hidden"
+               name="categoryId"
+               value="<%= category.getCategoryId() %>">
+
+        <input type="text"
+               name="categoryName"
+               value="<%= category.getCategoryName() %>"
+               required>
+
+        <button type="submit"
+                class="save-icon"
+                title="Save">
+            ✓
+        </button>
+
+        <button type="button"
+                class="cancel-icon"
+                onclick="cancelEdit(<%= category.getCategoryId() %>)"
+                title="Cancel">
+            ✕
+        </button>
+
+    </form>
+
+</td>
+				<td>
+    <form action="${pageContext.request.contextPath}/admin/dashboard"
+          method="post"
+          onsubmit="return confirm('Are you sure you want to delete this category?');">
+
+        <input type="hidden"
+               name="action"
+               value="deleteCategory">
+
+        <input type="hidden"
+               name="categoryId"
+               value="<%= category.getCategoryId() %>">
+
+        <button type="submit" class="delete-button">
+            Delete
+        </button>
+
+    </form>
+</td>
+            </tr>
+
+            <%
+            }
+            %>
+
+        </table>
+
+    </div>
+
+    <%
+    } else {
+    %>
+
+    <p class="empty-message">
+        No categories found.
+    </p>
+
+    <%
+    }
+    %>
+
+</section>
 
 
 		<!-- =========================
@@ -544,7 +709,30 @@ td form {
 
 
 	</div>
+<script>
 
+function editCategory(categoryId) {
+
+    document.querySelector(
+        ".edit-icon[onclick='editCategory(" + categoryId + ")']"
+    ).style.display = "none";
+
+    document.getElementById("edit-form-" + categoryId)
+            .style.display = "flex";
+}
+
+
+function cancelEdit(categoryId) {
+
+    document.querySelector(
+        ".edit-icon[onclick='editCategory(" + categoryId + ")']"
+    ).style.display = "inline";
+
+    document.getElementById("edit-form-" + categoryId)
+            .style.display = "none";
+}
+
+</script>
 
 </body>
 

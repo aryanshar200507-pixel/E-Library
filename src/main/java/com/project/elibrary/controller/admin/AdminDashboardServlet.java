@@ -56,7 +56,9 @@ public class AdminDashboardServlet extends HttpServlet {
 		} else {
 			loadUsers(request);
 		}
-
+		// Load Categories 
+		loadCategories(request);
+		
 		request.getRequestDispatcher("/WEB-INF/admin/dashboard.jsp").forward(request, response);
 	}
 
@@ -112,7 +114,14 @@ public class AdminDashboardServlet extends HttpServlet {
 
 		request.setAttribute("totalCategories", totalCategories);
 	}
+	//Method to get all Categories
+	private void loadCategories(HttpServletRequest request) {
+		List<Category> categories = categoryService.getAllCategories();
 
+		request.setAttribute("categories", categories);
+
+		System.out.println("Categories found: " + categories.size());
+	}
 	// Method to add category
 	private void addCategory(HttpServletRequest request) {
 
@@ -129,7 +138,48 @@ public class AdminDashboardServlet extends HttpServlet {
 			System.out.println("Failed to add category");
 		}
 	}
+	//Method to update/Edit Category
+	private void updateCategory(HttpServletRequest request) {
 
+	    String categoryIdParam = request.getParameter("categoryId");
+	    String categoryName = request.getParameter("categoryName");
+
+	    Category category = new Category();
+
+	    if (categoryIdParam != null && !categoryIdParam.trim().isEmpty()) {
+	        int categoryId = Integer.parseInt(categoryIdParam);
+	        category.setCategoryId(categoryId);
+	    }
+
+	    category.setCategoryName(categoryName);
+
+	    boolean updated = categoryService.update(category);
+
+	    if (updated) {
+	        System.out.println("Category updated successfully");
+	    } else {
+	        System.out.println("Failed to update category");
+	    }
+	}
+	
+	//Method to delete Category
+	private void deleteCategory(HttpServletRequest request) {
+		String categoryIdParam = request.getParameter("categoryId");
+		
+		Category category = new Category();
+		if (categoryIdParam != null && !categoryIdParam.trim().isEmpty()) {
+	        int categoryId = Integer.parseInt(categoryIdParam);
+	        category.setCategoryId(categoryId);
+	    }
+		 boolean deleted = categoryService.delete(category);
+
+		    if (deleted) {
+		        System.out.println("Category deleted successfully");
+		    } else {
+		        System.out.println("Failed to deleted category");
+		    }
+		
+	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -144,6 +194,10 @@ public class AdminDashboardServlet extends HttpServlet {
 			loadIdToRecover(request);
 		} else if ("addCategory".equals(action)) {
 			addCategory(request);
+		}else if("updateCategory".equals(action)) {
+			updateCategory(request);
+		}else if("deleteCategory".equals(action)) {
+			deleteCategory(request);
 		}
 
 		response.sendRedirect(request.getContextPath() + "/admin/dashboard");

@@ -17,4 +17,8 @@ public interface CategoryService {
 	int getTotalCategories();
 	
 	List<Category> getTopRatedCategories(int limit);
+	
+	boolean update(Category category);
+	
+	boolean delete(Category category);
 }

@@ -124,8 +124,7 @@
 
         <% for (Category category : categories) { %>
 
-            <option
-                value="<%= category.getCategoryId() %>"
+            <option          value="<%= category.getCategoryId() %>"
                 <%= category.getCategoryId()
                         == book.getCategoryId()
                         ? "selected"

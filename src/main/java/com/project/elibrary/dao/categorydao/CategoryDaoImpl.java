@@ -11,9 +11,6 @@ import com.project.elibrary.bean.category.Category;
 import com.project.elibrary.config.DatabaseConnection;
 //import java.util.List;
 
-//import com.project.elibrary.bean.category.Category;
-import com.project.elibrary.config.DatabaseConnection;
-
 public class CategoryDaoImpl implements CategoryDao {
 
 	@Override
@@ -162,6 +159,40 @@ public class CategoryDaoImpl implements CategoryDao {
 		}
 
 		return categories;
+	}
+	
+	@Override
+	public boolean update(Category category) {
+		
+		String sql = """
+				UPDATE category
+				SET category_name = ?
+				WHERE category_id = ?
+				""";
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement statement = connection.prepareStatement(sql)) {
+			statement.setString(1, category.getCategoryName());
+			statement.setLong(2, category.getCategoryId());
+			
+			return statement.executeUpdate() > 0;
+		} catch (SQLException e) {
+			throw new RuntimeException("Failed to update book.", e);
+		}
+		
+	}
+	
+	@Override
+	public boolean delete(Category category) {
+		String sql = """
+				DELETE FROM category WHERE category_id = ? """;
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement statement = connection.prepareStatement(sql)) {
+			statement.setLong(1, category.getCategoryId());
+			
+			return statement.executeUpdate() > 0;
+		} catch (SQLException e) {
+			throw new RuntimeException("Failed to delete category.", e);
+		}
 	}
 
 }

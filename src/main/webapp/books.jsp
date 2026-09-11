@@ -1187,9 +1187,7 @@ if (searchMode) {
 
         for (Category category : categories) {
 
-            Long categoryId =
-                    category.getCategoryId();
-
+            Long categoryId = category.getCategoryId();
             String coverUrl =
                     categoryCoverUrlMap.get(
                             categoryId

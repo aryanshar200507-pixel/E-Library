@@ -58,4 +58,28 @@ public class CategoryServiceImpl implements CategoryService {
 
 		return categoryDao.findTopRatedCategories(limit);
 	}
+	
+	@Override
+	public boolean update(Category category) {
+		
+		if(category == null) {
+			throw new IllegalArgumentException("Category can't be null.");
+		}
+		if(category.getCategoryId() <=0 || category.getCategoryId()<=0 ) {
+			throw new IllegalArgumentException("Invalid Category Id.");
+		}
+		return categoryDao.update(category);
+		
+	}
+	
+	@Override
+	public boolean delete(Category category) {
+		if(category == null) {
+			throw new IllegalArgumentException("Category can't be null.");
+		}
+		if(category.getCategoryId()<=0 || category.getCategoryId()<=0 ) {
+			throw new IllegalArgumentException("Invalid Category Id.");
+		}
+		return categoryDao.delete(category);
+	}
 }

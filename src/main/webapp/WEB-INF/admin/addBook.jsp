@@ -47,11 +47,9 @@
 
 				for (Category category : categories) {
 				%>
-
 				<option value="<%=category.getCategoryId()%>">
 					<%=category.getCategoryName()%>
 				</option>
-
 				<%
 				}
 				%>
