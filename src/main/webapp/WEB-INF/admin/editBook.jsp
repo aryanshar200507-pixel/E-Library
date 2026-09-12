@@ -2,11 +2,12 @@
     contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
-<%@ page import="java.util.List" %>
-<%@ page import="com.project.elibrary.bean.book.Book" %>
-<%@ page import="com.project.elibrary.bean.category.Category" %>
+<%@ page import="java.util.List"%>
+<%@ page import="com.project.elibrary.bean.book.Book"%>
+<%@ page import="com.project.elibrary.bean.category.Category"%>
 
 <!DOCTYPE html>
+
 <html>
 
 <head>
@@ -17,91 +18,155 @@
 
 </head>
 
+
 <body>
 
+
 <%
+
+    /*
+     * ============================================
+     * GET DATA FROM SERVLET
+     * ============================================
+     */
+
     Book book =
         (Book) request.getAttribute("book");
+
 
     List<Category> categories =
         (List<Category>) request.getAttribute("categories");
 
+
     String error =
         (String) request.getAttribute("error");
+
 %>
 
 
 <h1>Edit Book</h1>
 
 
-<% if (error != null) { %>
+<%
+
+if (error != null) {
+
+%>
 
     <p><%= error %></p>
 
-<% } %>
+<%
 
+}
+
+%>
+
+
+<!--
+    ============================================
+    EDIT BOOK FORM
+    ============================================
+    
+    multipart/form-data is required because
+    this form can upload files.
+-->
 
 <form
+
     action="${pageContext.request.contextPath}/admin/books/edit"
-    method="post">
+
+    method="post"
+
+    enctype="multipart/form-data">
 
 
-    <!-- Book ID -->
+    <!-- ============================================
+         BOOK ID
+         ============================================ -->
 
     <input
+
         type="hidden"
+
         name="bookId"
+
         value="<%= book.getBookId() %>">
 
 
-    <!-- Title -->
+    <!-- ============================================
+         TITLE
+         ============================================ -->
 
     <label for="title">
+
         Title:
+
     </label>
 
     <br>
 
     <input
+
         type="text"
+
         id="title"
+
         name="title"
+
         value="<%= book.getTitle() %>"
+
         required>
 
     <br><br>
 
 
-    <!-- Author -->
+    <!-- ============================================
+         AUTHOR
+         ============================================ -->
 
     <label for="author">
+
         Author:
+
     </label>
 
     <br>
 
     <input
+
         type="text"
+
         id="author"
+
         name="author"
+
         value="<%= book.getAuthor() %>"
+
         required>
 
     <br><br>
 
 
-    <!-- Description -->
+    <!-- ============================================
+         DESCRIPTION
+         ============================================ -->
 
     <label for="description">
+
         Description:
+
     </label>
 
     <br>
 
     <textarea
+
         id="description"
+
         name="description"
+
         rows="6"
+
         cols="50"><%= book.getDescription() != null
                 ? book.getDescription()
                 : "" %></textarea>
@@ -109,22 +174,38 @@
     <br><br>
 
 
-    <!-- Category -->
+    <!-- ============================================
+         CATEGORY
+         ============================================ -->
 
     <label for="categoryId">
+
         Category:
+
     </label>
 
     <br>
 
     <select
+
         id="categoryId"
+
         name="categoryId"
+
         required>
 
-        <% for (Category category : categories) { %>
 
-            <option          value="<%= category.getCategoryId() %>"
+        <%
+
+        for (Category category : categories) {
+
+        %>
+
+
+            <option
+
+                value="<%= category.getCategoryId() %>"
+
                 <%= category.getCategoryId()
                         == book.getCategoryId()
                         ? "selected"
@@ -134,25 +215,39 @@
 
             </option>
 
-        <% } %>
+
+        <%
+
+        }
+
+        %>
+
 
     </select>
 
     <br><br>
 
 
-    <!-- Published Date -->
+    <!-- ============================================
+         PUBLISHED DATE
+         ============================================ -->
 
     <label for="publishedAt">
+
         Published Date:
+
     </label>
 
     <br>
 
     <input
+
         type="date"
+
         id="publishedAt"
+
         name="publishedAt"
+
         value="<%= book.getPublishedAt() != null
                 ? book.getPublishedAt()
                 : "" %>">
@@ -160,18 +255,98 @@
     <br><br>
 
 
-    <!-- Submit -->
+    <!-- ============================================
+         NEW COVER
+         ============================================ -->
+
+    <label for="cover">
+
+        New Cover (optional):
+
+    </label>
+
+    <br>
+
+    <input
+
+        type="file"
+
+        id="cover"
+
+        name="cover"
+
+        accept=".jpg,.jpeg,.png,.webp">
+
+    <br>
+
+    <small>
+
+        Leave empty to keep the existing cover.
+
+    </small>
+
+    <br><br>
+
+
+    <!-- ============================================
+         NEW PDF
+         ============================================ -->
+
+    <label for="pdf">
+
+        New PDF (optional):
+
+    </label>
+
+    <br>
+
+    <input
+
+        type="file"
+
+        id="pdf"
+
+        name="pdf"
+
+        accept=".pdf">
+
+    <br>
+
+    <small>
+
+        Leave empty to keep the existing PDF.
+
+    </small>
+
+    <br><br>
+
+
+    <!-- ============================================
+         SUBMIT
+         ============================================ -->
 
     <button type="submit">
+
         Update Book
+
     </button>
 
 
-    <a href="${pageContext.request.contextPath}/books">
+    <!-- ============================================
+         CANCEL
+         ============================================ -->
+
+    <a
+
+        href="${pageContext.request.contextPath}/books">
+
         Cancel
+
     </a>
 
+
 </form>
+
 
 </body>
 

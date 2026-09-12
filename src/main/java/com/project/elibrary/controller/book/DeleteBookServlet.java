@@ -35,9 +35,13 @@ public class DeleteBookServlet extends HttpServlet {
 
 		String idParam = request.getParameter("bookId");
 
+		// Validate book ID
 		if (idParam == null || idParam.isBlank()) {
 
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Book ID is required.");
+			response.sendError(
+					HttpServletResponse.SC_BAD_REQUEST,
+					"Book ID is required."
+			);
 
 			return;
 		}
@@ -46,45 +50,113 @@ public class DeleteBookServlet extends HttpServlet {
 
 			Long bookId = Long.parseLong(idParam);
 
-			Book book = bookService.getBookById(bookId);
+			// Book ID must be positive
+			if (bookId <= 0) {
 
-			if (book == null) {
-
-				response.sendError(HttpServletResponse.SC_NOT_FOUND, "Book not found.");
+				response.sendError(
+						HttpServletResponse.SC_BAD_REQUEST,
+						"Invalid book ID."
+				);
 
 				return;
 			}
 
-			// Delete database record
+			/*
+			 * Find the book before deleting it.
+			 *
+			 * We need the storage keys because after the database
+			 * record is deleted, we can no longer retrieve them.
+			 */
+			Book book = bookService.getBookById(bookId);
 
+			if (book == null) {
+
+				response.sendError(
+						HttpServletResponse.SC_NOT_FOUND,
+						"Book not found."
+				);
+
+				return;
+			}
+
+			/*
+			 * Delete the database record first.
+			 *
+			 * Because the related tables use ON DELETE CASCADE,
+			 * ratings, comments, reading progress, bookmarks
+			 * and highlights related to this book will also be deleted.
+			 */
 			boolean deleted = bookService.deleteBook(bookId);
 
-			if (deleted) {
+			if (!deleted) {
 
-				// Delete cover from S3
+				response.sendError(
+						HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"Failed to delete book."
+				);
 
-				if (book.getCoverStorageKey() != null && !book.getCoverStorageKey().isBlank()) {
-
-					storageService.deleteFile(book.getCoverStorageKey());
-				}
-
-				// Delete PDF from S3
-
-				if (book.getPdfStorageKey() != null && !book.getPdfStorageKey().isBlank()) {
-
-					storageService.deleteFile(book.getPdfStorageKey());
-				}
-
-				response.sendRedirect(request.getContextPath() + "/books/details?id=" + bookId);
-
-			} else {
-
-				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to delete book.");
+				return;
 			}
+
+			/*
+			 * Delete the PDF from S3.
+			 */
+			if (book.getPdfStorageKey() != null
+					&& !book.getPdfStorageKey().isBlank()) {
+
+				boolean pdfDeleted =
+						storageService.deleteFile(book.getPdfStorageKey());
+
+				if (!pdfDeleted) {
+
+					System.err.println(
+							"Warning: Failed to delete PDF from S3 for book ID: "
+									+ bookId
+					);
+				}
+			}
+
+			/*
+			 * Delete the cover from S3.
+			 */
+			if (book.getCoverStorageKey() != null
+					&& !book.getCoverStorageKey().isBlank()) {
+
+				boolean coverDeleted =
+						storageService.deleteFile(book.getCoverStorageKey());
+
+				if (!coverDeleted) {
+
+					System.err.println(
+							"Warning: Failed to delete cover from S3 for book ID: "
+									+ bookId
+					);
+				}
+			}
+
+			/*
+			 * Book has been successfully removed from the database.
+			 *
+			 * Redirect to the shared /books page because the deleted
+			 * book's details page no longer exists.
+			 */
+			response.sendRedirect(
+					request.getContextPath() + "/books"
+			);
 
 		} catch (NumberFormatException e) {
 
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid book ID.");
+			response.sendError(
+					HttpServletResponse.SC_BAD_REQUEST,
+					"Invalid book ID."
+			);
+
+		} catch (RuntimeException e) {
+
+			throw new ServletException(
+					"Failed to delete book.",
+					e
+			);
 		}
 	}
 }

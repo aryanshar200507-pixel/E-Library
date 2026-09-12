@@ -21,167 +21,644 @@ import com.project.elibrary.service.categoryservice.CategoryServiceImpl;
 import com.project.elibrary.service.storageservice.S3StorageServiceImpl;
 import com.project.elibrary.service.storageservice.StorageService;
 
-/**
- * Servlet implementation class AddBookServlet
- */
 @WebServlet("/admin/books/add")
-@MultipartConfig(maxFileSize = 50 * 1024 * 1024, maxRequestSize = 55 * 1024 * 1024)
+@MultipartConfig(
+    maxFileSize = 50 * 1024 * 1024,
+    maxRequestSize = 55 * 1024 * 1024
+)
 public class AddBookServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
 
-	private BookService bookService;
-	private StorageService storageService;
-	private CategoryService categoryService;
+    private static final long serialVersionUID = 1L;
 
-	public AddBookServlet() {
-		super();
-		this.bookService = new BookServiceImpl();
-		this.storageService = new S3StorageServiceImpl();
-		this.categoryService = new CategoryServiceImpl();
-	}
+    private BookService bookService;
+    private StorageService storageService;
+    private CategoryService categoryService;
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
+    public AddBookServlet() {
+        super();
 
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-			List<Category> categories = categoryService.getAllCategories();
-			request.setAttribute("categories", categories);
-		request.getRequestDispatcher("/WEB-INF/admin/addBook.jsp").forward(request, response);
-	}
+        bookService = new BookServiceImpl();
+        storageService = new S3StorageServiceImpl();
+        categoryService = new CategoryServiceImpl();
+    }
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    @Override
+    protected void doGet(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
 
-		System.out.println("ADD BOOK POST RECEIVED");
+        List<Category> categories =
+                categoryService.getAllCategories();
 
-		String title = request.getParameter("title");
-		String author = request.getParameter("author");
-		String description = request.getParameter("description");
-		String categoryIdParam = request.getParameter("categoryId");
-		String publishedAtParam = request.getParameter("publishedAt");
+        request.setAttribute(
+                "categories",
+                categories
+        );
 
-		Part coverPart = request.getPart("cover");
-		Part pdfPart = request.getPart("pdf");
+        request.getRequestDispatcher(
+                "/WEB-INF/admin/addBook.jsp"
+        ).forward(request, response);
+    }
 
-		if (title == null || title.isBlank() || author == null || author.isBlank() || categoryIdParam == null
-				|| categoryIdParam.isBlank() || coverPart == null || coverPart.getSize() == 0 || pdfPart == null
-				|| pdfPart.getSize() == 0) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Required book information is meissing.");
-			return;
-		}
+    @Override
+    protected void doPost(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
 
-		Long categoryId;
+        System.out.println("ADD BOOK POST RECEIVED");
 
-		try {
-			categoryId = Long.parseLong(categoryIdParam);
-		} catch (NumberFormatException e) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid category ID.");
-			return;
-		}
+        /*
+         * ============================================
+         * GET FORM DATA
+         * ============================================
+         */
 
-		LocalDate publishedAt = null;
-		if (publishedAtParam != null && !publishedAtParam.isBlank()) {
-			try {
-				publishedAt = LocalDate.parse(publishedAtParam);
-			} catch (Exception e) {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid published date.");
-				return;
-			}
-		}
+        String title =
+                request.getParameter("title");
 
-		String coverFileName = getFileName(coverPart);
-		String pdfFileName = getFileName(pdfPart);
+        String author =
+                request.getParameter("author");
 
-		String coverStorageKey = null;
-		String pdfStorageKey = null;
+        String description =
+                request.getParameter("description");
 
-		try {
-			System.out.println("Uploading cover: " + coverFileName);
-//			UPLOAD COVER TO S3
-			try (var inputStream = coverPart.getInputStream()) {
-				coverStorageKey = storageService.uploadCover(inputStream, coverFileName, coverPart.getSize());
-			}
-			System.out.println("Cover uploaded: " + coverStorageKey);
-//			UPLOAD PDF TO S3
-			System.out.println("Uploading PDF: " + pdfFileName);
+        String categoryIdParam =
+                request.getParameter("categoryId");
 
-			try (var inputStream = pdfPart.getInputStream()) {
-				pdfStorageKey = storageService.uploadPdf(inputStream, pdfFileName, pdfPart.getSize());
+        String publishedAtParam =
+                request.getParameter("publishedAt");
 
-			}
-			System.out.println("PDF uploaded: " + pdfStorageKey);
 
-//			CREATE BOOK OBJECT
-			Book book = new Book();
-			book.setTitle(title.trim());
-			book.setAuthor(author.trim());
-			book.setDescription(description == null ? null : description.trim());
-			book.setCategoryId(categoryId);
-			book.setPublishedAt(publishedAt);
-			book.setCoverStorageKey(coverStorageKey);
-			book.setPdfStorageKey(pdfStorageKey);
-			book.setViews(0L);
+        /*
+         * ============================================
+         * GET UPLOADED FILES
+         * ============================================
+         */
 
-//				SAVE BOOK METADATA TO MYSQL
-			boolean saved = bookService.addBook(book);
+        Part coverPart =
+                request.getPart("cover");
 
-			if (!saved) {
-//					DATABASE SAVE FAILED , SO REMOVE UPLODED FILES
-				storageService.deleteFile(coverStorageKey);
-				storageService.deleteFile(pdfStorageKey);
+        Part pdfPart =
+                request.getPart("pdf");
 
-				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "FAILED TO SAVE BOOK.");
-				return;
-			}
 
-			response.sendRedirect(request.getContextPath() + "/books");
+        /*
+         * ============================================
+         * REQUIRED FIELD VALIDATION
+         * ============================================
+         */
 
-		} catch (Exception e) {
-			// If something fails after uploading,
-			// clean up files already uploaded to S3.
-			if (coverStorageKey != null) {
-				storageService.deleteFile(coverStorageKey);
-			}
+        if (title == null || title.isBlank()) {
 
-			if (pdfStorageKey != null) {
-				storageService.deleteFile(pdfStorageKey);
-			}
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Book title is required."
+            );
 
-			throw new ServletException("Failed to add book.", e);
-		}
-	}
+            return;
+        }
 
-	private String getFileName(Part part) {
+        if (author == null || author.isBlank()) {
 
-		String contentDisposition = part.getHeader("content-disposition");
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Book author is required."
+            );
 
-		if (contentDisposition == null) {
-			return "file";
-		}
+            return;
+        }
 
-		for (String item : contentDisposition.split(";")) {
+        if (categoryIdParam == null ||
+                categoryIdParam.isBlank()) {
 
-			if (item.trim().startsWith("filename")) {
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Category is required."
+            );
 
-				String fileName = item.substring(item.indexOf('=') + 1).trim().replace("\"", "");
+            return;
+        }
 
-				int lastSlash = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
+        if (coverPart == null ||
+                coverPart.getSize() == 0) {
 
-				if (lastSlash >= 0) {
-					fileName = fileName.substring(lastSlash + 1);
-				}
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Book cover is required."
+            );
 
-				return fileName;
-				
-				
-			}
-		}
+            return;
+        }
 
-		return "file";
+        if (pdfPart == null ||
+                pdfPart.getSize() == 0) {
 
-	}
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "PDF file is required."
+            );
+
+            return;
+        }
+
+
+        /*
+         * ============================================
+         * PARSE CATEGORY ID
+         * ============================================
+         */
+
+        Long categoryId;
+
+        try {
+
+            categoryId =
+                    Long.parseLong(categoryIdParam);
+
+        } catch (NumberFormatException e) {
+
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid category ID."
+            );
+
+            return;
+        }
+
+
+        /*
+         * Category IDs must be positive.
+         */
+
+        if (categoryId <= 0) {
+
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid category ID."
+            );
+
+            return;
+        }
+
+
+        /*
+         * ============================================
+         * VERIFY CATEGORY EXISTS
+         * ============================================
+         *
+         * We do this BEFORE uploading anything to S3.
+         */
+
+        boolean categoryExists = false;
+
+        List<Category> categories =
+                categoryService.getAllCategories();
+
+        for (Category category : categories) {
+
+            if (category.getCategoryId() == categoryId) {
+
+                categoryExists = true;
+
+                break;
+            }
+        }
+
+        if (!categoryExists) {
+
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Selected category does not exist."
+            );
+
+            return;
+        }
+
+
+        /*
+         * ============================================
+         * PUBLISHED DATE VALIDATION
+         * ============================================
+         */
+
+        LocalDate publishedAt = null;
+
+        if (publishedAtParam != null &&
+                !publishedAtParam.isBlank()) {
+
+            try {
+
+                publishedAt =
+                        LocalDate.parse(publishedAtParam);
+
+            } catch (Exception e) {
+
+                response.sendError(
+                        HttpServletResponse.SC_BAD_REQUEST,
+                        "Invalid published date."
+                );
+
+                return;
+            }
+        }
+
+
+        /*
+         * ============================================
+         * GET FILE NAMES
+         * ============================================
+         */
+
+        String coverFileName =
+                getFileName(coverPart);
+
+        String pdfFileName =
+                getFileName(pdfPart);
+
+
+        /*
+         * ============================================
+         * FILE NAME VALIDATION
+         * ============================================
+         */
+
+        if (coverFileName == null ||
+                coverFileName.isBlank()) {
+
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid cover file."
+            );
+
+            return;
+        }
+
+        if (pdfFileName == null ||
+                pdfFileName.isBlank()) {
+
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid PDF file."
+            );
+
+            return;
+        }
+
+
+        /*
+         * ============================================
+         * PDF FILE TYPE VALIDATION
+         * ============================================
+         */
+
+        if (!isPdfFile(pdfFileName)) {
+
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Only PDF files are allowed."
+            );
+
+            return;
+        }
+
+
+        /*
+         * ============================================
+         * COVER FILE TYPE VALIDATION
+         * ============================================
+         */
+
+        if (!isValidCoverFile(coverFileName)) {
+
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Only JPG, JPEG, PNG and WEBP cover images are allowed."
+            );
+
+            return;
+        }
+
+
+        /*
+         * ============================================
+         * FILE SIZE VALIDATION
+         * ============================================
+         *
+         * @MultipartConfig already limits the request,
+         * but we also explicitly validate the files here.
+         */
+
+        long maxFileSize =
+                50L * 1024 * 1024;
+
+
+        if (coverPart.getSize() > maxFileSize) {
+
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "Cover file is too large. Maximum size is 50 MB."
+            );
+
+            return;
+        }
+
+
+        if (pdfPart.getSize() > maxFileSize) {
+
+            response.sendError(
+                    HttpServletResponse.SC_BAD_REQUEST,
+                    "PDF file is too large. Maximum size is 50 MB."
+            );
+
+            return;
+        }
+
+
+        /*
+         * ============================================
+         * STORAGE KEYS
+         * ============================================
+         */
+
+        String coverStorageKey = null;
+
+        String pdfStorageKey = null;
+
+
+        try {
+
+            /*
+             * ========================================
+             * UPLOAD COVER TO S3
+             * ========================================
+             */
+
+            System.out.println(
+                    "Uploading cover: " +
+                    coverFileName
+            );
+
+            try (var inputStream =
+                    coverPart.getInputStream()) {
+
+                coverStorageKey =
+                        storageService.uploadCover(
+                                inputStream,
+                                coverFileName,
+                                coverPart.getSize()
+                        );
+            }
+
+            System.out.println(
+                    "Cover uploaded: " +
+                    coverStorageKey
+            );
+
+
+            /*
+             * ========================================
+             * UPLOAD PDF TO S3
+             * ========================================
+             */
+
+            System.out.println(
+                    "Uploading PDF: " +
+                    pdfFileName
+            );
+
+            try (var inputStream =
+                    pdfPart.getInputStream()) {
+
+                pdfStorageKey =
+                        storageService.uploadPdf(
+                                inputStream,
+                                pdfFileName,
+                                pdfPart.getSize()
+                        );
+            }
+
+            System.out.println(
+                    "PDF uploaded: " +
+                    pdfStorageKey
+            );
+
+
+            /*
+             * ========================================
+             * CREATE BOOK OBJECT
+             * ========================================
+             */
+
+            Book book = new Book();
+
+            book.setTitle(
+                    title.trim()
+            );
+
+            book.setAuthor(
+                    author.trim()
+            );
+
+            book.setDescription(
+                    description == null
+                            ? null
+                            : description.trim()
+            );
+
+            book.setCategoryId(
+                    categoryId
+            );
+
+            book.setPublishedAt(
+                    publishedAt
+            );
+
+            book.setCoverStorageKey(
+                    coverStorageKey
+            );
+
+            book.setPdfStorageKey(
+                    pdfStorageKey
+            );
+
+            book.setViews(0L);
+
+
+            /*
+             * ========================================
+             * SAVE BOOK TO MYSQL
+             * ========================================
+             */
+
+            boolean saved =
+                    bookService.addBook(book);
+
+
+            /*
+             * ========================================
+             * DATABASE SAVE FAILED
+             * ========================================
+             *
+             * Remove files already uploaded to S3.
+             */
+
+            if (!saved) {
+
+                if (coverStorageKey != null) {
+
+                    storageService.deleteFile(
+                            coverStorageKey
+                    );
+                }
+
+                if (pdfStorageKey != null) {
+
+                    storageService.deleteFile(
+                            pdfStorageKey
+                    );
+                }
+
+                response.sendError(
+                        HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                        "Failed to save book."
+                );
+
+                return;
+            }
+
+
+            /*
+             * ========================================
+             * SUCCESS
+             * ========================================
+             */
+
+            response.sendRedirect(
+                    request.getContextPath() +
+                    "/books"
+            );
+
+        } catch (Exception e) {
+
+            /*
+             * ========================================
+             * S3 CLEANUP
+             * ========================================
+             *
+             * If anything fails after an upload,
+             * remove the uploaded files.
+             */
+
+            if (coverStorageKey != null) {
+
+                storageService.deleteFile(
+                        coverStorageKey
+                );
+            }
+
+            if (pdfStorageKey != null) {
+
+                storageService.deleteFile(
+                        pdfStorageKey
+                );
+            }
+
+            throw new ServletException(
+                    "Failed to add book.",
+                    e
+            );
+        }
+    }
+
+
+    /*
+     * ============================================
+     * CHECK PDF EXTENSION
+     * ============================================
+     */
+
+    private boolean isPdfFile(String fileName) {
+
+        return fileName
+                .toLowerCase()
+                .endsWith(".pdf");
+    }
+
+
+    /*
+     * ============================================
+     * CHECK COVER EXTENSION
+     * ============================================
+     */
+
+    private boolean isValidCoverFile(
+            String fileName) {
+
+        String lowerCaseFileName =
+                fileName.toLowerCase();
+
+        return lowerCaseFileName.endsWith(".jpg")
+                || lowerCaseFileName.endsWith(".jpeg")
+                || lowerCaseFileName.endsWith(".png")
+                || lowerCaseFileName.endsWith(".webp");
+    }
+
+
+    /*
+     * ============================================
+     * EXTRACT FILE NAME
+     * ============================================
+     */
+
+    private String getFileName(Part part) {
+
+        String contentDisposition =
+                part.getHeader("content-disposition");
+
+        if (contentDisposition == null) {
+
+            return "file";
+        }
+
+        for (String item :
+                contentDisposition.split(";")) {
+
+            if (item.trim()
+                    .startsWith("filename")) {
+
+                String fileName =
+                        item.substring(
+                                item.indexOf('=') + 1
+                        )
+                        .trim()
+                        .replace("\"", "");
+
+
+                /*
+                 * Remove directory information.
+                 */
+
+                int lastSlash =
+                        Math.max(
+                                fileName.lastIndexOf('/'),
+                                fileName.lastIndexOf('\\')
+                        );
+
+
+                if (lastSlash >= 0) {
+
+                    fileName =
+                            fileName.substring(
+                                    lastSlash + 1
+                            );
+                }
+
+                return fileName;
+            }
+        }
+
+        return "file";
+    }
 }
