@@ -136,65 +136,87 @@ public class BookDaoImpl implements BookDao {
 
 	@Override
 	public List<Book> search(String keyword, int offset, int limit) {
-		String sql = """
-				SELECT book_id, title, author, description, category_id,
-				       published_at, cover_storage_key, pdf_storage_key,
-				       views, created_at, updated_at
-				FROM books
-				WHERE title LIKE ?
-				   OR author LIKE ?
-				ORDER BY created_at DESC
-				LIMIT ? OFFSET ?
-				""";
-		List<Book> books = new ArrayList<>();
-		String searchKeyword = "%" + keyword + "%";
 
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(sql)) {
-			statement.setString(1, searchKeyword);
-			statement.setString(2, searchKeyword);
-			statement.setInt(3, limit);
-			statement.setInt(4, offset);
+	    String sql = """
+	            SELECT b.book_id, b.title, b.author, b.description,
+	                   b.category_id, b.published_at,
+	                   b.cover_storage_key, b.pdf_storage_key,
+	                   b.views, b.created_at, b.updated_at
+	            FROM books b
+	            JOIN category c
+	                ON b.category_id = c.category_id
+	            WHERE b.title LIKE ?
+	               OR b.author LIKE ?
+	               OR c.category_name LIKE ?
+	            ORDER BY b.created_at DESC
+	            LIMIT ? OFFSET ?
+	            """;
 
-			try (ResultSet resultSet = statement.executeQuery()) {
-				while (resultSet.next()) {
-					books.add(mapBook(resultSet));
-				}
-			}
+	    List<Book> books = new ArrayList<>();
 
-			return books;
-		} catch (SQLException e) {
-			throw new RuntimeException("Failed to search books.", e);
-		}
+	    String searchKeyword = "%" + keyword + "%";
+
+	    try (Connection connection = DatabaseConnection.getConnection();
+	            PreparedStatement statement =
+	                    connection.prepareStatement(sql)) {
+
+	        statement.setString(1, searchKeyword);
+	        statement.setString(2, searchKeyword);
+	        statement.setString(3, searchKeyword);
+	        statement.setInt(4, limit);
+	        statement.setInt(5, offset);
+
+	        try (ResultSet resultSet = statement.executeQuery()) {
+
+	            while (resultSet.next()) {
+	                books.add(mapBook(resultSet));
+	            }
+	        }
+
+	        return books;
+
+	    } catch (SQLException e) {
+	        throw new RuntimeException("Failed to search books.", e);
+	    }
 	}
 
 	@Override
 	public int countSearch(String keyword) {
-		String sql = """
-				SELECT COUNT(*)
-				FROM books
-				WHERE title LIKE ? OR author LIKE ?
-				""";
 
-		String searchKeyword = "%" + keyword + "%";
+	    String sql = """
+	            SELECT COUNT(*)
+	            FROM books b
+	            JOIN category c
+	                ON b.category_id = c.category_id
+	            WHERE b.title LIKE ?
+	               OR b.author LIKE ?
+	               OR c.category_name LIKE ?
+	            """;
 
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(sql)) {
-			statement.setString(1, searchKeyword);
-			statement.setString(2, searchKeyword);
+	    String searchKeyword = "%" + keyword + "%";
 
-			try (ResultSet resultSet = statement.executeQuery()) {
-				if (resultSet.next()) {
-					return resultSet.getInt(1);
-				}
-			}
+	    try (Connection connection = DatabaseConnection.getConnection();
+	            PreparedStatement statement =
+	                    connection.prepareStatement(sql)) {
 
-			return 0;
-		} catch (SQLException e) {
-			throw new RuntimeException("Failed to count search results.", e);
-		}
+	        statement.setString(1, searchKeyword);
+	        statement.setString(2, searchKeyword);
+	        statement.setString(3, searchKeyword);
+
+	        try (ResultSet resultSet = statement.executeQuery()) {
+
+	            if (resultSet.next()) {
+	                return resultSet.getInt(1);
+	            }
+	        }
+
+	        return 0;
+
+	    } catch (SQLException e) {
+	        throw new RuntimeException(
+	                "Failed to count search results.", e);
+	    }
 	}
-
 	@Override
 	public List<Book> findByCategory(Long categoryId, int offset, int limit) {
 
