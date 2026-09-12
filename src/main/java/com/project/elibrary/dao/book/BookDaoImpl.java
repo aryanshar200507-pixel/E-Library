@@ -137,133 +137,199 @@ public class BookDaoImpl implements BookDao {
 	@Override
 	public List<Book> search(String keyword, int offset, int limit) {
 
-	    String sql = """
-	            SELECT b.book_id, b.title, b.author, b.description,
-	                   b.category_id, b.published_at,
-	                   b.cover_storage_key, b.pdf_storage_key,
-	                   b.views, b.created_at, b.updated_at
-	            FROM books b
-	            JOIN category c
-	                ON b.category_id = c.category_id
-	            WHERE b.title LIKE ?
-	               OR b.author LIKE ?
-	               OR c.category_name LIKE ?
-	            ORDER BY b.created_at DESC
-	            LIMIT ? OFFSET ?
-	            """;
-
-	    List<Book> books = new ArrayList<>();
-
-	    String searchKeyword = "%" + keyword + "%";
-
-	    try (Connection connection = DatabaseConnection.getConnection();
-	            PreparedStatement statement =
-	                    connection.prepareStatement(sql)) {
-
-	        statement.setString(1, searchKeyword);
-	        statement.setString(2, searchKeyword);
-	        statement.setString(3, searchKeyword);
-	        statement.setInt(4, limit);
-	        statement.setInt(5, offset);
-
-	        try (ResultSet resultSet = statement.executeQuery()) {
-
-	            while (resultSet.next()) {
-	                books.add(mapBook(resultSet));
-	            }
-	        }
-
-	        return books;
-
-	    } catch (SQLException e) {
-	        throw new RuntimeException("Failed to search books.", e);
-	    }
-	}
-
-	@Override
-	public int countSearch(String keyword) {
-
-	    String sql = """
-	            SELECT COUNT(*)
-	            FROM books b
-	            JOIN category c
-	                ON b.category_id = c.category_id
-	            WHERE b.title LIKE ?
-	               OR b.author LIKE ?
-	               OR c.category_name LIKE ?
-	            """;
-
-	    String searchKeyword = "%" + keyword + "%";
-
-	    try (Connection connection = DatabaseConnection.getConnection();
-	            PreparedStatement statement =
-	                    connection.prepareStatement(sql)) {
-
-	        statement.setString(1, searchKeyword);
-	        statement.setString(2, searchKeyword);
-	        statement.setString(3, searchKeyword);
-
-	        try (ResultSet resultSet = statement.executeQuery()) {
-
-	            if (resultSet.next()) {
-	                return resultSet.getInt(1);
-	            }
-	        }
-
-	        return 0;
-
-	    } catch (SQLException e) {
-	        throw new RuntimeException(
-	                "Failed to count search results.", e);
-	    }
-	}
-	@Override
-	public List<Book> findByCategory(Long categoryId, int offset, int limit) {
-
 		String sql = """
-				SELECT book_id, title, author, description, category_id,
-				       published_at, cover_storage_key, pdf_storage_key,
-				       views, created_at, updated_at
-				FROM books
-				WHERE category_id = ?
-				ORDER BY created_at DESC
+				SELECT b.book_id, b.title, b.author, b.description,
+				       b.category_id, b.published_at,
+				       b.cover_storage_key, b.pdf_storage_key,
+				       b.views, b.created_at, b.updated_at
+				FROM books b
+				JOIN category c
+				    ON b.category_id = c.category_id
+				WHERE b.title LIKE ?
+				   OR b.author LIKE ?
+				   OR c.category_name LIKE ?
+				ORDER BY b.created_at DESC
 				LIMIT ? OFFSET ?
 				""";
+
 		List<Book> books = new ArrayList<>();
+
+		String searchKeyword = "%" + keyword + "%";
+
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement statement = connection.prepareStatement(sql)) {
-			statement.setLong(1, categoryId);
-			statement.setInt(2, limit);
-			statement.setInt(3, offset);
+
+			statement.setString(1, searchKeyword);
+			statement.setString(2, searchKeyword);
+			statement.setString(3, searchKeyword);
+			statement.setInt(4, limit);
+			statement.setInt(5, offset);
 
 			try (ResultSet resultSet = statement.executeQuery()) {
+
 				while (resultSet.next()) {
 					books.add(mapBook(resultSet));
 				}
 			}
 
 			return books;
+
 		} catch (SQLException e) {
-			throw new RuntimeException("Failed to find books by category.", e);
+			throw new RuntimeException("Failed to search books.", e);
 		}
 	}
 
 	@Override
-	public int countByCategory(Long categoryId) {
-		String sql = "SELECT COUNT(*) FROM books WHERE category_id = ?";
+	public int countSearch(String keyword) {
+
+		String sql = """
+				SELECT COUNT(*)
+				FROM books b
+				JOIN category c
+				    ON b.category_id = c.category_id
+				WHERE b.title LIKE ?
+				   OR b.author LIKE ?
+				   OR c.category_name LIKE ?
+				""";
+
+		String searchKeyword = "%" + keyword + "%";
 
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement statement = connection.prepareStatement(sql)) {
-			statement.setLong(1, categoryId);
+
+			statement.setString(1, searchKeyword);
+			statement.setString(2, searchKeyword);
+			statement.setString(3, searchKeyword);
 
 			try (ResultSet resultSet = statement.executeQuery()) {
+
 				if (resultSet.next()) {
 					return resultSet.getInt(1);
 				}
 			}
 
 			return 0;
+
 		} catch (SQLException e) {
+			throw new RuntimeException("Failed to count search results.", e);
+		}
+	}
+
+	@Override
+	public List<Book> findByCategory(Long categoryId, String keyword, int offset, int limit) {
+
+		String sql = """
+				SELECT b.book_id, b.title, b.author, b.description,
+				       b.category_id, b.published_at,
+				       b.cover_storage_key, b.pdf_storage_key,
+				       b.views, b.created_at, b.updated_at
+				FROM books b
+				JOIN category c
+				    ON b.category_id = c.category_id
+				WHERE b.category_id = ?
+				  AND (
+				       ? IS NULL
+				       OR ? = ''
+				       OR b.title LIKE ?
+				       OR b.author LIKE ?
+				       OR c.category_name LIKE ?
+				  )
+				ORDER BY b.created_at DESC
+				LIMIT ? OFFSET ?
+				""";
+
+		List<Book> books = new ArrayList<>();
+
+		String searchKeyword = keyword == null ? "" : "%" + keyword + "%";
+
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement statement = connection.prepareStatement(sql)) {
+
+			statement.setLong(1, categoryId);
+
+			/*
+			 * Check whether a keyword was provided.
+			 */
+			statement.setString(2, keyword);
+			statement.setString(3, keyword);
+
+			/*
+			 * Search title, author and category name.
+			 */
+			statement.setString(4, searchKeyword);
+			statement.setString(5, searchKeyword);
+			statement.setString(6, searchKeyword);
+
+			/*
+			 * Pagination.
+			 */
+			statement.setInt(7, limit);
+			statement.setInt(8, offset);
+
+			try (ResultSet resultSet = statement.executeQuery()) {
+
+				while (resultSet.next()) {
+					books.add(mapBook(resultSet));
+				}
+			}
+
+			return books;
+
+		} catch (SQLException e) {
+
+			throw new RuntimeException("Failed to find books by category.", e);
+		}
+	}
+
+	@Override
+	public int countByCategory(Long categoryId, String keyword) {
+
+		String sql = """
+				SELECT COUNT(*)
+				FROM books b
+				JOIN category c
+				    ON b.category_id = c.category_id
+				WHERE b.category_id = ?
+				  AND (
+				       ? IS NULL
+				       OR ? = ''
+				       OR b.title LIKE ?
+				       OR b.author LIKE ?
+				       OR c.category_name LIKE ?
+				  )
+				""";
+
+		String searchKeyword = keyword == null ? "" : "%" + keyword + "%";
+
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement statement = connection.prepareStatement(sql)) {
+
+			statement.setLong(1, categoryId);
+
+			/*
+			 * Check whether a keyword was provided.
+			 */
+			statement.setString(2, keyword);
+			statement.setString(3, keyword);
+
+			/*
+			 * Search title, author and category name.
+			 */
+			statement.setString(4, searchKeyword);
+			statement.setString(5, searchKeyword);
+			statement.setString(6, searchKeyword);
+
+			try (ResultSet resultSet = statement.executeQuery()) {
+
+				if (resultSet.next()) {
+					return resultSet.getInt(1);
+				}
+			}
+
+			return 0;
+
+		} catch (SQLException e) {
+
 			throw new RuntimeException("Failed to count books by category.", e);
 		}
 	}

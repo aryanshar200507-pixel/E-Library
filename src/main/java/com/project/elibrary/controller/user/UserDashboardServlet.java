@@ -217,11 +217,12 @@ public class UserDashboardServlet extends HttpServlet {
                 category.getCategoryId();
 
             List<Book> books =
-                bookService.getBookByCategory(
-                    categoryId,
-                    1,
-                    5
-                );
+            	    bookService.getBookByCategory(
+            	        categoryId,
+            	        "",
+            	        1,
+            	        5
+            	    );
 
             categoryBooksMap.put(
                 categoryId,

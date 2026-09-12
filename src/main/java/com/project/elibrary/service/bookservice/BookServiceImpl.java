@@ -66,28 +66,54 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public List<Book> getBookByCategory(Long categoryId, int page, int pageSize) {
-		validatePagination(page, pageSize);
-		if (categoryId == null || categoryId <= 0) {
-			throw new IllegalArgumentException("Invalid category ID.");
-		}
+	public List<Book> getBookByCategory(
+	        Long categoryId,
+	        String keyword,
+	        int page,
+	        int pageSize) {
 
-		int offset = calculateOffset(page, pageSize);
+	    validatePagination(page, pageSize);
 
-		return bookDao.findByCategory(categoryId, offset, pageSize);
+	    if (categoryId == null || categoryId <= 0) {
+	        throw new IllegalArgumentException(
+	                "Invalid category ID.");
+	    }
+
+	    if (keyword == null) {
+	        keyword = "";
+	    }
+
+	    keyword = keyword.trim();
+
+	    int offset = calculateOffset(page, pageSize);
+
+	    return bookDao.findByCategory(
+	            categoryId,
+	            keyword,
+	            offset,
+	            pageSize);
 	}
 
 	@Override
-	public int getTotalBookByCategory(Long categoryId) {
+	public int getTotalBookByCategory(
+	        Long categoryId,
+	        String keyword) {
 
-		if (categoryId == null || categoryId <= 0) {
-			throw new IllegalArgumentException("Invalid category ID.");
-		}
+	    if (categoryId == null || categoryId <= 0) {
+	        throw new IllegalArgumentException(
+	                "Invalid category ID.");
+	    }
 
-		return bookDao.countByCategory(categoryId);
+	    if (keyword == null) {
+	        keyword = "";
+	    }
 
+	    keyword = keyword.trim();
+
+	    return bookDao.countByCategory(
+	            categoryId,
+	            keyword);
 	}
-
 	@Override
 	public boolean updateBook(Book book) {
 		if (book == null) {

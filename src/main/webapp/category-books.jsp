@@ -2,11 +2,8 @@
 	pageEncoding="UTF-8"%>
 
 <%@ page import="java.util.List"%>
-
 <%@ page import="java.util.Map"%>
-
 <%@ page import="com.project.elibrary.bean.book.Book"%>
-
 <%@ page import="com.project.elibrary.bean.category.Category"%>
 
 
@@ -22,6 +19,7 @@
 
 
 <style>
+
 body {
 	font-family: Arial, sans-serif;
 	margin: 0;
@@ -29,7 +27,9 @@ body {
 	background: #f5f5f5;
 }
 
+
 /* ================= HEADER ================= */
+
 header {
 	padding: 20px;
 	background: white;
@@ -45,7 +45,9 @@ header a {
 	text-decoration: none;
 }
 
+
 /* ================= CONTAINER ================= */
+
 .container {
 	max-width: 1100px;
 	margin: 30px auto;
@@ -53,7 +55,39 @@ header a {
 	background: white;
 }
 
+
+/* ================= CATEGORY SEARCH ================= */
+
+.category-search {
+	display: flex;
+	gap: 10px;
+	margin: 20px 0 10px 0;
+}
+
+.category-search input[type="text"] {
+	flex: 1;
+	padding: 10px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+}
+
+.category-search button {
+	padding: 10px 18px;
+	border: 1px solid #333;
+	background: white;
+	cursor: pointer;
+}
+
+.category-search a {
+	display: inline-block;
+	padding: 10px 18px;
+	border: 1px solid #ccc;
+	text-decoration: none;
+}
+
+
 /* ================= BOOK ================= */
+
 .book {
 	display: flex;
 	gap: 25px;
@@ -61,7 +95,9 @@ header a {
 	border-bottom: 1px solid #ddd;
 }
 
+
 /* ================= COVER ================= */
+
 .book-cover-container {
 	width: 160px;
 	flex-shrink: 0;
@@ -74,7 +110,9 @@ header a {
 	border: 1px solid #ccc;
 }
 
+
 /* ================= BOOK INFORMATION ================= */
+
 .book-information {
 	flex: 1;
 }
@@ -88,13 +126,17 @@ header a {
 	margin-bottom: 8px;
 }
 
+
 /* ================= DESCRIPTION ================= */
+
 .description {
 	margin-top: 10px;
 	line-height: 1.5;
 }
 
+
 /* ================= READ MORE ================= */
+
 .read-more {
 	display: inline-block;
 	margin-top: 15px;
@@ -103,7 +145,9 @@ header a {
 	border: 1px solid #333;
 }
 
+
 /* ================= PAGINATION ================= */
+
 .pagination {
 	margin-top: 30px;
 	text-align: center;
@@ -124,19 +168,30 @@ header a {
 	background: #ddd;
 }
 
+
 /* ================= RESPONSIVE ================= */
-@media ( max-width : 700px) {
+
+@media (max-width: 700px) {
+
 	.book {
 		flex-direction: column;
 	}
+
 	.book-cover-container {
 		width: 100%;
 	}
+
 	.book-cover {
 		display: block;
 		margin: auto;
 	}
+
+	.category-search {
+		flex-direction: column;
+	}
+
 }
+
 </style>
 
 </head>
@@ -145,189 +200,365 @@ header a {
 <body>
 
 
+<%
+
+/*
+ * ============================================
+ * GET DATA FROM SERVLET
+ * ============================================
+ */
+
+
+/*
+ * Selected category.
+ */
+
+Category category =
+		(Category) request.getAttribute("category");
+
+
+/*
+ * Books belonging to this category.
+ */
+
+List<Book> books =
+		(List<Book>) request.getAttribute("books");
+
+
+/*
+ * Cover URL map.
+ */
+
+Map<Long, String> coverUrlMap =
+		(Map<Long, String>) request.getAttribute("coverUrlMap");
+
+
+/*
+ * Average rating map.
+ */
+
+Map<Long, Double> averageRatingMap =
+		(Map<Long, Double>) request.getAttribute("averageRatingMap");
+
+
+/*
+ * Rating count map.
+ */
+
+Map<Long, Integer> ratingCountMap =
+		(Map<Long, Integer>) request.getAttribute("ratingCountMap");
+
+
+/*
+ * Pagination.
+ */
+
+Integer currentPage =
+		(Integer) request.getAttribute("currentPage");
+
+Integer totalPages =
+		(Integer) request.getAttribute("totalPages");
+
+
+/*
+ * Search keyword.
+ */
+
+String keyword =
+		(String) request.getAttribute("keyword");
+
+if (keyword == null) {
+
+	keyword = "";
+
+}
+
+%>
+
+
+<!-- ================= HEADER ================= -->
+
+<header>
+
+	<h1>E-Library</h1>
+
+
+	<!-- Back to categories -->
+
+	<a href="${pageContext.request.contextPath}/books">
+		Categories
+	</a>
+
+</header>
+
+
+<!-- ================= CONTENT ================= -->
+
+<div class="container">
+
+
+	<h1>
+
+		<%=category.getCategoryName()%>
+
+	</h1>
+
+
+	<!-- ================= CATEGORY SEARCH ================= -->
+
+	<form method="get"
+		  action="${pageContext.request.contextPath}/books/category"
+		  class="category-search">
+
+
+		<!-- Preserve category -->
+
+		<input type="hidden"
+			   name="id"
+			   value="<%=category.getCategoryId()%>">
+
+
+		<!-- Search keyword -->
+
+		<input type="text"
+			   name="keyword"
+			   value="<%=keyword%>"
+			   placeholder="Search books in this category...">
+
+
+		<button type="submit">
+			Search
+		</button>
+
+
+		<!-- Clear search -->
+
+		<%
+
+		if (!keyword.isBlank()) {
+
+		%>
+
+			<a href="${pageContext.request.contextPath}/books/category?id=<%=category.getCategoryId()%>">
+				Clear
+			</a>
+
+		<%
+
+		}
+
+		%>
+
+
+	</form>
+
+
 	<%
-	/*
-	 * Get the selected category.
-	 */
-
-	Category category = (Category) request.getAttribute("category");
 
 	/*
-	 * Get books belonging to this category.
+	 * ============================================
+	 * DISPLAY BOOKS
+	 * ============================================
 	 */
 
-	List<Book> books = (List<Book>) request.getAttribute("books");
+	if (books == null || books.isEmpty()) {
 
-	/*
-	 * Maps prepared by CategoryBooksServlet.
-	 */
-
-	Map<Long, String> coverUrlMap = (Map<Long, String>) request.getAttribute("coverUrlMap");
-
-	Map<Long, Double> averageRatingMap = (Map<Long, Double>) request.getAttribute("averageRatingMap");
-
-	Map<Long, Integer> ratingCountMap = (Map<Long, Integer>) request.getAttribute("ratingCountMap");
-
-	/*
-	 * Pagination.
-	 */
-
-	Integer currentPage = (Integer) request.getAttribute("currentPage");
-
-	Integer totalPages = (Integer) request.getAttribute("totalPages");
 	%>
 
 
-	<!-- ================= HEADER ================= -->
-
-	<header>
-
-		<h1>E-Library</h1>
-
-
-		<!-- Back to categories -->
-
-		<a href="${pageContext.request.contextPath}/books"> Categories </a>
-
-	</header>
-
-
-	<!-- ================= CONTENT ================= -->
-
-	<div class="container">
-
-
-		<h1>
-
-			<%=category.getCategoryName()%>
-
-		</h1>
-
-
 		<%
-		if (books == null || books.isEmpty()) {
+
+		if (!keyword.isBlank()) {
+
 		%>
 
-		<p>No books available in this category.</p>
+			<p>
+				No books found matching
+				"<%=keyword%>"
+				in this category.
+			</p>
 
 		<%
+
 		} else {
 
-		/*
-		 * Display each book belonging to
-		 * this category.
-		 */
+		%>
 
-		for (Book book : books) {
+			<p>
+				No books available in this category.
+			</p>
+
+		<%
+
+		}
+
 		%>
 
 
-		<!-- ================= BOOK ================= -->
+	<%
 
-		<div class="book">
+	} else {
 
 
-			<!-- ================= COVER ================= -->
+	/*
+	 * Display each book.
+	 */
 
-			<div class="book-cover-container">
+	for (Book book : books) {
 
-				<%
-				String coverUrl = coverUrlMap.get(book.getBookId());
+	%>
 
-				if (coverUrl != null && !coverUrl.isBlank()) {
-				%>
 
-				<img class="book-cover" src="<%=coverUrl%>"
+	<!-- ================= BOOK ================= -->
+
+	<div class="book">
+
+
+		<!-- ================= COVER ================= -->
+
+		<div class="book-cover-container">
+
+
+			<%
+
+			String coverUrl =
+					coverUrlMap.get(book.getBookId());
+
+
+			if (coverUrl != null && !coverUrl.isBlank()) {
+
+			%>
+
+
+				<img
+					class="book-cover"
+					src="<%=coverUrl%>"
 					alt="<%=book.getTitle()%> cover">
 
-				<%
-				} else {
-				%>
 
-				<p>No cover available.</p>
+			<%
 
-				<%
-				}
-				%>
+			} else {
+
+			%>
+
+
+				<p>
+					No cover available.
+				</p>
+
+
+			<%
+
+			}
+
+			%>
+
+
+		</div>
+
+
+		<!-- ================= BOOK INFORMATION ================= -->
+
+		<div class="book-information">
+
+
+			<!-- TITLE -->
+
+			<h2>
+
+				<%=book.getTitle()%>
+
+			</h2>
+
+
+			<!-- AUTHOR -->
+
+			<div class="book-info">
+
+				<strong>Author:</strong>
+
+				<%=book.getAuthor()%>
 
 			</div>
 
 
-			<!-- ================= BOOK INFORMATION ================= -->
+			<!-- RATING -->
 
-			<div class="book-information">
+			<div class="book-info">
 
-
-				<!-- TITLE -->
-
-				<h2>
-
-					<%=book.getTitle()%>
-
-				</h2>
+				<strong>Rating:</strong>
 
 
-				<!-- AUTHOR -->
+				<%
 
-				<div class="book-info">
+				Double averageRating =
+						averageRatingMap.get(book.getBookId());
 
-					<strong>Author:</strong>
-
-					<%=book.getAuthor()%>
-
-				</div>
+				Integer ratingCount =
+						ratingCountMap.get(book.getBookId());
 
 
-				<!-- RATING -->
+				if (ratingCount != null && ratingCount > 0) {
 
-				<div class="book-info">
+				%>
 
-					<strong>Rating:</strong>
-
-
-					<%
-					Double averageRating = averageRatingMap.get(book.getBookId());
-
-					Integer ratingCount = ratingCountMap.get(book.getBookId());
-
-					if (ratingCount != null && ratingCount > 0) {
-					%>
 
 					⭐
-					<%=String.format("%.1f", averageRating)%>
-					/ 5 (<%=ratingCount%>
-					ratings)
 
-					<%
-					} else {
-					%>
+					<%=String.format("%.1f", averageRating)%>
+
+					/ 5
+
+					(<%=ratingCount%> ratings)
+
+
+				<%
+
+				} else {
+
+				%>
+
 
 					No ratings yet
 
-					<%
-					}
-					%>
 
-				</div>
+				<%
 
+				}
 
-				<!-- DESCRIPTION -->
-
-				<div class="description">
-
-					<strong>Description:</strong>
+				%>
 
 
-					<%
-					String description = book.getDescription();
+			</div>
 
-					if (description == null || description.isBlank()) {
-					%>
+
+			<!-- DESCRIPTION -->
+
+			<div class="description">
+
+				<strong>Description:</strong>
+
+
+				<%
+
+				String description =
+						book.getDescription();
+
+
+				if (description == null ||
+						description.isBlank()) {
+
+				%>
+
 
 					No description available.
 
-					<%
-					} else {
+
+				<%
+
+				} else {
+
 
 					/*
 					 * Only show a short description
@@ -336,120 +567,171 @@ header a {
 
 					if (description.length() > 250) {
 
-						description = description.substring(0, 250) + "...";
+						description =
+								description.substring(0, 250) + "...";
 
 					}
-					%>
+
+				%>
+
 
 					<%=description%>
 
-					<%
-					}
-					%>
 
-				</div>
+				<%
 
+				}
 
-				<!-- ================= READ MORE ================= -->
-
-				<a class="read-more"
-					href="${pageContext.request.contextPath}/books/details?id=<%=book.getBookId()%>">
-
-					Read More </a>
+				%>
 
 
 			</div>
 
 
-		</div>
-
-
-		<%
-		}
-
-		}
-		%>
-
-
-		<!-- ================= PAGINATION ================= -->
-
-		<%
-		if (totalPages != null && totalPages >= 1) {
-		%>
-
-		<div class="pagination">
-
-
-			<!-- PREVIOUS -->
-
-			<%
-			if (currentPage > 1) {
-			%>
+			<!-- ================= READ MORE ================= -->
 
 			<a
-				href="${pageContext.request.contextPath}/books/category?id=<%=category.getCategoryId()%>&page=<%=currentPage - 1%>">
+				class="read-more"
+				href="${pageContext.request.contextPath}/books/details?id=<%=book.getBookId()%>">
 
-				Previous </a>
-
-			<%
-			}
-			%>
-
-
-			<!-- PAGE NUMBERS -->
-
-			<%
-			for (int pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
-
-				if (pageNumber == currentPage) {
-			%>
-
-			<span class="current"> <%=pageNumber%>
-
-			</span>
-
-			<%
-			} else {
-			%>
-
-			<a
-				href="${pageContext.request.contextPath}/books/category?id=<%=category.getCategoryId()%>&page=<%=pageNumber%>">
-
-				<%=pageNumber%>
+				Read More
 
 			</a>
 
-			<%
-			}
-
-			}
-			%>
-
-
-			<!-- NEXT -->
-
-			<%
-			if (currentPage < totalPages) {
-			%>
-
-			<a
-				href="${pageContext.request.contextPath}/books/category?id=<%=category.getCategoryId()%>&page=<%=currentPage + 1%>">
-
-				Next </a>
-
-			<%
-			}
-			%>
-
 
 		</div>
 
+
+	</div>
+
+
+	<%
+
+	}
+
+	}
+
+	%>
+
+
+	<!-- ================= PAGINATION ================= -->
+
+	<%
+
+	if (totalPages != null && totalPages >= 1) {
+
+	%>
+
+
+	<div class="pagination">
+
+
+		<!-- ================= PREVIOUS ================= -->
+
 		<%
+
+		if (currentPage > 1) {
+
+		%>
+
+
+			<a
+				href="${pageContext.request.contextPath}/books/category?id=<%=category.getCategoryId()%>&keyword=<%=java.net.URLEncoder.encode(keyword, "UTF-8")%>&page=<%=currentPage - 1%>">
+
+				Previous
+
+			</a>
+
+
+		<%
+
 		}
+
+		%>
+
+
+		<!-- ================= PAGE NUMBERS ================= -->
+
+		<%
+
+		for (
+			int pageNumber = 1;
+			pageNumber <= totalPages;
+			pageNumber++
+		) {
+
+
+			if (pageNumber == currentPage) {
+
+		%>
+
+
+				<span class="current">
+
+					<%=pageNumber%>
+
+				</span>
+
+
+		<%
+
+			} else {
+
+		%>
+
+
+				<a
+					href="${pageContext.request.contextPath}/books/category?id=<%=category.getCategoryId()%>&keyword=<%=java.net.URLEncoder.encode(keyword, "UTF-8")%>&page=<%=pageNumber%>">
+
+					<%=pageNumber%>
+
+				</a>
+
+
+		<%
+
+			}
+
+		}
+
+		%>
+
+
+		<!-- ================= NEXT ================= -->
+
+		<%
+
+		if (currentPage < totalPages) {
+
+		%>
+
+
+			<a
+				href="${pageContext.request.contextPath}/books/category?id=<%=category.getCategoryId()%>&keyword=<%=java.net.URLEncoder.encode(keyword, "UTF-8")%>&page=<%=currentPage + 1%>">
+
+				Next
+
+			</a>
+
+
+		<%
+
+		}
+
 		%>
 
 
 	</div>
+
+
+	<%
+
+	}
+
+	%>
+
+
+</div>
 
 
 </body>

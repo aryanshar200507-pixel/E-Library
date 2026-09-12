@@ -120,6 +120,35 @@ public class CategoryBookServlet extends HttpServlet {
 		}
 
 		/*
+		 * ========================================== GET KEYWORD
+		 * ==========================================
+		 *
+		 * Optional keyword used to search inside the selected category.
+		 *
+		 * Example:
+		 *
+		 * /books/category?id=1&keyword=harry
+		 *
+		 * The search checks:
+		 *
+		 * - Book title
+		 * - Book author
+		 * - Category name
+		 *
+		 * Since the category is already fixed by categoryId, the search is restricted
+		 * to books belonging to that category.
+		 */
+
+		String keyword = request.getParameter("keyword");
+
+		if (keyword == null) {
+
+			keyword = "";
+		}
+
+		keyword = keyword.trim();
+
+		/*
 		 * ========================================== PAGINATION
 		 * ==========================================
 		 *
@@ -163,23 +192,24 @@ public class CategoryBookServlet extends HttpServlet {
 		 * ========================================== GET BOOKS FOR THIS CATEGORY
 		 * ==========================================
 		 *
-		 * IMPORTANT:
+		 * The categoryId restricts the results to one category.
 		 *
-		 * This does NOT get all books.
-		 *
-		 * It only gets books whose category_id matches categoryId.
+		 * The keyword further filters those books.
 		 */
 
-		List<Book> books = bookService.getBookByCategory(categoryId, page, pageSize);
+		List<Book> books = bookService.getBookByCategory(categoryId, keyword, page, pageSize);
 
 		/*
 		 * ========================================== TOTAL BOOKS
 		 * ==========================================
 		 *
 		 * Used to calculate total pages.
+		 *
+		 * The count also uses the keyword so pagination remains correct when
+		 * searching.
 		 */
 
-		int totalBooks = bookService.getTotalBookByCategory(categoryId);
+		int totalBooks = bookService.getTotalBookByCategory(categoryId, keyword);
 
 		/*
 		 * Calculate number of pages.
@@ -267,6 +297,12 @@ public class CategoryBookServlet extends HttpServlet {
 		request.setAttribute("currentPage", page);
 
 		request.setAttribute("totalPages", totalPages);
+
+		/*
+		 * Preserve the search keyword for the JSP.
+		 */
+
+		request.setAttribute("keyword", keyword);
 
 		/*
 		 * Open the category books page.

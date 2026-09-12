@@ -17,16 +17,16 @@ public interface BookDao {
 
 	int countSearch(String keyword);
 
-	List<Book> findByCategory(Long categoryId, int offset, int limit);
+	List<Book> findByCategory(Long categoryId, String keyword, int offset, int limit);
 
-	int countByCategory(Long categoryId);
+	int countByCategory(Long categoryId, String keyword);
 
 	boolean update(Book book);
 
 	boolean delete(Long bookId);
-	
+
 	boolean incrementViews(Long bookId);
-	
+
 	Book findHighestRatedBookByCategory(Long categoryId);
 
 }

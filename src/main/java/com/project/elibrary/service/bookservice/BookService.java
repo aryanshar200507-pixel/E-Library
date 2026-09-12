@@ -17,16 +17,16 @@ public interface BookService {
 
 	int getTotalSearchResults(String keyword);
 
-	List<Book> getBookByCategory(Long categoryId, int page, int pageSize);
+	List<Book> getBookByCategory(Long categoryId, String keyword, int page, int pageSize);
 
-	int getTotalBookByCategory(Long categoryId);
+	int getTotalBookByCategory(Long categoryId, String keyword);
 
 	boolean updateBook(Book book);
 
 	boolean deleteBook(Long bookId);
-	
+
 	boolean incrementVIews(Long bookId);
-	
+
 	Book getHighestRatedBookByCategory(Long categoryId);
 
 }
