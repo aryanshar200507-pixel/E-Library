@@ -211,4 +211,153 @@ public class ReadingProgressDaoImpl implements ReadingProgressDao {
 
         return books;
     }
+    
+    @Override
+    public List<Book> findReadingHistory(Long userId, int offset, int limit) {
+
+        List<Book> books = new ArrayList<>();
+
+        String sql = """
+                SELECT b.book_id,
+                       b.title,
+                       b.author,
+                       b.description,
+                       b.category_id,
+                       b.published_at,
+                       b.cover_storage_key,
+                       b.pdf_storage_key,
+                       b.views,
+                       b.created_at,
+                       b.updated_at
+                FROM reading_progress rp
+                JOIN books b
+                    ON rp.book_id = b.book_id
+                WHERE rp.user_id = ?
+                ORDER BY rp.updated_at DESC
+                LIMIT ? OFFSET ?
+                """;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(sql)) {
+
+            statement.setLong(1, userId);
+            statement.setInt(2, limit);
+            statement.setInt(3, offset);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                while (resultSet.next()) {
+
+                    Book book = new Book();
+
+                    book.setBookId(
+                            resultSet.getLong("book_id")
+                    );
+
+                    book.setTitle(
+                            resultSet.getString("title")
+                    );
+
+                    book.setAuthor(
+                            resultSet.getString("author")
+                    );
+
+                    book.setDescription(
+                            resultSet.getString("description")
+                    );
+
+                    book.setCategoryId(
+                            resultSet.getLong("category_id")
+                    );
+
+                    Date publishedDate =
+                            resultSet.getDate("published_at");
+
+                    if (publishedDate != null) {
+                        book.setPublishedAt(
+                                publishedDate.toLocalDate()
+                        );
+                    }
+
+                    book.setCoverStorageKey(
+                            resultSet.getString("cover_storage_key")
+                    );
+
+                    book.setPdfStorageKey(
+                            resultSet.getString("pdf_storage_key")
+                    );
+
+                    book.setViews(
+                            resultSet.getLong("views")
+                    );
+
+                    Timestamp createdTimestamp =
+                            resultSet.getTimestamp("created_at");
+
+                    if (createdTimestamp != null) {
+                        book.setCreatedAt(
+                                createdTimestamp.toLocalDateTime()
+                        );
+                    }
+
+                    Timestamp updatedTimestamp =
+                            resultSet.getTimestamp("updated_at");
+
+                    if (updatedTimestamp != null) {
+                        book.setUpdatedAt(
+                                updatedTimestamp.toLocalDateTime()
+                        );
+                    }
+
+                    books.add(book);
+                }
+            }
+
+        } catch (SQLException e) {
+
+            throw new RuntimeException(
+                    "Failed to find reading history.",
+                    e
+            );
+        }
+
+        return books;
+    }
+
+
+    @Override
+    public int countReadingHistory(Long userId) {
+
+        String sql = """
+                SELECT COUNT(*)
+                FROM reading_progress rp
+                JOIN books b
+                    ON rp.book_id = b.book_id
+                WHERE rp.user_id = ?
+                """;
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement =
+                     connection.prepareStatement(sql)) {
+
+            statement.setLong(1, userId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                if (resultSet.next()) {
+                    return resultSet.getInt(1);
+                }
+            }
+
+        } catch (SQLException e) {
+
+            throw new RuntimeException(
+                    "Failed to count reading history.",
+                    e
+            );
+        }
+
+        return 0;
+    }
 }

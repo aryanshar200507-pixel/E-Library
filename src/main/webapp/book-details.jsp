@@ -1,10 +1,10 @@
-<%@page import="java.util.Map"%>
-<%@page import="com.project.elibrary.bean.enums.Role"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
+<%@ page import="java.util.Map"%>
 <%@ page import="java.util.List"%>
 
+<%@ page import="com.project.elibrary.bean.enums.Role"%>
 <%@ page import="com.project.elibrary.bean.book.Book"%>
 <%@ page import="com.project.elibrary.bean.comment.Comment"%>
 <%@ page import="com.project.elibrary.bean.ratings.Rating"%>
@@ -25,6 +25,7 @@
 <style>
 
 /* ================= BODY ================= */
+
 body {
 	font-family: Arial, sans-serif;
 	margin: 0;
@@ -32,7 +33,9 @@ body {
 	background: #f5f5f5;
 }
 
+
 /* ================= HEADER ================= */
+
 header {
 	background: white;
 	padding: 20px;
@@ -48,7 +51,9 @@ header a {
 	margin-right: 20px;
 }
 
+
 /* ================= MAIN CONTAINER ================= */
+
 .container {
 	max-width: 1100px;
 	margin: 30px auto;
@@ -56,7 +61,9 @@ header a {
 	background: white;
 }
 
+
 /* ================= BOOK DETAILS ================= */
+
 .book-details {
 	display: flex;
 	gap: 40px;
@@ -64,7 +71,9 @@ header a {
 	border-bottom: 1px solid #ddd;
 }
 
+
 /* ================= COVER ================= */
+
 .cover-container {
 	width: 250px;
 	flex-shrink: 0;
@@ -77,7 +86,9 @@ header a {
 	border: 1px solid #ccc;
 }
 
+
 /* ================= BOOK INFORMATION ================= */
+
 .book-information {
 	flex: 1;
 }
@@ -91,23 +102,53 @@ header a {
 	margin: 12px 0;
 }
 
+
 /* ================= DESCRIPTION ================= */
+
 .description {
 	margin-top: 25px;
 	line-height: 1.7;
 }
 
+
+/* ================= BOOK ACTIONS ================= */
+
+.book-actions {
+	margin-top: 25px;
+}
+
+
 /* ================= READ BUTTON ================= */
+
 .read-button {
 	display: inline-block;
-	margin-top: 25px;
 	padding: 12px 25px;
 	background: #333;
 	color: white;
 	text-decoration: none;
+	margin-right: 10px;
 }
 
+
+/* ================= BOOKMARK BUTTON ================= */
+
+.bookmark-button {
+	display: inline-block;
+	padding: 12px 25px;
+	border: 1px solid #333;
+	background: white;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.bookmark-button.bookmarked {
+	background: #333;
+	color: white;
+}
+
+
 /* ================= ADMIN ACTIONS ================= */
+
 .admin-actions {
 	margin-top: 25px;
 	padding: 20px;
@@ -136,20 +177,20 @@ header a {
 	background: #b00020;
 }
 
+
 /* ================= RATING ================= */
+
 .rating-section {
 	margin-top: 30px;
 	padding-top: 20px;
 	border-top: 1px solid #ddd;
 }
 
-/* Current rating */
 .current-rating {
 	font-size: 18px;
 	margin-bottom: 15px;
 }
 
-/* Touch rating */
 .rating-input {
 	margin-top: 20px;
 }
@@ -187,7 +228,9 @@ header a {
 	opacity: 0.5;
 }
 
+
 /* ================= COMMENTS ================= */
+
 .comments-section {
 	margin-top: 40px;
 	padding-top: 20px;
@@ -212,7 +255,9 @@ header a {
 	margin-bottom: 10px;
 }
 
+
 /* ================= COMMENT ACTIONS ================= */
+
 .comment-actions {
 	margin-top: 10px;
 }
@@ -223,7 +268,9 @@ header a {
 	cursor: pointer;
 }
 
+
 /* ================= EDIT FORM ================= */
+
 .edit-form {
 	margin-top: 10px;
 }
@@ -244,7 +291,9 @@ header a {
 	cursor: pointer;
 }
 
+
 /* ================= ADD COMMENT ================= */
+
 .comment-form {
 	margin-top: 25px;
 }
@@ -264,19 +313,26 @@ header a {
 	cursor: pointer;
 }
 
+
 /* ================= RESPONSIVE ================= */
-@media ( max-width : 700px) {
+
+@media (max-width: 700px) {
+
 	.book-details {
 		flex-direction: column;
 	}
+
 	.cover-container {
 		width: 100%;
 	}
+
 	.book-cover {
 		display: block;
 		margin: auto;
 	}
+
 }
+
 </style>
 
 </head>
@@ -285,469 +341,649 @@ header a {
 <body>
 
 
-	<%
-	/* =====================================================
-	 * GET BOOK DATA
-	 * ===================================================== */
+<%
 
-	Book book = (Book) request.getAttribute("book");
+/* =====================================================
+ * GET BOOK DATA
+ * ===================================================== */
 
-	String categoryName = (String) request.getAttribute("categoryName");
+Book book =
+		(Book) request.getAttribute("book");
 
-	String coverUrl = (String) request.getAttribute("coverUrl");
+String categoryName =
+		(String) request.getAttribute("categoryName");
 
-	Double averageRating = (Double) request.getAttribute("averageRating");
+String coverUrl =
+		(String) request.getAttribute("coverUrl");
 
-	Integer ratingCount = (Integer) request.getAttribute("ratingCount");
+Double averageRating =
+		(Double) request.getAttribute("averageRating");
 
-	Rating userRating = (Rating) request.getAttribute("userRating");
+Integer ratingCount =
+		(Integer) request.getAttribute("ratingCount");
 
-	List<Comment> comments = (List<Comment>) request.getAttribute("comments");
+Rating userRating =
+		(Rating) request.getAttribute("userRating");
 
-	Map<Long, String> commentUserNameMap = (Map<Long, String>) request.getAttribute("commentUserNameMap");
+List<Comment> comments =
+		(List<Comment>) request.getAttribute("comments");
 
-	/*
-	 * Get logged-in user.
-	 */
-
-	User loggedInUser = (User) session.getAttribute("loggedInUser");
-
-	/*
-	 * Check whether user is admin.
-	 */
-
-	boolean isAdmin = loggedInUser != null && loggedInUser.getRole() == Role.ADMIN;
-	%>
+Map<Long, String> commentUserNameMap =
+		(Map<Long, String>) request.getAttribute(
+				"commentUserNameMap");
 
 
+/* Logged-in user */
 
-	<!-- =====================================================
+User loggedInUser =
+		(User) session.getAttribute("loggedInUser");
+
+
+/* Check admin */
+
+boolean isAdmin =
+		loggedInUser != null &&
+		loggedInUser.getRole() == Role.ADMIN;
+
+
+/* Check normal USER */
+
+boolean isUser =
+		loggedInUser != null &&
+		loggedInUser.getRole() == Role.USER;
+
+%>
+
+
+<!-- =====================================================
      HEADER
      ===================================================== -->
 
-	<header>
+<header>
 
-		<h1>E-Library</h1>
-
-
-		<a href="${pageContext.request.contextPath}/books"> Categories </a> <a
-			href="${pageContext.request.contextPath}/books/category?id=<%=book.getCategoryId()%>">
-			Back to Books </a>
+	<h1>E-Library</h1>
 
 
-		<%
-		/*
-		 * Admin can directly go to Add Book.
-		 */
-		if (isAdmin) {
-		%>
-
-		<a href="${pageContext.request.contextPath}/books/add"> Add Book </a>
-
-		<%
-		}
-		%>
-
-	</header>
+	<a href="${pageContext.request.contextPath}/books">
+		Categories
+	</a>
 
 
+	<a href="${pageContext.request.contextPath}/books/category?id=<%=book.getCategoryId()%>">
+		Back to Books
+	</a>
 
-	<!-- =====================================================
+
+	<%
+
+	if (isAdmin) {
+
+	%>
+
+
+		<a href="${pageContext.request.contextPath}/books/add">
+			Add Book
+		</a>
+
+
+	<%
+
+	}
+
+	%>
+
+</header>
+
+
+<!-- =====================================================
      MAIN CONTAINER
      ===================================================== -->
 
-	<div class="container">
+<div class="container">
 
 
-
-		<!-- =================================================
+	<!-- =================================================
 	     BOOK DETAILS
 	     ================================================= -->
 
-		<div class="book-details">
+	<div class="book-details">
 
 
+		<!-- ================= COVER ================= -->
 
-			<!-- ================= COVER ================= -->
+		<div class="cover-container">
 
-			<div class="cover-container">
 
-				<%
-				if (coverUrl != null && !coverUrl.isBlank()) {
-				%>
+			<%
 
-				<img class="book-cover" src="<%=coverUrl%>"
+			if (coverUrl != null && !coverUrl.isBlank()) {
+
+			%>
+
+
+				<img
+					class="book-cover"
+					src="<%=coverUrl%>"
 					alt="<%=book.getTitle()%> cover">
 
-				<%
-				} else {
-				%>
 
-				<p>No cover available.</p>
+			<%
 
-				<%
-				}
-				%>
+			} else {
+
+			%>
+
+
+				<p>
+					No cover available.
+				</p>
+
+
+			<%
+
+			}
+
+			%>
+
+
+		</div>
+
+
+		<!-- ================= INFORMATION ================= -->
+
+		<div class="book-information">
+
+
+			<!-- TITLE -->
+
+			<h2>
+				<%=book.getTitle()%>
+			</h2>
+
+
+			<!-- AUTHOR -->
+
+			<div class="book-info">
+
+				<strong>Author:</strong>
+
+				<%=book.getAuthor()%>
 
 			</div>
 
 
+			<!-- CATEGORY -->
 
-			<!-- ================= INFORMATION ================= -->
+			<div class="book-info">
 
-			<div class="book-information">
+				<strong>Category:</strong>
 
+				<%=categoryName != null ? categoryName : "Unknown"%>
 
-				<!-- TITLE -->
-
-				<h2>
-					<%=book.getTitle()%>
-				</h2>
+			</div>
 
 
+			<!-- PUBLISHED -->
 
-				<!-- AUTHOR -->
+			<div class="book-info">
 
-				<div class="book-info">
+				<strong>Published:</strong>
 
-					<strong>Author:</strong>
+				<%=book.getPublishedAt() != null
+						? book.getPublishedAt()
+						: "Not available"%>
 
-					<%=book.getAuthor()%>
-
-				</div>
-
-
-
-				<!-- CATEGORY -->
-
-				<div class="book-info">
-
-					<strong>Category:</strong>
-
-					<%=categoryName != null ? categoryName : "Unknown"%>
-
-				</div>
+			</div>
 
 
+			<!-- VIEWS -->
 
-				<!-- PUBLISHED -->
+			<div class="book-info">
 
-				<div class="book-info">
+				<strong>Views:</strong>
 
-					<strong>Published:</strong>
+				<%=book.getViews() != null
+						? book.getViews()
+						: 0%>
 
-					<%=book.getPublishedAt() != null ? book.getPublishedAt() : "Not available"%>
-
-				</div>
-
-
-
-				<!-- VIEWS -->
-
-				<div class="book-info">
-
-					<strong>Views:</strong>
-
-					<%=book.getViews() != null ? book.getViews() : 0%>
-
-				</div>
+			</div>
 
 
+			<!-- RATING -->
 
-				<!-- RATING -->
+			<div class="book-info">
 
-				<div class="book-info">
+				<strong>Rating:</strong>
 
-					<strong>Rating:</strong>
 
-					<%
-					if (ratingCount != null && ratingCount > 0) {
-					%>
+				<%
+
+				if (ratingCount != null && ratingCount > 0) {
+
+				%>
+
 
 					⭐
 
 					<%=String.format("%.1f", averageRating)%>
 
-					/ 5 (<%=ratingCount%>
-					ratings)
+					/ 5
 
-					<%
-					} else {
-					%>
+					(<%=ratingCount%> ratings)
+
+
+				<%
+
+				} else {
+
+				%>
+
 
 					No ratings yet
 
-					<%
-					}
-					%>
 
-				</div>
+				<%
+
+				}
+
+				%>
 
 
+			</div>
 
-				<!-- ================= DESCRIPTION ================= -->
 
-				<div class="description">
+			<!-- ================= DESCRIPTION ================= -->
 
-					<h3>Description</h3>
+			<div class="description">
 
-					<%
-					if (book.getDescription() != null && !book.getDescription().isBlank()) {
-					%>
+				<h3>
+					Description
+				</h3>
+
+
+				<%
+
+				if (book.getDescription() != null &&
+						!book.getDescription().isBlank()) {
+
+				%>
+
 
 					<%=book.getDescription()%>
 
-					<%
-					} else {
-					%>
+
+				<%
+
+				} else {
+
+				%>
+
 
 					No description available.
 
-					<%
-					}
-					%>
 
-				</div>
+				<%
 
+				}
+
+				%>
+
+
+			</div>
+
+
+			<!-- ================= BOOK ACTIONS ================= -->
+
+			<div class="book-actions">
+
+
+				<!-- ================= BOOKMARK BOOK ================= -->
+
+				<%
+
+				if (isUser) {
+
+				%>
+
+
+					<button
+						type="button"
+						id="bookBookmarkButton"
+						class="bookmark-button"
+						data-book-id="<%=book.getBookId()%>"
+						onclick="toggleBookBookmark(this)">
+
+						🔖 Bookmark
+
+					</button>
+
+
+				<%
+
+				}
+
+				%>
 
 
 				<!-- ================= READ BOOK ================= -->
 
 				<%
-				if (book.getPdfStorageKey() != null && !book.getPdfStorageKey().isBlank()) {
+
+				if (book.getPdfStorageKey() != null &&
+						!book.getPdfStorageKey().isBlank()) {
+
 				%>
 
-				<a class="read-button"
-					href="${pageContext.request.contextPath}/books/read?id=<%=book.getBookId()%>">
 
-					Read Book </a>
+					<a
+						class="read-button"
+						href="${pageContext.request.contextPath}/books/read?id=<%=book.getBookId()%>">
+
+						Read Book
+
+					</a>
+
 
 				<%
+
 				} else {
+
 				%>
 
-				<p>Book file is not available.</p>
+
+					<p>
+						Book file is not available.
+					</p>
+
 
 				<%
+
 				}
-				%>
 
-
-
-				<!-- =================================================
-			     ADMIN BOOK ACTIONS
-			     ================================================= -->
-
-				<%
-				/*
-				 * Only ADMIN can edit/delete books.
-				 *
-				 * Normal USER will not see this section.
-				 */
-
-				if (isAdmin) {
-				%>
-
-				<div class="admin-actions">
-
-					<h3>Admin Actions</h3>
-
-
-					<!-- ================= EDIT BOOK ================= -->
-
-					<a class="admin-button"
-						href="${pageContext.request.contextPath}/admin/books/edit?id=<%=book.getBookId()%>">
-
-						Edit Book </a>
-
-
-
-					<!-- ================= DELETE BOOK ================= -->
-
-					<form action="${pageContext.request.contextPath}/admin/books/delete"
-						method="post" style="display: inline;">
-
-						<input type="hidden" name="bookId" value="<%=book.getBookId()%>">
-
-
-						<button type="submit" class="admin-button delete-button"
-							onclick="return confirm('Are you sure you want to delete this book?');">
-
-							Delete Book</button>
-
-					</form>
-
-				</div>
-
-				<%
-				}
 				%>
 
 
 			</div>
+
+
+			<!-- =================================================
+			     ADMIN BOOK ACTIONS
+			     ================================================= -->
+
+			<%
+
+			if (isAdmin) {
+
+			%>
+
+
+				<div class="admin-actions">
+
+					<h3>
+						Admin Actions
+					</h3>
+
+
+					<!-- EDIT BOOK -->
+
+					<a
+						class="admin-button"
+						href="${pageContext.request.contextPath}/admin/books/edit?id=<%=book.getBookId()%>">
+
+						Edit Book
+
+					</a>
+
+
+					<!-- DELETE BOOK -->
+
+					<form
+						action="${pageContext.request.contextPath}/admin/books/delete"
+						method="post"
+						style="display: inline;">
+
+
+						<input
+							type="hidden"
+							name="bookId"
+							value="<%=book.getBookId()%>">
+
+
+						<button
+							type="submit"
+							class="admin-button delete-button"
+							onclick="return confirm('Are you sure you want to delete this book?');">
+
+							Delete Book
+
+						</button>
+
+
+					</form>
+
+
+				</div>
+
+
+			<%
+
+			}
+
+			%>
+
 
 		</div>
 
 
+	</div>
 
-		<!-- =================================================
+
+	<!-- =================================================
 	     RATING SECTION
 	     ================================================= -->
 
-		<%
-		/*
-		 * Only normal USER can rate.
-		 *
-		 * ADMIN cannot rate.
-		 */
+	<%
 
-		if (loggedInUser != null && !isAdmin) {
-		%>
+	if (loggedInUser != null && !isAdmin) {
+
+	%>
 
 
-		<div class="rating-section">
+	<div class="rating-section">
 
 
-			<h3>Your Rating</h3>
+		<h3>
+			Your Rating
+		</h3>
 
 
+		<!-- CURRENT USER RATING -->
 
-			<!-- ================= CURRENT USER RATING ================= -->
+		<div class="current-rating">
 
-			<div class="current-rating">
 
-				<%
-				if (userRating != null) {
-				%>
+			<%
 
-				You rated this book: <strong> <%=userRating.getRating()%> /
-					5
+			if (userRating != null) {
+
+			%>
+
+
+				You rated this book:
+
+				<strong>
+					<%=userRating.getRating()%> / 5
 				</strong>
 
-				<%
-				} else {
-				%>
+
+			<%
+
+			} else {
+
+			%>
+
 
 				You have not rated this book yet.
 
-				<%
-				}
-				%>
 
-			</div>
+			<%
 
+			}
 
-
-			<!-- ================= TOUCH STAR RATING ================= -->
-
-			<div class="rating-input">
+			%>
 
 
-				<p>
-
-					<strong> Choose your rating: </strong>
-
-				</p>
+		</div>
 
 
+		<!-- TOUCH STAR RATING -->
 
-				<form action="${pageContext.request.contextPath}/rating"
-					method="post" id="ratingForm">
-
-
-					<!-- BOOK ID -->
-
-					<input type="hidden" name="bookId" value="<%=book.getBookId()%>">
+		<div class="rating-input">
 
 
-					<!-- SELECTED RATING -->
-
-					<input type="hidden" name="rating" id="ratingValue" value="">
-
-
-
-					<!-- STARS -->
-
-					<div class="touch-stars">
+			<p>
+				<strong>
+					Choose your rating:
+				</strong>
+			</p>
 
 
-						<%
-						for (int star = 1; star <= 5; star++) {
-						%>
+			<form
+				action="${pageContext.request.contextPath}/rating"
+				method="post"
+				id="ratingForm">
 
 
-						<span class="touch-star" data-rating="<%=star%>"> <%
- /*
-  * Show filled stars if
-  * user already rated.
-  */
+				<input
+					type="hidden"
+					name="bookId"
+					value="<%=book.getBookId()%>">
 
- if (userRating != null && star <= userRating.getRating()) {
- %> ★ <%
- } else {
- %> ☆ <%
- }
- %>
+
+				<input
+					type="hidden"
+					name="rating"
+					id="ratingValue"
+					value="">
+
+
+				<!-- STARS -->
+
+				<div class="touch-stars">
+
+
+					<%
+
+					for (int star = 1; star <= 5; star++) {
+
+					%>
+
+
+						<span
+							class="touch-star"
+							data-rating="<%=star%>">
+
+
+							<%
+
+							if (userRating != null &&
+									star <= userRating.getRating()) {
+
+							%>
+
+								★
+
+							<%
+
+							} else {
+
+							%>
+
+								☆
+
+							<%
+
+							}
+
+							%>
+
 
 						</span>
 
 
-						<%
-						}
-						%>
+					<%
+
+					}
+
+					%>
 
 
-					</div>
+				</div>
 
 
+				<!-- SUBMIT -->
 
-					<!-- SUBMIT -->
+				<button
+					type="submit"
+					id="ratingSubmit"
+					disabled>
 
-					<button type="submit" id="ratingSubmit" disabled>
+					<%=userRating == null
+							? "Submit Rating"
+							: "Update Rating"%>
 
-						<%=userRating == null ? "Submit Rating" : "Update Rating"%>
-
-					</button>
+				</button>
 
 
-				</form>
-
-			</div>
+			</form>
 
 
 		</div>
 
 
-		<%
-		}
-		%>
+	</div>
 
 
+	<%
 
-		<!-- =================================================
+	}
+
+	%>
+
+
+	<!-- =================================================
 	     COMMENTS SECTION
 	     ================================================= -->
 
-		<div class="comments-section">
+	<div class="comments-section">
 
 
-			<h2>Comments</h2>
+		<h2>
+			Comments
+		</h2>
 
 
+		<!-- EXISTING COMMENTS -->
 
-			<!-- ================= EXISTING COMMENTS ================= -->
+		<%
 
-			<%
-			if (comments == null || comments.isEmpty()) {
-			%>
+		if (comments == null || comments.isEmpty()) {
 
-			<p>No comments yet.</p>
+		%>
 
-			<%
-			} else {
+
+			<p>
+				No comments yet.
+			</p>
+
+
+		<%
+
+		} else {
 
 			for (Comment comment : comments) {
-			%>
+
+		%>
 
 
 			<div class="comment">
@@ -755,18 +991,44 @@ header a {
 
 				<!-- COMMENT USER -->
 
-				<strong> <%
- String commentUserName = commentUserNameMap != null ? commentUserNameMap.get(comment.getUserId()) : null;
+				<strong>
 
- if (commentUserName != null) {
- %> <%=commentUserName%> <%
- } else {
- %> User #<%=comment.getUserId()%> <%
- }
- %>
+
+					<%
+
+					String commentUserName =
+							commentUserNameMap != null
+							? commentUserNameMap.get(
+									comment.getUserId())
+							: null;
+
+
+					if (commentUserName != null) {
+
+					%>
+
+
+						<%=commentUserName%>
+
+
+					<%
+
+					} else {
+
+					%>
+
+
+						User #<%=comment.getUserId()%>
+
+
+					<%
+
+					}
+
+					%>
+
 
 				</strong>
-
 
 
 				<!-- COMMENT TEXT -->
@@ -778,7 +1040,6 @@ header a {
 				</div>
 
 
-
 				<!-- COMMENT DATE -->
 
 				<div class="comment-date">
@@ -788,178 +1049,212 @@ header a {
 				</div>
 
 
-
 				<%
-				/*
-				 * Determine permissions.
-				 */
 
-				boolean isCommentOwner = loggedInUser != null && loggedInUser.getUserId().equals(comment.getUserId());
+				boolean isCommentOwner =
+						loggedInUser != null &&
+						loggedInUser.getUserId().equals(
+								comment.getUserId());
 
-				/*
-				 * USER:
-				 * can edit own comment.
-				 *
-				 * ADMIN:
-				 * cannot edit user's comment.
-				 */
+
+				/* USER can edit own comment */
 
 				if (isCommentOwner && !isAdmin) {
+
 				%>
 
 
-				<!-- ================= EDIT BUTTON ================= -->
-
-				<div class="comment-actions">
+					<div class="comment-actions">
 
 
-					<button type="button"
-						onclick="showEditForm(<%=comment.getCommentId()%>)">Edit
+						<button
+							type="button"
+							onclick="showEditForm(<%=comment.getCommentId()%>)">
 
-					</button>
+							Edit
 
-
-
-					<!-- ================= HIDDEN EDIT FORM ================= -->
-
-					<div id="edit-form-<%=comment.getCommentId()%>" class="edit-form"
-						style="display: none;">
+						</button>
 
 
-						<form action="${pageContext.request.contextPath}/comment"
-							method="post">
+						<!-- HIDDEN EDIT FORM -->
+
+						<div
+							id="edit-form-<%=comment.getCommentId()%>"
+							class="edit-form"
+							style="display: none;">
 
 
-							<!-- ACTION -->
-
-							<input type="hidden" name="action" value="update">
-
-
-							<!-- COMMENT ID -->
-
-							<input type="hidden" name="commentId"
-								value="<%=comment.getCommentId()%>">
+							<form
+								action="${pageContext.request.contextPath}/comment"
+								method="post">
 
 
-							<!-- BOOK ID -->
-
-							<input type="hidden" name="bookId" value="<%=book.getBookId()%>">
-
-
-							<!-- COMMENT -->
-
-							<textarea name="comment" required><%=comment.getComment()%></textarea>
+								<input
+									type="hidden"
+									name="action"
+									value="update">
 
 
-							<br>
+								<input
+									type="hidden"
+									name="commentId"
+									value="<%=comment.getCommentId()%>">
 
 
-							<button type="submit">Save</button>
+								<input
+									type="hidden"
+									name="bookId"
+									value="<%=book.getBookId()%>">
 
 
-							<button type="button"
-								onclick="hideEditForm(<%=comment.getCommentId()%>)">
+								<textarea
+									name="comment"
+									required><%=comment.getComment()%></textarea>
 
-								Cancel</button>
+
+								<br>
 
 
-						</form>
+								<button type="submit">
+									Save
+								</button>
+
+
+								<button
+									type="button"
+									onclick="hideEditForm(<%=comment.getCommentId()%>)">
+
+									Cancel
+
+								</button>
+
+
+							</form>
+
+
+						</div>
+
 
 					</div>
 
-				</div>
-
 
 				<%
+
 				}
 
-				/*
-				 * USER can delete own comment.
-				 *
-				 * ADMIN can delete any comment.
+
+				/* USER can delete own comment
+				 * ADMIN can delete any comment
 				 */
 
 				if (isCommentOwner || isAdmin) {
+
 				%>
 
 
-				<!-- ================= DELETE COMMENT ================= -->
-
-				<form action="${pageContext.request.contextPath}/comment"
-					method="post" style="display: inline;">
-
-
-					<input type="hidden" name="action" value="delete"> <input
-						type="hidden" name="commentId" value="<%=comment.getCommentId()%>">
+					<form
+						action="${pageContext.request.contextPath}/comment"
+						method="post"
+						style="display: inline;">
 
 
-					<input type="hidden" name="bookId" value="<%=book.getBookId()%>">
+						<input
+							type="hidden"
+							name="action"
+							value="delete">
 
 
-					<button type="submit"
-						onclick="return confirm('Delete this comment?');">Delete
+						<input
+							type="hidden"
+							name="commentId"
+							value="<%=comment.getCommentId()%>">
 
-					</button>
+
+						<input
+							type="hidden"
+							name="bookId"
+							value="<%=book.getBookId()%>">
 
 
-				</form>
+						<button
+							type="submit"
+							onclick="return confirm('Delete this comment?');">
+
+							Delete
+
+						</button>
+
+
+					</form>
 
 
 				<%
+
 				}
+
 				%>
 
 
 			</div>
 
 
-			<%
-			}
+		<%
 
 			}
-			%>
+
+		}
+
+		%>
 
 
-
-			<!-- =================================================
+		<!-- =================================================
 		     ADD COMMENT
 		     ================================================= -->
 
-			<%
-			if (loggedInUser != null) {
-			%>
+		<%
+
+		if (loggedInUser != null) {
+
+		%>
 
 
 			<div class="comment-form">
 
 
-				<h3>Add Comment</h3>
+				<h3>
+					Add Comment
+				</h3>
 
 
-				<form action="${pageContext.request.contextPath}/comment"
+				<form
+					action="${pageContext.request.contextPath}/comment"
 					method="post">
 
 
-					<!-- ACTION -->
-
-					<input type="hidden" name="action" value="add">
-
-
-					<!-- BOOK ID -->
-
-					<input type="hidden" name="bookId" value="<%=book.getBookId()%>">
+					<input
+						type="hidden"
+						name="action"
+						value="add">
 
 
-					<!-- COMMENT -->
+					<input
+						type="hidden"
+						name="bookId"
+						value="<%=book.getBookId()%>">
 
-					<textarea name="comment" placeholder="Write your comment..."
+
+					<textarea
+						name="comment"
+						placeholder="Write your comment..."
 						required></textarea>
 
 
 					<br>
 
 
-					<button type="submit">Add Comment</button>
+					<button type="submit">
+						Add Comment
+					</button>
 
 
 				</form>
@@ -968,31 +1263,185 @@ header a {
 			</div>
 
 
-			<%
-			} else {
-			%>
+		<%
+
+		} else {
+
+		%>
 
 
-			<p>Login to rate the book or add comments.</p>
+			<p>
+				Login to rate the book or add comments.
+			</p>
 
 
-			<%
-			}
-			%>
+		<%
 
+		}
 
-		</div>
+		%>
 
 
 	</div>
 
 
+</div>
 
-	<!-- =====================================================
+
+<!-- =====================================================
      JAVASCRIPT
      ===================================================== -->
 
-	<script>
+
+<script>
+
+
+/* =====================================================
+ * BOOK LEVEL BOOKMARK
+ * ===================================================== */
+
+function toggleBookBookmark(button) {
+
+	const bookId =
+			button.dataset.bookId;
+
+
+	const formData =
+			new URLSearchParams();
+
+
+	formData.append(
+			"bookId",
+			bookId
+	);
+
+
+	fetch(
+			"${pageContext.request.contextPath}/books/bookmark-book",
+			{
+				method: "POST",
+
+				headers: {
+					"Content-Type":
+						"application/x-www-form-urlencoded"
+				},
+
+				body:
+					formData.toString()
+			}
+	)
+	.then(function(response) {
+
+		if (!response.ok) {
+
+			throw new Error(
+					"Failed to update bookmark."
+			);
+
+		}
+
+		return response.text();
+
+	})
+	.then(function(action) {
+
+		if (action === "added") {
+
+			button.textContent =
+					"🔖 Bookmarked";
+
+			button.classList.add(
+					"bookmarked"
+			);
+
+		}
+
+		else if (action === "removed") {
+
+			button.textContent =
+					"🔖 Bookmark";
+
+			button.classList.remove(
+					"bookmarked"
+			);
+
+		}
+
+	})
+	.catch(function(error) {
+
+		console.error(error);
+
+		alert(
+				"Unable to update bookmark."
+		);
+
+	});
+}
+
+
+/* =====================================================
+ * LOAD BOOKMARK STATUS
+ * ===================================================== */
+
+document.addEventListener(
+		"DOMContentLoaded",
+		function() {
+
+			const button =
+					document.getElementById(
+							"bookBookmarkButton"
+					);
+
+
+			if (!button) {
+				return;
+			}
+
+
+			const bookId =
+					button.dataset.bookId;
+
+
+			fetch(
+					"${pageContext.request.contextPath}/books/bookmark-book?bookId="
+					+ encodeURIComponent(bookId)
+			)
+			.then(function(response) {
+
+				if (!response.ok) {
+
+					throw new Error(
+							"Failed to check bookmark."
+					);
+
+				}
+
+				return response.text();
+
+			})
+			.then(function(result) {
+
+				if (result === "true") {
+
+					button.textContent =
+							"🔖 Bookmarked";
+
+					button.classList.add(
+							"bookmarked"
+					);
+
+				}
+
+			})
+			.catch(function(error) {
+
+				console.error(error);
+
+			});
+
+		}
+);
 
 
 /* =====================================================
@@ -1000,62 +1449,37 @@ header a {
  * ===================================================== */
 
 const stars =
-	document.querySelectorAll(".touch-star");
+		document.querySelectorAll(".touch-star");
 
 
 const ratingValue =
-	document.getElementById("ratingValue");
+		document.getElementById("ratingValue");
 
 
 const ratingSubmit =
-	document.getElementById("ratingSubmit");
+		document.getElementById("ratingSubmit");
 
-
-/*
- * Add click event to every star.
- */
 
 stars.forEach(function(star) {
 
-
 	star.addEventListener("click", function() {
 
-
-		/*
-		 * Get selected rating.
-		 */
-
 		const selectedRating =
-			parseInt(this.dataset.rating);
+				parseInt(this.dataset.rating);
 
-
-		/*
-		 * Put selected rating
-		 * into hidden input.
-		 */
 
 		ratingValue.value =
-			selectedRating;
+				selectedRating;
 
-
-		/*
-		 * Enable submit button.
-		 */
 
 		ratingSubmit.disabled =
-			false;
+				false;
 
-
-		/*
-		 * Fill stars up to
-		 * selected rating.
-		 */
 
 		stars.forEach(function(s) {
 
-
 			const starRating =
-				parseInt(s.dataset.rating);
+					parseInt(s.dataset.rating);
 
 
 			if (starRating <= selectedRating) {
@@ -1075,29 +1499,26 @@ stars.forEach(function(star) {
 });
 
 
-
 /* =====================================================
  * SHOW EDIT FORM
  * ===================================================== */
 
 function showEditForm(commentId) {
 
-
 	const editForm =
-		document.getElementById(
-			"edit-form-" + commentId
-		);
+			document.getElementById(
+					"edit-form-" + commentId
+			);
 
 
 	if (editForm) {
 
 		editForm.style.display =
-			"block";
+				"block";
 
 	}
 
 }
-
 
 
 /* =====================================================
@@ -1106,17 +1527,16 @@ function showEditForm(commentId) {
 
 function hideEditForm(commentId) {
 
-
 	const editForm =
-		document.getElementById(
-			"edit-form-" + commentId
-		);
+			document.getElementById(
+					"edit-form-" + commentId
+			);
 
 
 	if (editForm) {
 
 		editForm.style.display =
-			"none";
+				"none";
 
 	}
 

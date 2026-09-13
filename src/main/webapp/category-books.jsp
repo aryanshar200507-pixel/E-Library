@@ -3,12 +3,14 @@
 
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Map"%>
+
 <%@ page import="com.project.elibrary.bean.book.Book"%>
 <%@ page import="com.project.elibrary.bean.category.Category"%>
+<%@ page import="com.project.elibrary.bean.user.User"%>
+<%@ page import="com.project.elibrary.bean.enums.Role"%>
 
 
 <!DOCTYPE html>
-
 <html>
 
 <head>
@@ -19,6 +21,8 @@
 
 
 <style>
+
+/* ================= BODY ================= */
 
 body {
 	font-family: Arial, sans-serif;
@@ -135,14 +139,38 @@ header a {
 }
 
 
+/* ================= BOOK ACTIONS ================= */
+
+.book-actions {
+	margin-top: 15px;
+}
+
+
 /* ================= READ MORE ================= */
 
 .read-more {
 	display: inline-block;
-	margin-top: 15px;
 	padding: 9px 16px;
 	text-decoration: none;
 	border: 1px solid #333;
+	margin-right: 10px;
+}
+
+
+/* ================= BOOKMARK ================= */
+
+.bookmark-button {
+	display: inline-block;
+	padding: 9px 16px;
+	border: 1px solid #333;
+	background: white;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.bookmark-button.bookmarked {
+	background: #333;
+	color: white;
 }
 
 
@@ -202,56 +230,42 @@ header a {
 
 <%
 
-/*
- * ============================================
+/* ============================================
  * GET DATA FROM SERVLET
- * ============================================
- */
+ * ============================================ */
 
 
-/*
- * Selected category.
- */
+/* Selected category */
 
 Category category =
 		(Category) request.getAttribute("category");
 
 
-/*
- * Books belonging to this category.
- */
+/* Books belonging to this category */
 
 List<Book> books =
 		(List<Book>) request.getAttribute("books");
 
 
-/*
- * Cover URL map.
- */
+/* Cover URL map */
 
 Map<Long, String> coverUrlMap =
 		(Map<Long, String>) request.getAttribute("coverUrlMap");
 
 
-/*
- * Average rating map.
- */
+/* Average rating map */
 
 Map<Long, Double> averageRatingMap =
 		(Map<Long, Double>) request.getAttribute("averageRatingMap");
 
 
-/*
- * Rating count map.
- */
+/* Rating count map */
 
 Map<Long, Integer> ratingCountMap =
 		(Map<Long, Integer>) request.getAttribute("ratingCountMap");
 
 
-/*
- * Pagination.
- */
+/* Pagination */
 
 Integer currentPage =
 		(Integer) request.getAttribute("currentPage");
@@ -260,18 +274,27 @@ Integer totalPages =
 		(Integer) request.getAttribute("totalPages");
 
 
-/*
- * Search keyword.
- */
+/* Search keyword */
 
 String keyword =
 		(String) request.getAttribute("keyword");
 
 if (keyword == null) {
-
 	keyword = "";
-
 }
+
+
+/* Logged-in user */
+
+User loggedInUser =
+		(User) session.getAttribute("loggedInUser");
+
+
+/* Only normal USER can bookmark books */
+
+boolean isUser =
+		loggedInUser != null &&
+		loggedInUser.getRole() == Role.USER;
 
 %>
 
@@ -281,7 +304,6 @@ if (keyword == null) {
 <header>
 
 	<h1>E-Library</h1>
-
 
 	<!-- Back to categories -->
 
@@ -298,9 +320,7 @@ if (keyword == null) {
 
 
 	<h1>
-
 		<%=category.getCategoryName()%>
-
 	</h1>
 
 
@@ -355,11 +375,9 @@ if (keyword == null) {
 
 	<%
 
-	/*
-	 * ============================================
+	/* ============================================
 	 * DISPLAY BOOKS
-	 * ============================================
-	 */
+	 * ============================================ */
 
 	if (books == null || books.isEmpty()) {
 
@@ -400,117 +418,38 @@ if (keyword == null) {
 	} else {
 
 
-	/*
-	 * Display each book.
-	 */
+	/* Display each book */
 
 	for (Book book : books) {
 
 	%>
 
 
-	<!-- ================= BOOK ================= -->
+		<!-- ================= BOOK ================= -->
 
-	<div class="book">
-
-
-		<!-- ================= COVER ================= -->
-
-		<div class="book-cover-container">
+		<div class="book">
 
 
-			<%
+			<!-- ================= COVER ================= -->
 
-			String coverUrl =
-					coverUrlMap.get(book.getBookId());
-
-
-			if (coverUrl != null && !coverUrl.isBlank()) {
-
-			%>
-
-
-				<img
-					class="book-cover"
-					src="<%=coverUrl%>"
-					alt="<%=book.getTitle()%> cover">
-
-
-			<%
-
-			} else {
-
-			%>
-
-
-				<p>
-					No cover available.
-				</p>
-
-
-			<%
-
-			}
-
-			%>
-
-
-		</div>
-
-
-		<!-- ================= BOOK INFORMATION ================= -->
-
-		<div class="book-information">
-
-
-			<!-- TITLE -->
-
-			<h2>
-
-				<%=book.getTitle()%>
-
-			</h2>
-
-
-			<!-- AUTHOR -->
-
-			<div class="book-info">
-
-				<strong>Author:</strong>
-
-				<%=book.getAuthor()%>
-
-			</div>
-
-
-			<!-- RATING -->
-
-			<div class="book-info">
-
-				<strong>Rating:</strong>
+			<div class="book-cover-container">
 
 
 				<%
 
-				Double averageRating =
-						averageRatingMap.get(book.getBookId());
-
-				Integer ratingCount =
-						ratingCountMap.get(book.getBookId());
+				String coverUrl =
+						coverUrlMap.get(book.getBookId());
 
 
-				if (ratingCount != null && ratingCount > 0) {
+				if (coverUrl != null && !coverUrl.isBlank()) {
 
 				%>
 
 
-					⭐
-
-					<%=String.format("%.1f", averageRating)%>
-
-					/ 5
-
-					(<%=ratingCount%> ratings)
+					<img
+						class="book-cover"
+						src="<%=coverUrl%>"
+						alt="<%=book.getTitle()%> cover">
 
 
 				<%
@@ -520,7 +459,9 @@ if (keyword == null) {
 				%>
 
 
-					No ratings yet
+					<p>
+						No cover available.
+					</p>
 
 
 				<%
@@ -533,76 +474,179 @@ if (keyword == null) {
 			</div>
 
 
-			<!-- DESCRIPTION -->
+			<!-- ================= BOOK INFORMATION ================= -->
 
-			<div class="description">
-
-				<strong>Description:</strong>
+			<div class="book-information">
 
 
-				<%
+				<!-- TITLE -->
 
-				String description =
-						book.getDescription();
-
-
-				if (description == null ||
-						description.isBlank()) {
-
-				%>
+				<h2>
+					<%=book.getTitle()%>
+				</h2>
 
 
-					No description available.
+				<!-- AUTHOR -->
+
+				<div class="book-info">
+
+					<strong>Author:</strong>
+
+					<%=book.getAuthor()%>
+
+				</div>
 
 
-				<%
+				<!-- RATING -->
 
-				} else {
+				<div class="book-info">
+
+					<strong>Rating:</strong>
 
 
-					/*
-					 * Only show a short description
-					 * on the category page.
-					 */
+					<%
 
-					if (description.length() > 250) {
+					Double averageRating =
+							averageRatingMap.get(book.getBookId());
 
-						description =
-								description.substring(0, 250) + "...";
+					Integer ratingCount =
+							ratingCountMap.get(book.getBookId());
+
+
+					if (ratingCount != null && ratingCount > 0) {
+
+					%>
+
+
+						⭐
+
+						<%=String.format("%.1f", averageRating)%>
+
+						/ 5
+
+						(<%=ratingCount%> ratings)
+
+
+					<%
+
+					} else {
+
+					%>
+
+
+						No ratings yet
+
+
+					<%
 
 					}
 
-				%>
+					%>
 
 
-					<%=description%>
+				</div>
 
 
-				<%
+				<!-- DESCRIPTION -->
 
-				}
+				<div class="description">
 
-				%>
+					<strong>Description:</strong>
+
+
+					<%
+
+					String description =
+							book.getDescription();
+
+
+					if (description == null ||
+							description.isBlank()) {
+
+					%>
+
+
+						No description available.
+
+
+					<%
+
+					} else {
+
+
+						if (description.length() > 250) {
+
+							description =
+									description.substring(0, 250) + "...";
+
+						}
+
+					%>
+
+
+						<%=description%>
+
+
+					<%
+
+					}
+
+					%>
+
+
+				</div>
+
+
+				<!-- ================= BOOK ACTIONS ================= -->
+
+				<div class="book-actions">
+
+
+					<%
+
+					/* Only USER can bookmark */
+
+					if (isUser) {
+
+					%>
+
+
+						<button
+							type="button"
+							class="bookmark-button"
+							data-book-id="<%=book.getBookId()%>"
+							onclick="toggleBookBookmark(this)">
+
+							🔖 Bookmark
+
+						</button>
+
+
+					<%
+
+					}
+
+					%>
+
+
+					<!-- READ MORE -->
+
+					<a
+						class="read-more"
+						href="${pageContext.request.contextPath}/books/details?id=<%=book.getBookId()%>">
+
+						Read More
+
+					</a>
+
+
+				</div>
 
 
 			</div>
 
 
-			<!-- ================= READ MORE ================= -->
-
-			<a
-				class="read-more"
-				href="${pageContext.request.contextPath}/books/details?id=<%=book.getBookId()%>">
-
-				Read More
-
-			</a>
-
-
 		</div>
-
-
-	</div>
 
 
 	<%
@@ -623,105 +667,103 @@ if (keyword == null) {
 	%>
 
 
-	<div class="pagination">
+		<div class="pagination">
 
 
-		<!-- ================= PREVIOUS ================= -->
+			<!-- ================= PREVIOUS ================= -->
 
-		<%
+			<%
 
-		if (currentPage > 1) {
+			if (currentPage > 1) {
 
-		%>
-
-
-			<a
-				href="${pageContext.request.contextPath}/books/category?id=<%=category.getCategoryId()%>&keyword=<%=java.net.URLEncoder.encode(keyword, "UTF-8")%>&page=<%=currentPage - 1%>">
-
-				Previous
-
-			</a>
-
-
-		<%
-
-		}
-
-		%>
-
-
-		<!-- ================= PAGE NUMBERS ================= -->
-
-		<%
-
-		for (
-			int pageNumber = 1;
-			pageNumber <= totalPages;
-			pageNumber++
-		) {
-
-
-			if (pageNumber == currentPage) {
-
-		%>
-
-
-				<span class="current">
-
-					<%=pageNumber%>
-
-				</span>
-
-
-		<%
-
-			} else {
-
-		%>
+			%>
 
 
 				<a
-					href="${pageContext.request.contextPath}/books/category?id=<%=category.getCategoryId()%>&keyword=<%=java.net.URLEncoder.encode(keyword, "UTF-8")%>&page=<%=pageNumber%>">
+					href="${pageContext.request.contextPath}/books/category?id=<%=category.getCategoryId()%>&keyword=<%=java.net.URLEncoder.encode(keyword, "UTF-8")%>&page=<%=currentPage - 1%>">
 
-					<%=pageNumber%>
+					Previous
 
 				</a>
 
 
-		<%
+			<%
 
 			}
 
-		}
-
-		%>
+			%>
 
 
-		<!-- ================= NEXT ================= -->
+			<!-- ================= PAGE NUMBERS ================= -->
 
-		<%
+			<%
 
-		if (currentPage < totalPages) {
-
-		%>
-
-
-			<a
-				href="${pageContext.request.contextPath}/books/category?id=<%=category.getCategoryId()%>&keyword=<%=java.net.URLEncoder.encode(keyword, "UTF-8")%>&page=<%=currentPage + 1%>">
-
-				Next
-
-			</a>
+			for (
+				int pageNumber = 1;
+				pageNumber <= totalPages;
+				pageNumber++
+			) {
 
 
-		<%
+				if (pageNumber == currentPage) {
 
-		}
-
-		%>
+			%>
 
 
-	</div>
+					<span class="current">
+						<%=pageNumber%>
+					</span>
+
+
+			<%
+
+				} else {
+
+			%>
+
+
+					<a
+						href="${pageContext.request.contextPath}/books/category?id=<%=category.getCategoryId()%>&keyword=<%=java.net.URLEncoder.encode(keyword, "UTF-8")%>&page=<%=pageNumber%>">
+
+						<%=pageNumber%>
+
+					</a>
+
+
+			<%
+
+				}
+
+			}
+
+			%>
+
+
+			<!-- ================= NEXT ================= -->
+
+			<%
+
+			if (currentPage < totalPages) {
+
+			%>
+
+
+				<a
+					href="${pageContext.request.contextPath}/books/category?id=<%=category.getCategoryId()%>&keyword=<%=java.net.URLEncoder.encode(keyword, "UTF-8")%>&page=<%=currentPage + 1%>">
+
+					Next
+
+				</a>
+
+
+			<%
+
+			}
+
+			%>
+
+
+		</div>
 
 
 	<%
@@ -732,6 +774,163 @@ if (keyword == null) {
 
 
 </div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script>
+
+/* =====================================================
+ * TOGGLE BOOK BOOKMARK
+ * ===================================================== */
+
+function toggleBookBookmark(button) {
+
+	const bookId =
+			button.dataset.bookId;
+
+
+	const formData =
+			new URLSearchParams();
+
+
+	formData.append(
+			"bookId",
+			bookId
+	);
+
+
+	fetch(
+			"${pageContext.request.contextPath}/books/bookmark-book",
+			{
+				method: "POST",
+
+				headers: {
+					"Content-Type":
+						"application/x-www-form-urlencoded"
+				},
+
+				body:
+					formData.toString()
+			}
+	)
+	.then(function(response) {
+
+		if (!response.ok) {
+
+			throw new Error(
+					"Failed to update bookmark."
+			);
+
+		}
+
+		return response.text();
+
+	})
+	.then(function(action) {
+
+		if (action === "added") {
+
+			button.textContent =
+					"🔖 Bookmarked";
+
+			button.classList.add(
+					"bookmarked"
+			);
+
+		}
+
+		else if (action === "removed") {
+
+			button.textContent =
+					"🔖 Bookmark";
+
+			button.classList.remove(
+					"bookmarked"
+			);
+
+		}
+
+	})
+	.catch(function(error) {
+
+		console.error(error);
+
+		alert(
+				"Unable to update bookmark."
+		);
+
+	});
+}
+
+
+/* =====================================================
+ * LOAD CURRENT BOOKMARK STATUS
+ * ===================================================== */
+
+document.addEventListener(
+		"DOMContentLoaded",
+		function() {
+
+			const buttons =
+					document.querySelectorAll(
+							".bookmark-button"
+					);
+
+
+			buttons.forEach(
+					function(button) {
+
+						const bookId =
+								button.dataset.bookId;
+
+
+						fetch(
+								"${pageContext.request.contextPath}/books/bookmark-book?bookId="
+								+ encodeURIComponent(bookId)
+						)
+						.then(function(response) {
+
+							if (!response.ok) {
+
+								throw new Error(
+										"Failed to check bookmark."
+								);
+
+							}
+
+							return response.text();
+
+						})
+						.then(function(result) {
+
+							if (result === "true") {
+
+								button.textContent =
+										"🔖 Bookmarked";
+
+								button.classList.add(
+										"bookmarked"
+								);
+
+							}
+
+						})
+						.catch(function(error) {
+
+							console.error(error);
+
+						});
+
+					}
+			);
+
+		}
+);
+
+</script>
 
 
 </body>

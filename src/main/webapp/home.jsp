@@ -1,476 +1,291 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.Map" %>
-<%@ page import="com.project.elibrary.bean.book.Book" %>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="com.project.elibrary.bean.book.Book"%>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Library | Home</title>
 
-    <title>E-Library | Home</title>
+<!-- Google Fonts: Playfair Display (bookish serif) + Inter (clean body) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+	rel="stylesheet">
 
-    <style>
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            color: #222;
-        }
-
-        /* ================= NAVBAR ================= */
-
-        .navbar {
-            background-color: #1f2937;
-            height: 65px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 60px;
-        }
-
-        .logo {
-            color: white;
-            font-size: 25px;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 25px;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 15px;
-        }
-
-        .nav-links a:hover {
-            color: #d1d5db;
-        }
-
-        /* ================= HERO ================= */
-
-        .hero {
-            background: linear-gradient(135deg, #1f2937, #374151);
-            color: white;
-            text-align: center;
-            padding: 70px 20px;
-        }
-
-        .hero h1 {
-            font-size: 42px;
-            margin-bottom: 15px;
-        }
-
-        .hero p {
-            font-size: 18px;
-            color: #d1d5db;
-            margin-bottom: 25px;
-        }
-
-        .hero-button {
-            display: inline-block;
-            background-color: white;
-            color: #1f2937;
-            padding: 12px 25px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .hero-button:hover {
-            background-color: #e5e7eb;
-        }
-
-        /* ================= MAIN ================= */
-
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 25px;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .section-title h2 {
-            font-size: 30px;
-            margin-bottom: 8px;
-        }
-
-        .section-title p {
-            color: #6b7280;
-        }
-
-        /* ================= BOOK GRID ================= */
-
-        .book-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-        }
-
-        /* ================= BOOK CARD ================= */
-
-        .book-card {
-            background-color: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-            transition: transform 0.2s ease,
-                        box-shadow 0.2s ease;
-        }
-
-        .book-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .book-cover-container {
-            height: 280px;
-            background-color: #e5e7eb;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .book-cover {
-            max-width: 180px;
-            height: 240px;
-            object-fit: cover;
-            border-radius: 5px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .no-cover {
-            color: #6b7280;
-            font-size: 14px;
-        }
-
-        /* ================= BOOK INFO ================= */
-
-        .book-info {
-            padding: 20px;
-        }
-
-        .book-title {
-            font-size: 20px;
-            margin-bottom: 8px;
-            color: #111827;
-        }
-
-        .book-author {
-            color: #6b7280;
-            font-size: 14px;
-            margin-bottom: 12px;
-        }
-
-        .book-description {
-            color: #4b5563;
-            font-size: 14px;
-            line-height: 1.5;
-            height: 65px;
-            overflow: hidden;
-            margin-bottom: 18px;
-        }
-
-        /* ================= BUTTON ================= */
-
-        .view-button {
-            display: inline-block;
-            width: 100%;
-            text-align: center;
-            padding: 11px;
-            background-color: #1f2937;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
-            transition: background-color 0.2s ease;
-        }
-
-        .view-button:hover {
-            background-color: #374151;
-        }
-
-        /* ================= NO BOOKS ================= */
-
-        .no-books {
-            text-align: center;
-            background-color: white;
-            padding: 40px;
-            border-radius: 10px;
-            color: #6b7280;
-        }
-
-        /* ================= FOOTER ================= */
-
-        .footer {
-            margin-top: 60px;
-            background-color: #1f2937;
-            color: #d1d5db;
-            text-align: center;
-            padding: 25px;
-        }
-
-        /* ================= RESPONSIVE ================= */
-
-        @media (max-width: 900px) {
-
-            .book-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .navbar {
-                padding: 0 25px;
-            }
-        }
-
-        @media (max-width: 600px) {
-
-            .book-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .navbar {
-                padding: 0 15px;
-            }
-
-            .nav-links {
-                gap: 10px;
-            }
-
-            .hero h1 {
-                font-size: 32px;
-            }
-        }
-
-    </style>
+<!-- Stylesheet -->
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/home.css">
 
 </head>
 
-
 <body>
+	
 
+	<!-- ================= NAVBAR ================= -->
 
-    <!-- ================= NAVBAR ================= -->
+	<nav class="navbar" id="navbar">
 
-    <nav class="navbar">
+		<a href="<%=request.getContextPath()%>/home" class="logo"> <i
+			data-lucide="book-marked" class="logo-icon"></i> <span>E-Library</span>
+		</a>
 
-        <a href="<%= request.getContextPath() %>/home"
-           class="logo">
-            E-Library
-        </a>
+		<button class="nav-toggle" id="navToggle"
+			aria-label="Toggle navigation">
+			<i data-lucide="menu"></i>
+		</button>
 
-        <div class="nav-links">
+		<div class="nav-links" id="navLinks">
 
-            <a href="<%= request.getContextPath() %>/home">
-                Home
-            </a>
+			<a href="<%=request.getContextPath()%>/home"> Home </a> <a
+				href="<%=request.getContextPath()%>/books"> Books </a> <a
+				href="#latest-books"> Explore </a>
 
-            <a href="<%= request.getContextPath() %>/books">
-                Books
-            </a>
+			<div class="nav-auth">
 
-            <a href="<%= request.getContextPath() %>/login.jsp">
-                Login
-            </a>
+				<a href="<%=request.getContextPath()%>/login.jsp"
+					class="nav-login"> Login </a> <a
+					href="<%=request.getContextPath()%>/Register.jsp"
+					class="nav-register"> Register </a>
 
-        </div>
+			</div>
 
-    </nav>
+		</div>
 
+	</nav>
 
-    <!-- ================= HERO SECTION ================= -->
 
-    <section class="hero">
+	<!-- ================= HERO SECTION ================= -->
 
-        <h1>Welcome to E-Library</h1>
+	<section class="hero">
 
-        <p>
-            Discover, explore and read your favourite books online.
-        </p>
+		<div class="hero-bg-shapes" aria-hidden="true">
+			<i data-lucide="book-open" class="float-icon icon-1"></i> <i
+				data-lucide="bookmark" class="float-icon icon-2"></i> <i
+				data-lucide="feather" class="float-icon icon-3"></i> <i
+				data-lucide="scroll-text" class="float-icon icon-4"></i>
+		</div>
 
-        <a href="#latest-books" class="hero-button">
-            Explore Books
-        </a>
+		<div class="hero-content">
 
-    </section>
+			<span class="hero-eyebrow"> <i data-lucide="sparkles"></i>
+				Your story starts here
+			</span>
 
+			<h1>
+				A Library Without <span class="highlight">Walls</span>
+			</h1>
 
-    <!-- ================= BOOK SECTION ================= -->
+			<p>Read online and lose yourself in a growing shelf of stories
+				&mdash; anytime, anywhere.</p>
 
-    <main class="container" id="latest-books">
+			<div class="hero-actions">
 
-        <div class="section-title">
+				<a href="#latest-books" class="btn btn-primary"> <i
+					data-lucide="compass"></i> Explore Books
+				</a> <a href="<%=request.getContextPath()%>/Register.jsp"
+					class="btn btn-secondary"> <i data-lucide="user-plus"></i> Join
+					the Library
+				</a>
 
-            <h2>Latest Books</h2>
+			</div>
 
-            <p>
-                Explore the latest books available in our library.
-            </p>
+			<div class="hero-stats">
 
-        </div>
+				<div class="stat">
+					<i data-lucide="library"></i>
+					<div>
+						<strong>Read Online</strong> <span>No downloads needed</span>
+					</div>
+				</div>
 
+				<div class="stat">
+					<i data-lucide="download"></i>
+					<div>
+						<strong>PDF Access</strong> <span>Take it offline</span>
+					</div>
+				</div>
 
-        <%
+				<div class="stat">
+					<i data-lucide="clock"></i>
+					<div>
+						<strong>Open 24/7</strong> <span>Always on the shelf</span>
+					</div>
+				</div>
 
-            List<Book> books =
-                    (List<Book>) request.getAttribute("books");
+			</div>
 
-            Map<Long, String> bookCoverUrlMap =
-                    (Map<Long, String>)
-                    request.getAttribute("bookCoverUrlMap");
+		</div>
 
+	</section>
 
-            if (books != null && !books.isEmpty()) {
 
-        %>
+	<!-- ================= BOOK SECTION ================= -->
 
+	<main class="container" id="latest-books">
 
-        <div class="book-grid">
+		<div class="section-title">
 
+			<span class="section-tag"> <i data-lucide="sparkle"></i> Fresh
+				on the Shelf
+			</span>
 
-            <%
+			<h2>Latest Books</h2>
 
-                for (Book book : books) {
+			<p>Explore the latest books available in our library.</p>
 
-                    String coverUrl = null;
+		</div>
 
-                    if (bookCoverUrlMap != null) {
 
-                        coverUrl =
-                                bookCoverUrlMap.get(book.getBookId());
+		<%
+		List<Book> books = (List<Book>) request.getAttribute("books");
 
-                    }
+		Map<Long, String> bookCoverUrlMap = (Map<Long, String>) request.getAttribute("bookCoverUrlMap");
 
-            %>
+		if (books != null && !books.isEmpty()) {
+		%>
 
 
-            <!-- ================= BOOK CARD ================= -->
+		<div class="book-grid">
 
-            <div class="book-card">
 
+			<%
+			for (Book book : books) {
 
-                <div class="book-cover-container">
+				String coverUrl = null;
 
-                    <% if (coverUrl != null) { %>
+				if (bookCoverUrlMap != null) {
 
-                        <img
-                            src="<%= coverUrl %>"
-                            alt="<%= book.getTitle() %>"
-                            class="book-cover"
-                        >
+					coverUrl = bookCoverUrlMap.get(book.getBookId());
 
-                    <% } else { %>
+				}
+			%>
 
-                        <span class="no-cover">
-                            No Cover Available
-                        </span>
 
-                    <% } %>
+			<!-- ================= BOOK CARD ================= -->
 
+			<div class="book-card">
 
-                </div>
 
+				<div class="book-cover-container">
 
-                <div class="book-info">
+					<%
+					if (coverUrl != null) {
+					%>
 
+					<img src="<%=coverUrl%>" alt="<%=book.getTitle()%>"
+						class="book-cover">
 
-                    <h3 class="book-title">
-                        <%= book.getTitle() %>
-                    </h3>
+					<%
+					} else {
+					%>
 
+					<div class="no-cover">
+						<i data-lucide="book-open"></i> <span>No Cover Available</span>
+					</div>
 
-                    <p class="book-author">
-                        By <%= book.getAuthor() %>
-                    </p>
+					<%
+					}
+					%>
 
+					<span class="cover-ribbon"> <i data-lucide="bookmark"></i>
+					</span>
 
-                    <p class="book-description">
-                        <%= book.getDescription() %>
-                    </p>
+				</div>
 
 
-                    <a
-                        href="<%= request.getContextPath() %>/books/details?id=<%= book.getBookId() %>"
-                        class="view-button"
-                    >
-                        View Details
-                    </a>
+				<div class="book-info">
 
 
-                </div>
+					<h3 class="book-title">
+						<%=book.getTitle()%>
+					</h3>
 
 
-            </div>
+					<p class="book-author">
+						<i data-lucide="feather"></i> By
+						<%=book.getAuthor()%>
+					</p>
 
 
-            <%
+					<p class="book-description">
+						<%=book.getDescription()%>
+					</p>
 
-                }
 
-            %>
+					<a
+						href="<%=request.getContextPath()%>/books/details?id=<%=book.getBookId()%>"
+						class="view-button"> <i
+						data-lucide="book-open"></i> View Details
+					</a>
 
 
-        </div>
+				</div>
 
 
-        <%
+			</div>
 
-            } else {
 
-        %>
+			<%
+			}
+			%>
 
 
-            <div class="no-books">
+		</div>
 
-                <h3>No books available</h3>
 
-                <p>
-                    There are currently no books available in the library.
-                </p>
+		<%
+		} else {
+		%>
 
-            </div>
 
+		<div class="no-books">
 
-        <%
+			<i data-lucide="library"></i>
 
-            }
+			<h3>No books available</h3>
 
-        %>
+			<p>There are currently no books available in the library.</p>
 
+		</div>
 
-    </main>
 
+		<%
+		}
+		%>
 
-    <!-- ================= FOOTER ================= -->
 
-    <footer class="footer">
+	</main>
 
-        <p>
-            © 2026 E-Library. All rights reserved.
-        </p>
 
-    </footer>
+	<!-- ================= FOOTER ================= -->
 
+	<footer class="footer">
+
+		<div class="footer-content">
+
+			<div class="footer-brand">
+				<i data-lucide="book-marked"></i> <span>E-Library</span>
+			</div>
+
+			<p>&copy; 2026 E-Library. All rights reserved.</p>
+
+		</div>
+
+	</footer>
+	
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+	<!-- Script -->
+	<script src="<%=request.getContextPath()%>/javascript/home.js"></script>
 
 </body>
 

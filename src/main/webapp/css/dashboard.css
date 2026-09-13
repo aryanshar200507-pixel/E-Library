@@ -1,0 +1,582 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f6fa;
+    color: #222;
+}
+
+/* =========================
+   HEADER
+   ========================= */
+.header {
+    background-color: white;
+    padding: 18px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.header h2 {
+    margin: 0;
+}
+
+.nav {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.nav a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nav a:hover {
+    color: #007bff;
+}
+
+.nav svg {
+    width: 17px;
+    height: 17px;
+}
+
+/* =========================
+   MAIN CONTAINER
+   ========================= */
+.dashboard-container {
+    max-width: 1400px;
+    margin: auto;
+    padding: 30px 40px;
+}
+
+/* =========================
+   SEARCH
+   ========================= */
+.search-section {
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 30px;
+}
+
+.search-section h2 {
+    margin-top: 0;
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.search-button {
+    padding: 12px 22px;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}
+
+.search-button svg {
+    width: 17px;
+    height: 17px;
+}
+
+/* =========================
+   SECTION SHARED STYLES
+   ========================= */
+.category-section,
+.recently-read-section,
+.bookmarked-section {
+    background-color: white;
+    padding: 25px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+.category-header,
+.recently-read-header,
+.bookmarked-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.category-header h2,
+.recently-read-header h2,
+.bookmarked-header h2 {
+    margin: 0;
+}
+
+.explore-button,
+.view-all-button {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.explore-button:hover,
+.view-all-button:hover {
+    text-decoration: underline;
+}
+
+.view-all-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.bookmarked-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.bookmarked-title svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* =========================
+   BOOK ROW & CARDS
+   ========================= */
+.book-row {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.book-card {
+    min-width: 190px;
+    width: 190px;
+    background-color: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.book-cover {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    display: block;
+    background-color: #e9e9e9;
+}
+
+.no-cover {
+    width: 100%;
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    background-color: #e9e9e9;
+    color: #777;
+}
+
+.no-cover svg {
+    width: 35px;
+    height: 35px;
+}
+
+.book-info {
+    padding: 14px;
+}
+
+.book-title {
+    font-size: 17px;
+    font-weight: bold;
+    margin: 0 0 8px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.book-author {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.book-rating {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.star {
+    color: #f5b301;
+}
+
+.book-description {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.4;
+    height: 54px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.read-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+.read-button:hover {
+    background-color: #0056b3;
+}
+
+.read-button svg {
+    width: 15px;
+    height: 15px;
+}
+
+/* =========================
+   EMPTY STATES
+   ========================= */
+.empty-message,
+.bookmarked-empty,
+.recently-read-empty {
+    color: #777;
+    padding: 15px 0;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+/* =========================================
+   PHONE SCREEN
+   Minimize header and navigation
+========================================= */
+
+@media (max-width: 700px) {
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .header {
+        padding: 10px 14px;
+
+        display: flex;
+        flex-direction: row;
+
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 8px;
+
+        min-height: 54px;
+    }
+
+    .header h2 {
+        font-size: 18px;
+        white-space: nowrap;
+    }
+
+
+    /* =========================
+       NAVIGATION
+    ========================= */
+
+    .nav {
+        display: flex;
+
+        gap: 4px;
+
+        align-items: center;
+        justify-content: flex-end;
+
+        flex-wrap: nowrap;
+    }
+
+    .nav a {
+        padding: 7px;
+
+        font-size: 0;
+
+        gap: 0;
+
+        border-radius: 6px;
+    }
+
+    .nav a svg {
+        width: 19px;
+        height: 19px;
+    }
+
+    .nav a:hover {
+        background-color: #f1f1f1;
+    }
+
+
+    /* =========================
+       MAIN CONTAINER
+    ========================= */
+
+    .dashboard-container {
+        width: 100%;
+
+        padding: 15px 12px;
+    }
+
+
+    /* =========================
+       SEARCH
+    ========================= */
+
+    .search-section {
+        padding: 16px;
+
+        margin-bottom: 18px;
+
+        border-radius: 8px;
+    }
+
+    .search-section h2 {
+        font-size: 18px;
+
+        margin-bottom: 12px;
+    }
+
+    .search-form {
+        flex-direction: row;
+
+        gap: 7px;
+    }
+
+    .search-input {
+        min-width: 0;
+
+        padding: 10px;
+
+        font-size: 14px;
+    }
+
+    .search-button {
+        padding: 10px 12px;
+
+        flex-shrink: 0;
+    }
+
+    .search-button span {
+        display: none;
+    }
+
+    .search-button svg {
+        width: 18px;
+        height: 18px;
+    }
+
+
+    /* =========================
+       SECTIONS
+    ========================= */
+
+    .category-section,
+    .recently-read-section,
+    .bookmarked-section {
+        padding: 16px;
+
+        margin-bottom: 18px;
+
+        border-radius: 8px;
+    }
+
+
+    /* =========================
+       SECTION HEADERS
+    ========================= */
+
+    .category-header,
+    .recently-read-header,
+    .bookmarked-header {
+        margin-bottom: 14px;
+    }
+
+    .category-header h2,
+    .recently-read-header h2,
+    .bookmarked-header h2 {
+        font-size: 18px;
+    }
+
+    .bookmarked-title {
+        gap: 6px;
+    }
+
+    .bookmarked-title svg {
+        width: 19px;
+        height: 19px;
+    }
+
+
+    /* =========================
+       VIEW ALL / EXPLORE
+    ========================= */
+
+    .explore-button,
+    .view-all-button {
+        font-size: 13px;
+
+        gap: 3px;
+    }
+
+    .view-all-button svg {
+        width: 14px;
+        height: 14px;
+    }
+
+
+    /* =========================
+       BOOK ROW
+    ========================= */
+
+    .book-row {
+        gap: 12px;
+
+        padding-bottom: 7px;
+
+        overflow-x: auto;
+
+        -webkit-overflow-scrolling: touch;
+
+        scrollbar-width: thin;
+    }
+
+
+    /* =========================
+       BOOK CARD
+    ========================= */
+
+    .book-card {
+        min-width: 145px;
+
+        width: 145px;
+
+        border-radius: 7px;
+    }
+
+
+    /* =========================
+       BOOK COVER
+    ========================= */
+
+    .book-cover,
+    .no-cover {
+        height: 190px;
+    }
+
+    .no-cover svg {
+        width: 28px;
+        height: 28px;
+    }
+
+
+    /* =========================
+       BOOK INFO
+    ========================= */
+
+    .book-info {
+        padding: 10px;
+    }
+
+    .book-title {
+        font-size: 15px;
+
+        margin-bottom: 6px;
+    }
+
+    .book-author {
+        font-size: 12px;
+
+        margin-bottom: 6px;
+    }
+
+    .book-rating {
+        font-size: 12px;
+
+        margin-bottom: 7px;
+    }
+
+    .book-description {
+        font-size: 12px;
+
+        line-height: 1.35;
+
+        height: 49px;
+
+        margin-bottom: 9px;
+    }
+
+
+    /* =========================
+       READ BUTTON
+    ========================= */
+
+    .read-button {
+        width: 100%;
+
+        padding: 8px 9px;
+
+        font-size: 12px;
+
+        gap: 5px;
+    }
+
+    .read-button svg {
+        width: 14px;
+        height: 14px;
+    }
+
+
+    /* =========================
+       EMPTY STATES
+    ========================= */
+
+    .empty-message,
+    .bookmarked-empty,
+    .recently-read-empty {
+        font-size: 13px;
+
+        padding: 10px 0;
+    }
+}

@@ -17,6 +17,7 @@ public class ReadingProgressServiceImpl implements ReadingProgressService {
 
     @Override
     public boolean saveProgress(ReadingProgress progress) {
+
         if (progress == null) {
             return false;
         }
@@ -26,6 +27,7 @@ public class ReadingProgressServiceImpl implements ReadingProgressService {
 
     @Override
     public ReadingProgress getProgress(Long userId, Long bookId) {
+
         if (userId == null || bookId == null) {
             return null;
         }
@@ -35,6 +37,7 @@ public class ReadingProgressServiceImpl implements ReadingProgressService {
 
     @Override
     public boolean updateProgress(ReadingProgress progress) {
+
         if (progress == null) {
             return false;
         }
@@ -50,5 +53,42 @@ public class ReadingProgressServiceImpl implements ReadingProgressService {
         }
 
         return readingProgressDao.findRecentlyRead(userId, limit);
+    }
+
+    @Override
+    public List<Book> getReadingHistory(
+            Long userId,
+            int page,
+            int pageSize) {
+
+        if (userId == null || userId <= 0) {
+            return List.of();
+        }
+
+        if (page < 1) {
+            page = 1;
+        }
+
+        if (pageSize <= 0) {
+            pageSize = 10;
+        }
+
+        int offset = (page - 1) * pageSize;
+
+        return readingProgressDao.findReadingHistory(
+                userId,
+                offset,
+                pageSize
+        );
+    }
+
+    @Override
+    public int getTotalReadingHistory(Long userId) {
+
+        if (userId == null || userId <= 0) {
+            return 0;
+        }
+
+        return readingProgressDao.countReadingHistory(userId);
     }
 }

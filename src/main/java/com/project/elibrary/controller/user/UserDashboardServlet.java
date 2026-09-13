@@ -16,6 +16,8 @@ import com.project.elibrary.service.ratingservice.RatingService;
 import com.project.elibrary.service.ratingservice.RatingServiceImpl;
 import com.project.elibrary.service.readingprogressservice.ReadingProgressService;
 import com.project.elibrary.service.readingprogressservice.ReadingProgressServiceImpl;
+import com.project.elibrary.service.bookmarkservice.BookmarkService;
+import com.project.elibrary.service.bookmarkservice.BookmarkServiceImpl;
 import com.project.elibrary.service.storageservice.S3StorageServiceImpl;
 import com.project.elibrary.service.storageservice.StorageService;
 
@@ -36,8 +38,8 @@ public class UserDashboardServlet extends HttpServlet {
     private RatingService ratingService;
     private StorageService storageService;
     private ReadingProgressService readingProgressService;
+    private BookmarkService bookmarkService;
 
-    
     public UserDashboardServlet() {
 
         categoryService = new CategoryServiceImpl();
@@ -45,10 +47,13 @@ public class UserDashboardServlet extends HttpServlet {
         ratingService = new RatingServiceImpl();
         storageService = new S3StorageServiceImpl();
         readingProgressService = new ReadingProgressServiceImpl();
+        bookmarkService = new BookmarkServiceImpl();
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(
+            HttpServletRequest request,
+            HttpServletResponse response)
             throws ServletException, IOException {
 
         /*
@@ -57,46 +62,105 @@ public class UserDashboardServlet extends HttpServlet {
          * ============================================
          */
 
-        HttpSession session = request.getSession(false);
+        HttpSession session =
+                request.getSession(false);
 
         if (session == null) {
+
             response.sendRedirect(
-                request.getContextPath() + "/login.jsp"
+                    request.getContextPath() + "/login.jsp"
             );
+
             return;
         }
 
         User loggedInUser =
-            (User) session.getAttribute("loggedInUser");
-        
-       
+                (User) session.getAttribute("loggedInUser");
 
         if (loggedInUser == null) {
+
             response.sendRedirect(
-                request.getContextPath() + "/login.jsp"
+                    request.getContextPath() + "/login.jsp"
             );
+
             return;
         }
 
-        Long userId = loggedInUser.getUserId();
+        Long userId =
+                loggedInUser.getUserId();
 
 
         /*
          * ============================================
          * RECENTLY READ BOOKS
          * ============================================
-         *
-         * Get the last 5 books opened by this user.
-         *
-         * The ReadingProgress DAO uses:
-         *
-         * reading_progress.updated_at
-         *
-         * to determine the most recently read books.
          */
 
         List<Book> recentlyReadBooks =
-            readingProgressService.getRecentlyRead(userId, 5);
+                readingProgressService.getRecentlyRead(
+                        userId,
+                        5
+                );
+
+
+        /*
+         * ============================================
+         * BOOKMARKED BOOKS
+         * ============================================
+         *
+         * Get the first 5 bookmarked books.
+         *
+         * The dedicated Bookmarks page has
+         * pagination. The dashboard only shows
+         * a small preview.
+         */
+
+        List<Book> bookmarkedBooks =
+                bookmarkService.getBookmarkedBooks(
+                        userId,
+                        1,
+                        5
+                );
+
+
+        /*
+         * ============================================
+         * BOOKMARKED BOOK COVER URL MAP
+         * ============================================
+         */
+
+        Map<Long, String> bookmarkedBookCoverUrlMap =
+                new HashMap<>();
+
+
+        /*
+         * ============================================
+         * PROCESS BOOKMARKED BOOK COVERS
+         * ============================================
+         */
+
+        for (Book book : bookmarkedBooks) {
+
+            Long bookId =
+                    book.getBookId();
+
+            String storageKey =
+                    book.getCoverStorageKey();
+
+            if (storageKey != null
+                    && !storageKey.isBlank()) {
+
+                String coverUrl =
+                        storageService.getFileUrl(
+                                storageKey
+                        );
+
+                bookmarkedBookCoverUrlMap.put(
+                        bookId,
+                        coverUrl
+                );
+            }
+        }
 
 
         /*
@@ -106,20 +170,17 @@ public class UserDashboardServlet extends HttpServlet {
          */
 
         List<Category> topCategories =
-            categoryService.getTopRatedCategories(3);
+                categoryService.getTopRatedCategories(3);
 
 
         /*
          * ============================================
          * CATEGORY BOOK MAP
          * ============================================
-         *
-         * Key   = category ID
-         * Value = list of books
          */
 
         Map<Long, List<Book>> categoryBooksMap =
-            new HashMap<>();
+                new HashMap<>();
 
 
         /*
@@ -129,7 +190,7 @@ public class UserDashboardServlet extends HttpServlet {
          */
 
         Map<Long, Double> bookAverageRatingMap =
-            new HashMap<>();
+                new HashMap<>();
 
 
         /*
@@ -139,7 +200,7 @@ public class UserDashboardServlet extends HttpServlet {
          */
 
         Map<Long, Integer> bookRatingCountMap =
-            new HashMap<>();
+                new HashMap<>();
 
 
         /*
@@ -149,7 +210,7 @@ public class UserDashboardServlet extends HttpServlet {
          */
 
         Map<Long, String> bookCoverUrlMap =
-            new HashMap<>();
+                new HashMap<>();
 
 
         /*
@@ -160,46 +221,58 @@ public class UserDashboardServlet extends HttpServlet {
 
         for (Book book : recentlyReadBooks) {
 
-            Long bookId = book.getBookId();
+            Long bookId =
+                    book.getBookId();
+
 
             /*
              * Average rating
              */
+
             Double averageRating =
-                ratingService.getAverageRating(bookId);
+                    ratingService.getAverageRating(
+                            bookId
+                    );
 
             bookAverageRatingMap.put(
-                bookId,
-                averageRating
+                    bookId,
+                    averageRating
             );
 
 
             /*
              * Rating count
              */
+
             int ratingCount =
-                ratingService.getRatingCount(bookId);
+                    ratingService.getRatingCount(
+                            bookId
+                    );
 
             bookRatingCountMap.put(
-                bookId,
-                ratingCount
+                    bookId,
+                    ratingCount
             );
 
 
             /*
              * Cover URL
              */
-            String storageKey =
-                book.getCoverStorageKey();
 
-            if (storageKey != null && !storageKey.isBlank()) {
+            String storageKey =
+                    book.getCoverStorageKey();
+
+            if (storageKey != null
+                    && !storageKey.isBlank()) {
 
                 String coverUrl =
-                    storageService.getFileUrl(storageKey);
+                        storageService.getFileUrl(
+                                storageKey
+                        );
 
                 bookCoverUrlMap.put(
-                    bookId,
-                    coverUrl
+                        bookId,
+                        coverUrl
                 );
             }
         }
@@ -214,19 +287,19 @@ public class UserDashboardServlet extends HttpServlet {
         for (Category category : topCategories) {
 
             Long categoryId =
-                category.getCategoryId();
+                    category.getCategoryId();
 
             List<Book> books =
-            	    bookService.getBookByCategory(
-            	        categoryId,
-            	        "",
-            	        1,
-            	        5
-            	    );
+                    bookService.getBookByCategory(
+                            categoryId,
+                            "",
+                            1,
+                            5
+                    );
 
             categoryBooksMap.put(
-                categoryId,
-                books
+                    categoryId,
+                    books
             );
 
 
@@ -238,47 +311,57 @@ public class UserDashboardServlet extends HttpServlet {
             for (Book book : books) {
 
                 Long bookId =
-                    book.getBookId();
+                        book.getBookId();
 
 
                 /*
                  * Average rating
                  */
+
                 Double averageRating =
-                    ratingService.getAverageRating(bookId);
+                        ratingService.getAverageRating(
+                                bookId
+                        );
 
                 bookAverageRatingMap.put(
-                    bookId,
-                    averageRating
+                        bookId,
+                        averageRating
                 );
 
 
                 /*
                  * Rating count
                  */
+
                 int ratingCount =
-                    ratingService.getRatingCount(bookId);
+                        ratingService.getRatingCount(
+                                bookId
+                        );
 
                 bookRatingCountMap.put(
-                    bookId,
-                    ratingCount
+                        bookId,
+                        ratingCount
                 );
 
 
                 /*
                  * Cover URL
                  */
-                String storageKey =
-                    book.getCoverStorageKey();
 
-                if (storageKey != null && !storageKey.isBlank()) {
+                String storageKey =
+                        book.getCoverStorageKey();
+
+                if (storageKey != null
+                        && !storageKey.isBlank()) {
 
                     String coverUrl =
-                        storageService.getFileUrl(storageKey);
+                            storageService.getFileUrl(
+                                    storageKey
+                            );
 
                     bookCoverUrlMap.put(
-                        bookId,
-                        coverUrl
+                            bookId,
+                            coverUrl
                     );
                 }
             }
@@ -291,34 +374,83 @@ public class UserDashboardServlet extends HttpServlet {
          * ============================================
          */
 
-        request.setAttribute(
-            "recentlyReadBooks",
-            recentlyReadBooks
-        );
+        /*
+         * Recently read
+         */
 
         request.setAttribute(
-            "topCategories",
-            topCategories
+                "recentlyReadBooks",
+                recentlyReadBooks
         );
 
-        request.setAttribute(
-            "categoryBooksMap",
-            categoryBooksMap
-        );
+
+        /*
+         * Bookmarked books
+         */
 
         request.setAttribute(
-            "bookAverageRatingMap",
-            bookAverageRatingMap
+                "bookmarkedBooks",
+                bookmarkedBooks
         );
 
-        request.setAttribute(
-            "bookRatingCountMap",
-            bookRatingCountMap
-        );
+
+        /*
+         * Bookmarked book covers
+         */
 
         request.setAttribute(
-            "bookCoverUrlMap",
-            bookCoverUrlMap
+                "bookmarkedBookCoverUrlMap",
+                bookmarkedBookCoverUrlMap
+        );
+
+
+        /*
+         * Top categories
+         */
+
+        request.setAttribute(
+                "topCategories",
+                topCategories
+        );
+
+
+        /*
+         * Category books
+         */
+
+        request.setAttribute(
+                "categoryBooksMap",
+                categoryBooksMap
+        );
+
+
+        /*
+         * Average ratings
+         */
+
+        request.setAttribute(
+                "bookAverageRatingMap",
+                bookAverageRatingMap
+        );
+
+
+        /*
+         * Rating counts
+         */
+
+        request.setAttribute(
+                "bookRatingCountMap",
+                bookRatingCountMap
+        );
+
+
+        /*
+         * Cover URLs
+         */
+
+        request.setAttribute(
+                "bookCoverUrlMap",
+                bookCoverUrlMap
         );
 
 
@@ -329,8 +461,11 @@ public class UserDashboardServlet extends HttpServlet {
          */
 
         request.getRequestDispatcher(
-            "/WEB-INF/user/dashboard.jsp"
-        ).forward(request, response);
+                "/WEB-INF/user/dashboard.jsp"
+        ).forward(
+                request,
+                response
+        );
     }
 
 

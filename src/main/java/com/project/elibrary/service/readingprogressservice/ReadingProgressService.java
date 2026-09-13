@@ -12,6 +12,10 @@ public interface ReadingProgressService {
     ReadingProgress getProgress(Long userId, Long bookId);
 
     boolean updateProgress(ReadingProgress progress);
-    
+
     List<Book> getRecentlyRead(Long userId, int limit);
+
+    List<Book> getReadingHistory(Long userId, int page, int pageSize);
+
+    int getTotalReadingHistory(Long userId);
 }

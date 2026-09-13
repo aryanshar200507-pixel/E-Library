@@ -14,4 +14,8 @@ public interface ReadingProgressDao {
     boolean updateProgress(ReadingProgress progress);
     
     List<Book> findRecentlyRead(Long userId , int limit);
+    
+    List<Book> findReadingHistory(Long userId, int offset, int limit);
+
+    int countReadingHistory(Long userId);
 }
