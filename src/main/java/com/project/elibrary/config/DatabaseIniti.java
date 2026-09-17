@@ -84,6 +84,7 @@ public final class DatabaseIniti {
 		createBookmarkTable();
 		createHighlightTable();
 		createRememberMeTable();
+		createSuggestionTable();
 		// Other table creation methods will be added here.
 	}
 
@@ -452,6 +453,38 @@ public final class DatabaseIniti {
 
 	        throw new RuntimeException(
 	                "Failed to create remember me table.",
+	                e
+	        );
+	    }
+	}
+	
+	public static void createSuggestionTable() {
+
+	    String sql = """
+	            CREATE TABLE IF NOT EXISTS app_suggestion (
+	                suggestion_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+	                user_id BIGINT NOT NULL,
+	                description TEXT NOT NULL,
+	                status VARCHAR(28) NOT NULL,
+	                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	                CONSTRAINT fk_app_suggestion_user
+	                    FOREIGN KEY (user_id)
+	                    REFERENCES users(user_id)
+	                    ON DELETE CASCADE
+	            );
+	            """;
+
+	    try (Connection connection = DatabaseConnection.getConnection();
+	         Statement statement = connection.createStatement()) {
+
+	        statement.executeUpdate(sql);
+
+	        System.out.println("App Suggestion table is ready.");
+
+	    } catch (SQLException e) {
+
+	        throw new RuntimeException(
+	                "Failed to create app suggestion table.",
 	                e
 	        );
 	    }
