@@ -21,6 +21,9 @@ import com.project.elibrary.service.bookmarkservice.BookmarkServiceImpl;
 import com.project.elibrary.service.storageservice.S3StorageServiceImpl;
 import com.project.elibrary.service.storageservice.StorageService;
 
+import com.project.elibrary.service.recommendationservice.RecommendationService;
+import com.project.elibrary.service.recommendationservice.RecommendationServiceImpl;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -39,7 +42,9 @@ public class UserDashboardServlet extends HttpServlet {
     private StorageService storageService;
     private ReadingProgressService readingProgressService;
     private BookmarkService bookmarkService;
-
+  
+    private RecommendationService recommendationService;
+   
     public UserDashboardServlet() {
 
         categoryService = new CategoryServiceImpl();
@@ -48,7 +53,8 @@ public class UserDashboardServlet extends HttpServlet {
         storageService = new S3StorageServiceImpl();
         readingProgressService = new ReadingProgressServiceImpl();
         bookmarkService = new BookmarkServiceImpl();
-    }
+        recommendationService = new RecommendationServiceImpl();
+        }
 
     @Override
     protected void doGet(
@@ -97,12 +103,23 @@ public class UserDashboardServlet extends HttpServlet {
          */
 
         List<Book> recentlyReadBooks =
-                readingProgressService.getRecentlyRead(
-                        userId,
-                        5
-                );
+                readingProgressService.getRecentlyRead( userId, 5  );
+         
+        /*This tells the recommendation system:
+		"Which user's recommendations should I calculate?"*/
+    
+        /*
+         * ============================================
+         * RECOMMENDING BOOKS
+         * ============================================
+         */
+        
+        List<Book> recommendedBooks =
+                recommendationService.getRecommendations(userId, 5);
 
-
+        /*This tells it:
+		"Give me a maximum of 5 recommended books."*/
+        
         /*
          * ============================================
          * BOOKMARKED BOOKS
@@ -205,14 +222,29 @@ public class UserDashboardServlet extends HttpServlet {
 
         /*
          * ============================================
-         * BOOK COVER URL MAP
+         * BOOK COVER && RECOMMENDED BOOK COVER URL MAP
          * ============================================
          */
 
         Map<Long, String> bookCoverUrlMap =
                 new HashMap<>();
 
+        for (Book book : recommendedBooks) {
 
+            Long bookId = book.getBookId();
+
+            String storageKey = book.getCoverStorageKey();
+
+            if (storageKey != null && !storageKey.isBlank()) {
+
+                String coverUrl =
+                        storageService.getFileUrl(storageKey);
+
+                bookCoverUrlMap.put(bookId, coverUrl);
+            }
+        }
+       
+        
         /*
          * ============================================
          * PROCESS RECENTLY READ BOOKS
@@ -452,7 +484,10 @@ public class UserDashboardServlet extends HttpServlet {
                 "bookCoverUrlMap",
                 bookCoverUrlMap
         );
-
+        
+        request.setAttribute(
+        		"recommendedBooks",
+        		recommendedBooks);
 
         /*
          * ============================================

@@ -580,3 +580,26 @@ body {
         padding: 10px 0;
     }
 }
+
+/* =========================
+   RECOMMENDED BOOKS
+   ========================= */
+
+.recommended-section {
+    background-color: white;
+    padding: 25px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+.recommended-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.recommended-header h2 {
+    margin: 0;
+}

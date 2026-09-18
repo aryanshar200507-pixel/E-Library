@@ -372,6 +372,81 @@ if (bookmarkedBooks != null && !bookmarkedBooks.isEmpty()) {
 
 	</div>
 
+	<!-- RECOMMENDED BOOKS -->
+	<%
+	    List<Book> recommendedBooks =
+	            (List<Book>) request.getAttribute("recommendedBooks");
+	
+	    Map<Long, String> coverMap =
+	            (Map<Long, String>) request.getAttribute("bookCoverUrlMap");
+	%>
+	
+	<% if (recommendedBooks != null && !recommendedBooks.isEmpty()) { %>
+	
+	<section class="recommended-section">
+	
+	    <div class="recommended-header">
+	        <h2>Recommended Books</h2>
+	    </div>
+	
+	    <div class="book-row">
+	
+	        <% for (Book book : recommendedBooks) {
+	
+	            Long bookId = book.getBookId();
+	            String coverUrl = coverMap.get(bookId);
+	        %>
+	
+	        <div class="book-card ">
+	
+	            <% if (coverUrl != null && !coverUrl.isBlank()) { %>
+	
+	                <img
+	                    src="<%= coverUrl %>"
+	                    alt="<%= book.getTitle() %>"
+	                    class="book-cover">
+	
+	            <% } else { %>
+	
+	                <div class="no-cover">
+	                    <span>No Cover</span>
+	                </div>
+	
+	            <% } %>
+	
+	            <div class="book-info">
+	
+	                <h3 class="book-title">
+	                    <%= book.getTitle() %>
+	                </h3>
+	
+	                <div class="book-author">
+	                    By <%= book.getAuthor() %>
+	                </div>
+	
+	                <div class="book-description">
+	                    <%= book.getDescription() != null
+	                        ? book.getDescription()
+	                        : "No description available." %>
+	                </div>
+	
+	                <a
+	                    href="${pageContext.request.contextPath}/books/details?id=<%= bookId %>"
+	                    class="read-button">
+	                    Read Now
+	                </a>
+	
+	            </div>
+	
+	        </div>
+	
+	        <% } %>
+	
+	    </div>
+	
+	</section>
+	
+	<% } %>
 	<!-- Custom JS Script -->
 	<script src="${pageContext.request.contextPath}/javascript/dashboard.js"></script>
 </body>
