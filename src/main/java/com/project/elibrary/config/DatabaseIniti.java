@@ -85,6 +85,8 @@ public final class DatabaseIniti {
 		createHighlightTable();
 		createRememberMeTable();
 		createSuggestionTable();
+		createBookRequestTable();
+		createBookRequestVoteTable();
 		// Other table creation methods will be added here.
 	}
 
@@ -487,6 +489,97 @@ public final class DatabaseIniti {
 	                "Failed to create app suggestion table.",
 	                e
 	        );
+	    }
+	}
+	
+	// =========================================================
+	// BOOK REQUEST TABLE
+	// =========================================================
+
+	public static void createBookRequestTable() {
+
+	    String sql = """
+	            CREATE TABLE IF NOT EXISTS book_request (
+	                request_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+	                user_id BIGINT NOT NULL,
+
+	                title VARCHAR(255) NOT NULL,
+
+	                author VARCHAR(255),
+
+	                week_start DATE NOT NULL,
+
+	                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+	                CONSTRAINT fk_book_request_user
+	                    FOREIGN KEY (user_id)
+	                    REFERENCES users(user_id)
+	                    ON DELETE CASCADE
+	            )
+	            """;
+
+	    try (Connection connection = DatabaseConnection.getConnection();
+	         Statement statement = connection.createStatement()) {
+
+	        statement.executeUpdate(sql);
+
+	        System.out.println(
+	                "Book Request table is ready.");
+
+	    } catch (SQLException e) {
+
+	        throw new RuntimeException(
+	                "Failed to create book request table.",
+	                e);
+	    }
+	}
+
+
+	// =========================================================
+	// BOOK REQUEST VOTE TABLE
+	// =========================================================
+
+	public static void createBookRequestVoteTable() {
+
+	    String sql = """
+	            CREATE TABLE IF NOT EXISTS book_request_vote (
+	                vote_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+
+	                request_id BIGINT NOT NULL,
+
+	                user_id BIGINT NOT NULL,
+
+	                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+	                CONSTRAINT fk_book_request_vote_request
+	                    FOREIGN KEY (request_id)
+	                    REFERENCES book_request(request_id)
+	                    ON DELETE CASCADE,
+
+	                CONSTRAINT fk_book_request_vote_user
+	                    FOREIGN KEY (user_id)
+	                    REFERENCES users(user_id)
+	                    ON DELETE CASCADE,
+
+	                CONSTRAINT unique_request_user_vote
+	                    UNIQUE (request_id, user_id)
+	            )
+	            """;
+
+	    try (Connection connection = DatabaseConnection.getConnection();
+	         Statement statement = connection.createStatement()) {
+
+	        statement.executeUpdate(sql);
+
+	        System.out.println(
+	                "Book Request Vote table is ready.");
+
+	    } catch (SQLException e) {
+
+	        throw new RuntimeException(
+	                "Failed to create book request vote table.",
+	                e);
 	    }
 	}
 }
