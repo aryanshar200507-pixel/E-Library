@@ -24,18 +24,38 @@
 	<!-- HEADER -->
 	<header class="header">
 		<h2>E-Library</h2>
+		
 		<nav class="nav">
-			<a href="${pageContext.request.contextPath}/user/dashboard"> <i
-				data-lucide="layout-dashboard"></i> Dashboard
-			</a> <a href="${pageContext.request.contextPath}/books"> <i
-				data-lucide="library"></i> Categories
-			</a> <a href="${pageContext.request.contextPath}/books/bookmark-book">
-				<i data-lucide="bookmark"></i> Bookmarks
-			</a> <a href="${pageContext.request.contextPath}/books/history"
-				class="nav-link"> <i data-lucide="history"></i> <span>History</span>
-
-			</a> <a href="${pageContext.request.contextPath}/logout"> <i
-				data-lucide="log-out"></i> Logout
+		
+			<a href="${pageContext.request.contextPath}/user/dashboard"> 
+			   <i data-lucide="layout-dashboard"></i> 
+			   Dashboard 
+			</a> 
+			
+			<a href="${pageContext.request.contextPath}/books"> 
+			   <i data-lucide="library"></i> 
+			   Categories 
+			</a>
+			
+			<a href="${pageContext.request.contextPath}/book-request">
+               <i data-lucide="book-plus"></i> 
+               Book Requests 
+            </a> 
+            
+			<a href="${pageContext.request.contextPath}/books/bookmark-book">
+				<i data-lucide="bookmark"></i> 
+				Bookmarks 
+		    </a> 
+		    
+			<a href="${pageContext.request.contextPath}/books/history"
+				class="nav-link"> 
+				<i data-lucide="history"></i> 
+				<span>History</span>
+			</a> 
+			
+			<a href="${pageContext.request.contextPath}/logout"> 
+			    <i data-lucide="log-out"></i> 
+			    Logout 
 			</a>
 		</nav>
 	</header>

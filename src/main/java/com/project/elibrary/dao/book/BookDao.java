@@ -28,5 +28,7 @@ public interface BookDao {
 	boolean incrementViews(Long bookId);
 
 	Book findHighestRatedBookByCategory(Long categoryId);
+	
+	boolean existsByTitle(String title);
 
 }

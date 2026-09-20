@@ -475,5 +475,25 @@ public class BookDaoImpl implements BookDao {
 			throw new RuntimeException("Failed to find highest rated book by category.", e);
 		}
 	}
+	@Override
+	public boolean existsByTitle(String title) {
+	    String sql = "SELECT COUNT(*) FROM books WHERE title = ?";
 
+	    try (Connection con = DatabaseConnection.getConnection();
+	         PreparedStatement ps = con.prepareStatement(sql)) {
+
+	        ps.setString(1, title);
+
+	        try (ResultSet rs = ps.executeQuery()) {
+	            if (rs.next()) {
+	                return rs.getInt(1) > 0;
+	            }
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return false;
+	}
 }

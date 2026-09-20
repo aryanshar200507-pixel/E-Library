@@ -1,0 +1,260 @@
+@charset "UTF-8";
+/* ===== E-LIBRARY REGISTER PAGE ===== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+
+
+    padding: 20px;
+}
+
+
+/* ===== Main Register Card ===== */
+
+body::before {
+    content: "📚";
+
+    position: fixed;
+
+    top: 40px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    font-size: 55px;
+}
+
+
+/* ===== Heading ===== */
+
+h2 {
+    position: absolute;
+
+    top: 110px;
+
+    color: white;
+
+    font-size: 30px;
+
+    text-align: center;
+
+    letter-spacing: 0.5px;
+}
+
+
+/* ===== Registration Form ===== */
+
+form {
+    width: 420px;
+
+    padding: 40px;
+
+    margin-top: 100px;
+
+    background: #ffffff;
+
+    border-radius: 18px;
+
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+
+/* ===== Labels ===== */
+
+label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #1e293b;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+/* ===== Input Fields ===== */
+
+input {
+    width: 100%;
+
+    padding: 13px 15px;
+
+    margin-bottom: 18px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 8px;
+
+    background: #f8fafc;
+
+    color: #1e293b;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: all 0.3s ease;
+}
+
+
+/* Input Focus */
+
+input:focus {
+    border-color: #2563eb;
+
+    background: white;
+
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+
+/* Placeholder */
+
+input::placeholder {
+    color: #94a3b8;
+}
+
+
+/* ===== Register Button ===== */
+
+button {
+    width: 100%;
+
+    padding: 13px;
+
+    margin-top: 5px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: all 0.3s ease;
+}
+
+
+button:hover {
+    background: linear-gradient(135deg, #1d4ed8, #4338ca);
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+}
+
+
+button:active {
+    transform: scale(0.98);
+}
+
+
+/* ===== Messages ===== */
+
+p {
+    position: relative;
+
+    width: 420px;
+
+    margin: 0 auto 15px;
+
+    padding: 12px;
+
+    border-radius: 8px;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    background: white;
+
+    color: #1e293b;
+}
+
+
+/* ===== Login Link ===== */
+
+a {
+    display: block;
+
+    width: 420px;
+
+    margin: 20px auto 0;
+
+    text-align: center;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    text-decoration: none;
+}
+
+
+a:hover {
+    text-decoration: underline;
+}
+
+
+/* ===== Remove BR Spacing ===== */
+
+br {
+    display: none;
+}
+
+
+/* ===== Mobile Responsive ===== */
+
+@media (max-width: 600px) {
+
+    body::before {
+        top: 20px;
+    }
+
+    h2 {
+        top: 85px;
+
+        font-size: 24px;
+    }
+
+    form {
+        width: 100%;
+
+        max-width: 420px;
+
+        padding: 30px;
+
+        margin-top: 100px;
+    }
+
+    p,
+    a {
+        width: 100%;
+
+        max-width: 420px;
+    }
+}

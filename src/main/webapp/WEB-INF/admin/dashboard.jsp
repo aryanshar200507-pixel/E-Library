@@ -376,42 +376,60 @@ td form {
 		<!-- =========================
          BOOK MANAGEMENT
          ========================= -->
+         
 
-		<section class="dashboard-section">
+        <section class="dashboard-section">
 
-			<h2>Book Management</h2>
+        <h2>Book Management</h2>
+        <div class="management-row">
 
-			<div class="management-row">
+        <!-- ADD BOOK -->
+        <div class="management-box">
+
+            <h3>Add Book</h3>
+
+            <p>Add a new book to the E-Library.</p>
+
+            <a class="management-button"
+               href="${pageContext.request.contextPath}/admin/books/add">
+                Add Book
+            </a>
+
+        </div>
 
 
-				<div class="management-box">
+        <!-- MANAGE BOOKS -->
+        <div class="management-box">
 
-					<h3>Add Book</h3>
+            <h3>Manage Books</h3>
 
-					<p>Add a new book to the E-Library.</p>
+            <p>View, edit and delete books.</p>
 
-					<a class="management-button"
-						href="${pageContext.request.contextPath}/admin/books/add"> Add
-						Book </a>
+            <a class="management-button"
+               href="${pageContext.request.contextPath}/books">
+                Manage Books
+            </a>
 
-				</div>
+        </div>
 
 
-				<div class="management-box">
+        <!-- BOOK REQUESTS -->
+        <div class="management-box">
 
-					<h3>Manage Books</h3>
+            <h3>Book Requests</h3>
 
-					<p>View, edit and delete books.</p>
+            <p>View and manage weekly book requests.</p>
 
-					<a class="management-button"
-						href="${pageContext.request.contextPath}/books"> Manage Books
-					</a>
+            <a class="management-button"
+               href="${pageContext.request.contextPath}/book-request">
+                View Requests
+            </a>
 
-				</div>
+        </div>
 
-			</div>
+    </div>
 
-		</section>
+</section>
 
 
 		<!-- =========================
