@@ -24,38 +24,26 @@
 	<!-- HEADER -->
 	<header class="header">
 		<h2>E-Library</h2>
-		
+
 		<nav class="nav">
-		
-			<a href="${pageContext.request.contextPath}/user/dashboard"> 
-			   <i data-lucide="layout-dashboard"></i> 
-			   Dashboard 
-			</a> 
-			
-			<a href="${pageContext.request.contextPath}/books"> 
-			   <i data-lucide="library"></i> 
-			   Categories 
+
+			<a href="${pageContext.request.contextPath}/user/dashboard"> <i
+				data-lucide="layout-dashboard"></i> Dashboard
+			</a> <a href="${pageContext.request.contextPath}/books"> <i
+				data-lucide="library"></i> Categories
+			</a> <a href="${pageContext.request.contextPath}/book-request"> <i
+				data-lucide="book-plus"></i> Book Requests
+			</a> <a href="${pageContext.request.contextPath}/books/bookmark-book">
+				<i data-lucide="bookmark"></i> Bookmarks
 			</a>
-			
-			<a href="${pageContext.request.contextPath}/book-request">
-               <i data-lucide="book-plus"></i> 
-               Book Requests 
-            </a> 
-            
-			<a href="${pageContext.request.contextPath}/books/bookmark-book">
-				<i data-lucide="bookmark"></i> 
-				Bookmarks 
-		    </a> 
-		    
-			<a href="${pageContext.request.contextPath}/books/history"
-				class="nav-link"> 
-				<i data-lucide="history"></i> 
-				<span>History</span>
-			</a> 
-			
-			<a href="${pageContext.request.contextPath}/logout"> 
-			    <i data-lucide="log-out"></i> 
-			    Logout 
+
+			<!-- Suggestions -->
+			<a href="${pageContext.request.contextPath}/user/suggestion"
+				class="nav-link"> <i data-lucide="message-square-plus"></i> <span>Suggestions</span>
+			</a> <a href="${pageContext.request.contextPath}/books/history"
+				class="nav-link"> <i data-lucide="history"></i> <span>History</span>
+			</a> <a href="${pageContext.request.contextPath}/logout"> <i
+				data-lucide="log-out"></i> Logout
 			</a>
 		</nav>
 	</header>
@@ -78,146 +66,124 @@
 
 		<!-- BOOKMARKED BOOKS -->
 
-<%
-List<Book> bookmarkedBooks =
-        (List<Book>) request.getAttribute("bookmarkedBooks");
+		<%
+		List<Book> bookmarkedBooks = (List<Book>) request.getAttribute("bookmarkedBooks");
 
-Map<Long, String> bookmarkedBookCoverUrlMap =
-        (Map<Long, String>) request.getAttribute(
-                "bookmarkedBookCoverUrlMap");
+		Map<Long, String> bookmarkedBookCoverUrlMap = (Map<Long, String>) request.getAttribute("bookmarkedBookCoverUrlMap");
 
-if (bookmarkedBooks != null && !bookmarkedBooks.isEmpty()) {
-%>
+		if (bookmarkedBooks != null && !bookmarkedBooks.isEmpty()) {
+		%>
 
-<section class="bookmarked-section">
+		<section class="bookmarked-section">
 
-    <div class="bookmarked-header">
+			<div class="bookmarked-header">
 
-        <div class="bookmarked-title">
+				<div class="bookmarked-title">
 
-            <i data-lucide="bookmark"></i>
+					<i data-lucide="bookmark"></i>
 
-            <h2>Bookmarked Books</h2>
+					<h2>Bookmarked Books</h2>
 
-        </div>
+				</div>
 
-        <a class="view-all-button"
-           href="${pageContext.request.contextPath}/books/bookmark-book">
+				<a class="view-all-button"
+					href="${pageContext.request.contextPath}/books/bookmark-book">
 
-            View All
+					View All <i data-lucide="arrow-right"></i>
 
-            <i data-lucide="arrow-right"></i>
+				</a>
 
-        </a>
-
-    </div>
+			</div>
 
 
-    <div class="book-row">
+			<div class="book-row">
 
-        <%
-        for (Book book : bookmarkedBooks) {
+				<%
+				for (Book book : bookmarkedBooks) {
 
-            Long bookId = book.getBookId();
+					Long bookId = book.getBookId();
 
-            String coverUrl =
-                    (bookmarkedBookCoverUrlMap != null)
-                    ? bookmarkedBookCoverUrlMap.get(bookId)
-                    : null;
-        %>
+					String coverUrl = (bookmarkedBookCoverUrlMap != null) ? bookmarkedBookCoverUrlMap.get(bookId) : null;
+				%>
 
-        <div class="book-card">
+				<div class="book-card">
 
-            <%
-            if (coverUrl != null && !coverUrl.isBlank()) {
-            %>
+					<%
+					if (coverUrl != null && !coverUrl.isBlank()) {
+					%>
 
-                <img
-                    class="book-cover"
-                    src="<%= coverUrl %>"
-                    alt="Book Cover">
+					<img class="book-cover" src="<%=coverUrl%>" alt="Book Cover">
 
-            <%
-            } else {
-            %>
+					<%
+					} else {
+					%>
 
-                <div class="no-cover">
+					<div class="no-cover">
 
-                    <i data-lucide="book-open"></i>
+						<i data-lucide="book-open"></i> <span>No Cover</span>
 
-                    <span>No Cover</span>
+					</div>
 
-                </div>
-
-            <%
-            }
-            %>
+					<%
+					}
+					%>
 
 
-            <div class="book-info">
+					<div class="book-info">
 
-                <h3 class="book-title">
-                    <%= book.getTitle() %>
-                </h3>
-
-
-                <div class="book-author">
-
-                    By <%= book.getAuthor() %>
-
-                </div>
+						<h3 class="book-title">
+							<%=book.getTitle()%>
+						</h3>
 
 
-                <div class="book-description">
+						<div class="book-author">
 
-                    <%
-                    String description =
-                            book.getDescription();
+							By
+							<%=book.getAuthor()%>
 
-                    if (description != null
-                            && !description.isBlank()) {
-
-                        out.print(
-                            description.length() > 100
-                            ? description.substring(0, 100) + "..."
-                            : description
-                        );
-
-                    } else {
-
-                        out.print(
-                            "No description available."
-                        );
-                    }
-                    %>
-
-                </div>
+						</div>
 
 
-                <a class="read-button"
-                   href="${pageContext.request.contextPath}/books/details?id=<%= bookId %>">
+						<div class="book-description">
 
-                    <i data-lucide="book-open"></i>
+							<%
+							String description = book.getDescription();
 
-                    Read More
+							if (description != null && !description.isBlank()) {
 
-                </a>
+								out.print(description.length() > 100 ? description.substring(0, 100) + "..." : description);
 
-            </div>
+							} else {
 
-        </div>
+								out.print("No description available.");
+							}
+							%>
 
-        <%
-        }
-        %>
+						</div>
 
-    </div>
 
-</section>
+						<a class="read-button"
+							href="${pageContext.request.contextPath}/books/details?id=<%= bookId %>">
 
-<%
-}
-%>
+							<i data-lucide="book-open"></i> Read More
+
+						</a>
+
+					</div>
+
+				</div>
+
+				<%
+				}
+				%>
+
+			</div>
+
+		</section>
+
+		<%
+		}
+		%>
 
 
 		<!-- RECENTLY READ BOOKS -->
@@ -390,84 +356,91 @@ if (bookmarkedBooks != null && !bookmarkedBooks.isEmpty()) {
 		}
 		%>
 
-	</div>
 
-	<!-- RECOMMENDED BOOKS -->
+		<!-- RECOMMENDED BOOKS -->
+		<%
+		List<Book> recommendedBooks = (List<Book>) request.getAttribute("recommendedBooks");
+
+		Map<Long, String> coverMap = (Map<Long, String>) request.getAttribute("bookCoverUrlMap");
+		%>
+
+		<%
+		if (recommendedBooks != null && !recommendedBooks.isEmpty()) {
+		%>
+
+		<section class="recommended-section">
+
+			<div class="recommended-header">
+				<h2>Recommended Books</h2>
+			</div>
+
+			<div class="book-row">
+
+				<%
+				for (Book book : recommendedBooks) {
+
+					Long bookId = book.getBookId();
+					String coverUrl = coverMap.get(bookId);
+				%>
+
+				<div class="book-card ">
+
+					<%
+					if (coverUrl != null && !coverUrl.isBlank()) {
+					%>
+
+					<img src="<%=coverUrl%>" alt="<%=book.getTitle()%>"
+						class="book-cover">
+
+					<%
+					} else {
+					%>
+
+					<div class="no-cover">
+						<span>No Cover</span>
+					</div>
+
+					<%
+					}
+					%>
+
+					<div class="book-info">
+
+						<h3 class="book-title">
+							<%=book.getTitle()%>
+						</h3>
+
+						<div class="book-author">
+							By
+							<%=book.getAuthor()%>
+						</div>
+
+						<div class="book-description">
+							<%=book.getDescription() != null ? book.getDescription() : "No description available."%>
+						</div>
+
+						<a
+							href="${pageContext.request.contextPath}/books/details?id=<%= bookId %>"
+							class="read-button"> Read Now </a>
+
+					</div>
+
+				</div>
+
+				<%
+				}
+				%>
+
+
+			</div>
+		</section>
+
+	</div>
 	<%
-	    List<Book> recommendedBooks =
-	            (List<Book>) request.getAttribute("recommendedBooks");
-	
-	    Map<Long, String> coverMap =
-	            (Map<Long, String>) request.getAttribute("bookCoverUrlMap");
+	}
 	%>
-	
-	<% if (recommendedBooks != null && !recommendedBooks.isEmpty()) { %>
-	
-	<section class="recommended-section">
-	
-	    <div class="recommended-header">
-	        <h2>Recommended Books</h2>
-	    </div>
-	
-	    <div class="book-row">
-	
-	        <% for (Book book : recommendedBooks) {
-	
-	            Long bookId = book.getBookId();
-	            String coverUrl = coverMap.get(bookId);
-	        %>
-	
-	        <div class="book-card ">
-	
-	            <% if (coverUrl != null && !coverUrl.isBlank()) { %>
-	
-	                <img
-	                    src="<%= coverUrl %>"
-	                    alt="<%= book.getTitle() %>"
-	                    class="book-cover">
-	
-	            <% } else { %>
-	
-	                <div class="no-cover">
-	                    <span>No Cover</span>
-	                </div>
-	
-	            <% } %>
-	
-	            <div class="book-info">
-	
-	                <h3 class="book-title">
-	                    <%= book.getTitle() %>
-	                </h3>
-	
-	                <div class="book-author">
-	                    By <%= book.getAuthor() %>
-	                </div>
-	
-	                <div class="book-description">
-	                    <%= book.getDescription() != null
-	                        ? book.getDescription()
-	                        : "No description available." %>
-	                </div>
-	
-	                <a
-	                    href="${pageContext.request.contextPath}/books/details?id=<%= bookId %>"
-	                    class="read-button">
-	                    Read Now
-	                </a>
-	
-	            </div>
-	
-	        </div>
-	
-	        <% } %>
-	
-	    </div>
-	
-	</section>
-	
-	<% } %>
 	<!-- Custom JS Script -->
-	<script src="${pageContext.request.contextPath}/javascript/dashboard.js"></script>
+	<script
+		src="${pageContext.request.contextPath}/javascript/dashboard.js"></script>
 </body>
 </html>
