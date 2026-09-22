@@ -59,5 +59,20 @@
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/mysql-connector-j-26.7.0/mysql-connector-j-26.7.0.jar</locationURI>
 		</link>
+		<link>
+			<name>src/main/webapp/images/category/dark.jpg</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Downloads/dark.png</locationURI>
+		</link>
+		<link>
+			<name>src/main/webapp/images/category/fiction.jpg</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Downloads/fiction.jpg</locationURI>
+		</link>
+		<link>
+			<name>src/main/webapp/images/category/romance.jpg</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Downloads/romance.jpg</locationURI>
+		</link>
 	</linkedResources>
 </projectDescription>

@@ -1,0 +1,1532 @@
+/* =========================================================
+   CATEGORY BOOKS
+   RESPONSIVE STACKED CARDS + SOFT ANIMATED CARD BACKGROUND
+   THEME: Deep Brown / Leather / Antique Gold / Paper
+   ========================================================= */
+
+/* =========================================================
+   COLOR TOKENS
+   ========================================================= */
+
+:root {
+	--primary: #2C1810;        /* Deep Brown */
+	--secondary: #6B4226;      /* Leather Brown */
+	--accent: #C89B5C;         /* Antique Gold */
+
+	--background: #F7F3EC;     /* Paper */
+	--surface: #FFFFFF;        /* White */
+
+	--text: #241F1A;           /* Dark Text */
+	--muted: #786F66;          /* Muted Brown */
+
+	--border: #E7DED2;
+
+	/* Shared easing for hover / colour transitions */
+	--ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Inter, Arial, sans-serif;
+	background: var(--background);
+	color: var(--text);
+	line-height: 1.5;
+	overflow-x: hidden;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.site-header {
+	background: var(--surface);
+	border-bottom: 1px solid var(--border);
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+.header-inner {
+	width: 100%;
+	max-width: 1180px;
+	margin: 0 auto;
+	padding: 18px 24px;
+
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+}
+
+.brand {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-width: 0;
+}
+
+.brand-icon {
+	width: 42px;
+	height: 42px;
+	flex: 0 0 42px;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	background: var(--primary);
+	color: var(--accent);
+	border-radius: 10px;
+}
+
+.brand-icon svg {
+	width: 21px;
+	height: 21px;
+}
+
+.brand-text {
+	min-width: 0;
+}
+
+.brand h1 {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 700;
+	line-height: 1.1;
+	color: var(--primary);
+}
+
+.brand span {
+	display: block;
+	margin-top: 2px;
+	font-size: 12px;
+	color: var(--muted);
+}
+
+.back-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 7px;
+
+	flex-shrink: 0;
+
+	color: var(--secondary);
+	text-decoration: none;
+
+	font-size: 14px;
+	font-weight: 600;
+
+	padding: 9px 13px;
+
+	border: 1px solid var(--border);
+	border-radius: 8px;
+
+	background: var(--surface);
+
+	transition:
+		background-color 0.3s var(--ease-soft),
+		border-color 0.3s var(--ease-soft);
+}
+
+.back-link svg {
+	width: 16px;
+	height: 16px;
+	flex-shrink: 0;
+}
+
+.back-link:hover {
+	background: var(--background);
+	border-color: var(--accent);
+}
+
+/* =========================================================
+   MAIN CONTAINER
+   ========================================================= */
+
+.container {
+	width: 100%;
+	max-width: 1180px;
+
+	margin: 0 auto;
+
+	padding: 42px 24px 100px;
+}
+
+/* =========================================================
+   CATEGORY HEADER
+   ========================================================= */
+
+.category-header {
+	margin-bottom: 28px;
+}
+
+.eyebrow {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+
+	font-size: 12px;
+	font-weight: 700;
+
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+
+	color: var(--secondary);
+
+	margin-bottom: 8px;
+}
+
+.eyebrow svg {
+	width: 15px;
+	height: 15px;
+}
+
+.category-header h2 {
+	margin: 0;
+
+	font-size: clamp(28px, 4vw, 34px);
+	line-height: 1.15;
+
+	font-weight: 750;
+	color: var(--primary);
+
+	overflow-wrap: anywhere;
+}
+
+.category-header p {
+	margin: 8px 0 0;
+
+	color: var(--muted);
+	font-size: 15px;
+}
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.category-search {
+	width: 100%;
+
+	display: flex;
+	align-items: stretch;
+
+	gap: 10px;
+
+	margin-bottom: 34px;
+}
+
+.search-input-wrapper {
+	position: relative;
+
+	flex: 1;
+	min-width: 0;
+
+	display: flex;
+	align-items: center;
+}
+
+.search-input-wrapper svg {
+	position: absolute;
+
+	left: 14px;
+
+	width: 18px;
+	height: 18px;
+
+	color: var(--muted);
+
+	pointer-events: none;
+}
+
+.search-input-wrapper input {
+	width: 100%;
+	min-width: 0;
+
+	height: 46px;
+
+	padding: 0 16px 0 43px;
+
+	border: 1px solid var(--border);
+	border-radius: 9px;
+
+	background: var(--surface);
+
+	outline: none;
+
+	font-size: 14px;
+	color: var(--text);
+
+	transition:
+		border-color 0.3s var(--ease-soft),
+		box-shadow 0.3s var(--ease-soft);
+}
+
+.search-input-wrapper input::placeholder {
+	color: var(--muted);
+}
+
+.search-input-wrapper input:focus {
+	border-color: var(--accent);
+
+	box-shadow: 0 0 0 3px rgba(200, 155, 92, 0.2);
+}
+
+.search-button,
+.clear-button {
+	height: 46px;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	gap: 7px;
+
+	padding: 0 17px;
+
+	border-radius: 9px;
+
+	font-size: 14px;
+	font-weight: 600;
+
+	white-space: nowrap;
+
+	cursor: pointer;
+
+	transition:
+		background-color 0.3s var(--ease-soft),
+		border-color 0.3s var(--ease-soft),
+		color 0.3s var(--ease-soft);
+}
+
+.search-button {
+	border: 1px solid var(--primary);
+	background: var(--primary);
+	color: var(--surface);
+}
+
+.search-button:hover {
+	background: var(--secondary);
+	border-color: var(--secondary);
+}
+
+.clear-button {
+	border: 1px solid var(--border);
+	background: var(--surface);
+	color: var(--secondary);
+
+	text-decoration: none;
+}
+
+.clear-button:hover {
+	background: var(--background);
+	border-color: var(--accent);
+}
+
+.search-button svg,
+.clear-button svg {
+	width: 16px;
+	height: 16px;
+
+	flex-shrink: 0;
+}
+
+/* =========================================================
+   BOOKS SECTION
+   ========================================================= */
+
+.books-section {
+	width: 100%;
+
+	display: flex;
+	flex-direction: column;
+
+	/*
+		The gap creates enough scroll distance
+		for the sticky stacking effect.
+	*/
+	gap: 14vh;
+}
+
+/* =========================================================
+   BOOK CARD
+   ========================================================= */
+
+.book-card {
+	/* Sticky stays enabled on every screen. JS sets the real "top". */
+	position: sticky;
+	top: 20px;
+
+	width: 100%;
+	min-height: 340px;
+
+	display: flex;
+	align-items: stretch;
+
+	gap: 25px;
+
+	padding: 24px;
+
+	/* Solid base colour: shows under the animated gradient layer */
+	background: #FFF8EF;
+
+	border: 1px solid rgba(200, 155, 92, 0.28);
+	border-radius: 22px;
+
+	/* Clips the moving gradient layer to the rounded card.
+	   isolation keeps that layer behind the card content. */
+	overflow: hidden;
+	isolation: isolate;
+
+	box-shadow:
+		0 4px 15px rgba(44, 24, 16, 0.06),
+		0 0 20px rgba(200, 155, 92, 0.10);
+
+	/* The stacking script drives transform / --dim / --blur directly,
+	   so those are NOT transitioned (a transition would lag behind scroll). */
+	transform-origin: top center;
+	will-change: transform;
+	filter: blur(var(--blur, 0px));
+
+	/* Only hover effects are transitioned */
+	transition:
+		box-shadow 0.45s var(--ease-soft),
+		border-color 0.45s var(--ease-soft);
+}
+
+/*
+	Animated soft gradient.
+
+	It lives on a pseudo-element and moves with TRANSFORM only,
+	so the browser animates it on the GPU. No repaint per frame,
+	which is what makes it smooth even with many cards.
+*/
+.book-card::before {
+	content: "";
+
+	position: absolute;
+	inset: -30%;
+	z-index: -1;
+
+	pointer-events: none;
+
+	background:
+		radial-gradient(circle at 20% 20%, rgba(255, 248, 239, 0.95) 0%, transparent 42%),
+		radial-gradient(circle at 80% 30%, rgba(248, 232, 216, 0.85) 0%, transparent 45%),
+		radial-gradient(circle at 60% 85%, rgba(238, 221, 229, 0.85) 0%, transparent 48%),
+		linear-gradient(135deg, #FFF8EF, #F8E8D8, #EEDDE5, #E7E0F0);
+
+	will-change: transform;
+
+	animation: softGradientDrift 18s ease-in-out infinite alternate;
+}
+
+@keyframes softGradientDrift {
+
+	0% {
+		transform: translate3d(-3%, -2%, 0) rotate(0deg) scale(1);
+	}
+
+	50% {
+		transform: translate3d(3%, 2%, 0) rotate(4deg) scale(1.05);
+	}
+
+	100% {
+		transform: translate3d(-1%, 4%, 0) rotate(-3deg) scale(1.02);
+	}
+}
+
+.book-card:hover {
+	border-color: var(--accent);
+
+	box-shadow:
+		0 8px 24px rgba(44, 24, 16, 0.10),
+		0 0 28px rgba(200, 155, 92, 0.35);
+}
+
+/*
+	Dark overlay for cards buried under the stack.
+	No transition: it follows scroll frame by frame.
+*/
+.book-card::after {
+	content: "";
+
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+
+	border-radius: inherit;
+
+	background: var(--primary);
+
+	opacity: var(--dim, 0);
+
+	pointer-events: none;
+}
+
+/* Desktop stacking: keep the upward shadow so stacked edges read clearly */
+@media (min-width: 769px) and (min-height: 641px) and (prefers-reduced-motion: no-preference) {
+
+	.book-card {
+		box-shadow:
+			0 -10px 30px rgba(44, 24, 16, 0.07),
+			0 0 18px rgba(200, 155, 92, 0.25);
+	}
+
+	.book-card:hover {
+		box-shadow:
+			0 -10px 30px rgba(44, 24, 16, 0.07),
+			0 0 28px rgba(200, 155, 92, 0.40),
+			0 0 60px rgba(107, 66, 38, 0.18);
+	}
+}
+
+/* =========================================================
+   BOOK COVER
+   ========================================================= */
+
+.book-cover-container {
+	width: 190px;
+	min-width: 190px;
+
+	height: 275px;
+
+	overflow: hidden;
+
+	border-radius: 9px;
+
+	background: var(--border);
+
+	flex-shrink: 0;
+}
+
+.book-cover {
+	width: 100%;
+	height: 100%;
+
+	display: block;
+
+	object-fit: cover;
+}
+
+.cover-placeholder {
+	width: 100%;
+	height: 100%;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+
+	gap: 8px;
+
+	color: var(--muted);
+
+	font-size: 12px;
+	text-align: center;
+}
+
+.cover-placeholder svg {
+	width: 34px;
+	height: 34px;
+}
+
+/* =========================================================
+   BOOK INFORMATION
+   ========================================================= */
+
+.book-information {
+	flex: 1;
+	min-width: 0;
+
+	display: flex;
+	flex-direction: column;
+}
+
+.book-title {
+	margin: 0 0 10px;
+
+	font-size: 23px;
+	line-height: 1.25;
+
+	font-weight: 700;
+
+	color: var(--primary);
+
+	overflow-wrap: anywhere;
+}
+
+.book-meta,
+.book-rating {
+	display: flex;
+	align-items: center;
+
+	gap: 7px;
+
+	font-size: 14px;
+	color: var(--muted);
+
+	min-width: 0;
+}
+
+.book-meta {
+	margin-bottom: 9px;
+}
+
+.book-meta svg,
+.book-rating svg {
+	width: 16px;
+	height: 16px;
+
+	flex-shrink: 0;
+}
+
+.book-meta svg {
+	color: var(--secondary);
+}
+
+.book-meta span,
+.book-rating span {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+.book-rating strong {
+	color: var(--text);
+	flex-shrink: 0;
+}
+
+.rating-icon {
+	color: var(--accent);
+	fill: currentColor;
+}
+
+.rating-count {
+	color: var(--muted);
+}
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.description {
+	margin-top: 20px;
+	min-width: 0;
+}
+
+.description-label {
+	display: block;
+
+	margin-bottom: 5px;
+
+	font-size: 12px;
+	font-weight: 700;
+
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+
+	color: var(--secondary);
+}
+
+.description p {
+	margin: 0;
+
+	color: var(--muted);
+
+	font-size: 14px;
+	line-height: 1.7;
+
+	overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.book-actions {
+	display: flex;
+	align-items: center;
+
+	flex-wrap: wrap;
+
+	gap: 9px;
+
+	margin-top: auto;
+	padding-top: 22px;
+}
+
+.bookmark-button,
+.read-more {
+	min-height: 40px;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	gap: 7px;
+
+	padding: 0 14px;
+
+	border-radius: 8px;
+
+	font-size: 13px;
+	font-weight: 600;
+
+	cursor: pointer;
+
+	text-decoration: none;
+
+	white-space: nowrap;
+
+	transition:
+		background-color 0.3s var(--ease-soft),
+		border-color 0.3s var(--ease-soft),
+		color 0.3s var(--ease-soft),
+		opacity 0.3s var(--ease-soft);
+}
+
+.bookmark-button {
+	border: 1px solid var(--border);
+
+	background: var(--surface);
+	color: var(--primary);
+}
+
+.bookmark-button:hover {
+	background: var(--background);
+	border-color: var(--accent);
+}
+
+.bookmark-button:disabled {
+	opacity: 0.6;
+	cursor: wait;
+}
+
+.bookmark-button.bookmarked {
+	background: var(--primary);
+	border-color: var(--primary);
+	color: var(--accent);
+}
+
+.bookmark-button svg,
+.read-more svg {
+	width: 16px;
+	height: 16px;
+	flex-shrink: 0;
+}
+
+.bookmark-button.bookmarked svg {
+	fill: currentColor;
+}
+
+.read-more {
+	background: var(--primary);
+
+	border: 1px solid var(--primary);
+
+	color: var(--surface);
+}
+
+.read-more:hover {
+	background: var(--secondary);
+	border-color: var(--secondary);
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty-state {
+	width: 100%;
+
+	padding: 70px 30px;
+
+	text-align: center;
+
+	background: var(--surface);
+
+	border: 1px solid var(--border);
+
+	border-radius: 14px;
+}
+
+.empty-icon {
+	width: 58px;
+	height: 58px;
+
+	margin: 0 auto 16px;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	background: var(--background);
+
+	color: var(--secondary);
+
+	border-radius: 50%;
+}
+
+.empty-icon svg {
+	width: 26px;
+	height: 26px;
+}
+
+.empty-state h3 {
+	margin: 0 0 7px;
+	font-size: 20px;
+	color: var(--primary);
+}
+
+.empty-state p {
+	margin: 0;
+
+	color: var(--muted);
+	font-size: 14px;
+
+	overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   LOADER
+   ========================================================= */
+
+.books-loader {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	gap: 9px;
+
+	height: 70px;
+
+	margin-top: 30px;
+
+	color: var(--muted);
+
+	font-size: 13px;
+	font-weight: 600;
+
+	opacity: 0;
+
+	pointer-events: none;
+
+	transition: opacity 0.3s var(--ease-soft);
+}
+
+.books-loader.visible {
+	opacity: 1;
+}
+
+.loader-spinner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	color: var(--accent);
+}
+
+.loader-spinner svg {
+	width: 19px;
+	height: 19px;
+
+	animation: booksLoaderSpin 0.9s linear infinite;
+}
+
+@keyframes booksLoaderSpin {
+
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* =========================================================
+   END MESSAGE
+   ========================================================= */
+
+.books-end-message {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	gap: 8px;
+
+	margin-top: 25px;
+
+	padding: 18px;
+
+	color: var(--muted);
+
+	font-size: 13px;
+
+	opacity: 0;
+
+	transition: opacity 0.3s var(--ease-soft);
+}
+
+.books-end-message.visible {
+	opacity: 1;
+}
+
+.books-end-message svg {
+	width: 17px;
+	height: 17px;
+}
+
+.infinite-scroll-sentinel {
+	width: 100%;
+	height: 1px;
+
+	pointer-events: none;
+}
+
+/* =========================================================
+   LARGE TABLET
+   <= 1100px
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+	.container {
+		padding-left: 28px;
+		padding-right: 28px;
+	}
+
+	.header-inner {
+		padding-left: 28px;
+		padding-right: 28px;
+	}
+
+	.book-card {
+		gap: 20px;
+		padding: 22px;
+	}
+
+	.book-cover-container {
+		width: 170px;
+		min-width: 170px;
+
+		height: 250px;
+	}
+
+	.book-title {
+		font-size: 21px;
+	}
+
+	.books-section {
+		gap: 11vh;
+	}
+}
+
+/* =========================================================
+   TABLET
+   <= 900px
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+	.container {
+		padding: 35px 22px 90px;
+	}
+
+	.header-inner {
+		padding: 16px 22px;
+	}
+
+	.book-card {
+		gap: 18px;
+
+		padding: 20px;
+
+		min-height: 310px;
+	}
+
+	.book-cover-container {
+		width: 150px;
+		min-width: 150px;
+
+		height: 225px;
+	}
+
+	.book-title {
+		font-size: 20px;
+	}
+
+	.description {
+		margin-top: 14px;
+	}
+
+	.description p {
+		font-size: 13px;
+		line-height: 1.6;
+	}
+
+	.book-actions {
+		padding-top: 18px;
+	}
+
+	/* Smaller stacking distance */
+	.books-section {
+		gap: 9vh;
+	}
+}
+
+/* =========================================================
+   MOBILE / RESPONSIVE
+   <= 768px
+
+   STACKING IS STILL ENABLED.
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+	.container {
+		padding: 28px 16px 100px;
+	}
+
+	.header-inner {
+		padding: 14px 16px;
+	}
+
+	.brand {
+		gap: 9px;
+	}
+
+	.brand-icon {
+		width: 38px;
+		height: 38px;
+
+		flex-basis: 38px;
+	}
+
+	.brand-icon svg {
+		width: 19px;
+		height: 19px;
+	}
+
+	.brand h1 {
+		font-size: 18px;
+	}
+
+	.brand span {
+		font-size: 11px;
+	}
+
+	.back-link {
+		padding: 8px 11px;
+		font-size: 13px;
+	}
+
+	.category-header {
+		margin-bottom: 22px;
+	}
+
+	.category-header h2 {
+		font-size: 28px;
+	}
+
+	.category-header p {
+		font-size: 14px;
+	}
+
+	.category-search {
+		flex-direction: column;
+
+		gap: 9px;
+
+		margin-bottom: 28px;
+	}
+
+	.search-button,
+	.clear-button {
+		width: 100%;
+	}
+
+	/*
+		The stacking script keeps controlling
+		transform, --dim and --blur on mobile.
+	*/
+
+	.books-section {
+		gap: 80px;
+	}
+
+	.book-card {
+		position: sticky;
+
+		flex-direction: column;
+
+		gap: 16px;
+
+		padding: 18px;
+
+		min-height: auto;
+
+		transform-origin: top center;
+	}
+
+	.book-cover-container {
+		width: min(175px, 52vw);
+
+		min-width: 0;
+
+		height: auto;
+
+		aspect-ratio: 2 / 3;
+
+		margin: 0 auto;
+	}
+
+	.book-information {
+		width: 100%;
+	}
+
+	.book-title {
+		font-size: 21px;
+	}
+
+	.book-meta,
+	.book-rating {
+		font-size: 13px;
+	}
+
+	.description {
+		margin-top: 15px;
+	}
+
+	.description p {
+		font-size: 13px;
+		line-height: 1.6;
+	}
+
+	.book-actions {
+		width: 100%;
+
+		margin-top: 0;
+
+		padding-top: 20px;
+	}
+
+	.bookmark-button,
+	.read-more {
+		flex: 1;
+		min-width: 125px;
+	}
+
+	.books-loader {
+		height: 60px;
+		margin-top: 20px;
+	}
+}
+
+/* =========================================================
+   MOBILE
+   <= 600px
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+	.container {
+		padding: 25px 13px 100px;
+	}
+
+	.header-inner {
+		padding: 13px;
+	}
+
+	.brand-icon {
+		width: 36px;
+		height: 36px;
+
+		flex-basis: 36px;
+	}
+
+	.brand-icon svg {
+		width: 18px;
+		height: 18px;
+	}
+
+	.brand h1 {
+		font-size: 17px;
+	}
+
+	.brand span {
+		display: none;
+	}
+
+	.back-link {
+		width: 38px;
+		height: 38px;
+
+		padding: 0;
+	}
+
+	.back-link span {
+		display: none;
+	}
+
+	.back-link svg {
+		width: 18px;
+		height: 18px;
+	}
+
+	.category-header h2 {
+		font-size: 26px;
+	}
+
+	.category-header p {
+		font-size: 13px;
+	}
+
+	.eyebrow {
+		font-size: 11px;
+	}
+
+	/* Smaller gap between sticky cards */
+	.books-section {
+		gap: 60px;
+	}
+
+	.book-card {
+		padding: 16px;
+
+		gap: 15px;
+	}
+
+	.book-cover-container {
+		width: 150px;
+	}
+
+	.book-title {
+		font-size: 20px;
+	}
+
+	.book-meta,
+	.book-rating {
+		font-size: 12px;
+	}
+
+	.book-meta svg,
+	.book-rating svg {
+		width: 15px;
+		height: 15px;
+	}
+
+	.rating-count {
+		display: none;
+	}
+
+	.description {
+		margin-top: 13px;
+	}
+
+	.description-label {
+		font-size: 11px;
+	}
+
+	.description p {
+		font-size: 12px;
+		line-height: 1.6;
+	}
+
+	.book-actions {
+		flex-direction: column;
+		align-items: stretch;
+
+		gap: 8px;
+	}
+
+	.bookmark-button,
+	.read-more {
+		width: 100%;
+		min-width: 0;
+		flex: none;
+	}
+}
+
+/* =========================================================
+   SMALL PHONE
+   <= 400px
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+	.container {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+
+	.header-inner {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+
+	.brand {
+		gap: 7px;
+	}
+
+	.brand-icon {
+		width: 34px;
+		height: 34px;
+
+		flex-basis: 34px;
+	}
+
+	.brand-icon svg {
+		width: 17px;
+		height: 17px;
+	}
+
+	.brand h1 {
+		font-size: 16px;
+	}
+
+	.category-header h2 {
+		font-size: 24px;
+	}
+
+	.books-section {
+		gap: 50px;
+	}
+
+	.book-card {
+		padding: 14px;
+	}
+
+	.book-cover-container {
+		width: 135px;
+	}
+
+	.book-title {
+		font-size: 18px;
+	}
+
+	.book-meta,
+	.book-rating {
+		font-size: 11px;
+	}
+
+	.description p {
+		font-size: 12px;
+	}
+
+	.bookmark-button,
+	.read-more {
+		height: 40px;
+		font-size: 12px;
+	}
+}
+
+/* =========================================================
+   VERY SMALL PHONE
+   <= 340px
+   ========================================================= */
+
+@media (max-width: 340px) {
+
+	.container {
+		padding-left: 8px;
+		padding-right: 8px;
+	}
+
+	.header-inner {
+		padding-left: 8px;
+		padding-right: 8px;
+	}
+
+	.category-header h2 {
+		font-size: 22px;
+	}
+
+	.books-section {
+		gap: 40px;
+	}
+
+	.book-card {
+		padding: 12px;
+	}
+
+	.book-cover-container {
+		width: 120px;
+	}
+
+	.book-title {
+		font-size: 17px;
+	}
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+	html {
+		scroll-behavior: auto;
+	}
+
+	.book-card {
+		filter: none !important;
+
+		transform: none !important;
+
+		transition: none;
+	}
+
+	/* Gradient stays as a static background */
+	.book-card::before {
+		animation: none;
+	}
+
+	.book-card::after {
+		opacity: 0 !important;
+	}
+
+	.loader-spinner svg {
+		animation: none;
+	}
+}
+
+/* =========================================================
+   HEADER NAVIGATION
+   Dashboard / Bookmarks / History
+   ========================================================= */
+
+.header-inner > a:not(.back-link) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    flex-shrink: 0;
+
+    padding: 9px 13px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background: var(--surface);
+    color: var(--secondary);
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition:
+        background-color 0.3s var(--ease-soft),
+        border-color 0.3s var(--ease-soft),
+        color 0.3s var(--ease-soft),
+        box-shadow 0.3s var(--ease-soft),
+        transform 0.3s var(--ease-soft);
+}
+
+.header-inner > a:not(.back-link) svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+/* Hover */
+
+.header-inner > a:not(.back-link):hover {
+    background: var(--background);
+    border-color: var(--accent);
+    color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px rgba(200, 155, 92, 0.10);
+
+    transform: translateY(-1px);
+}
+
+/* Dashboard slightly emphasized */
+
+.header-inner > a[href*="/user/dashboard"] {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--accent);
+}
+
+.header-inner > a[href*="/user/dashboard"]:hover {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: var(--accent);
+
+    box-shadow:
+        0 0 0 3px rgba(200, 155, 92, 0.12);
+}
+
+
+/* =========================================================
+   HEADER NAV RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .header-inner {
+        gap: 8px;
+    }
+
+    .header-inner > a:not(.back-link) {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+
+    .header-inner > a:not(.back-link) svg {
+        width: 15px;
+        height: 15px;
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    .header-inner {
+        flex-wrap: wrap;
+    }
+
+    .header-inner > a:not(.back-link) {
+        padding: 8px 10px;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .header-inner {
+        gap: 7px;
+    }
+
+    /* Hide text and keep icons on small screens */
+    .header-inner > a:not(.back-link) {
+        width: 38px;
+        height: 38px;
+
+        padding: 0;
+
+        border-radius: 8px;
+    }
+
+    .header-inner > a:not(.back-link) {
+        font-size: 0;
+    }
+
+    .header-inner > a:not(.back-link) svg {
+        width: 18px;
+        height: 18px;
+    }
+}
