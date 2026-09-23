@@ -16,20 +16,23 @@ document.addEventListener("DOMContentLoaded", function () {
 function initializeLucide() {
 
     if (typeof lucide !== "undefined") {
+
         lucide.createIcons();
+
     }
 
 }
 
 
 /* =========================================
-   PASSWORD TOGGLE
+   PASSWORD TOGGLES
    ========================================= */
 
 function initializePasswordToggles() {
 
     const buttons =
         document.querySelectorAll(".password-toggle");
+
 
     buttons.forEach(function (button) {
 
@@ -41,9 +44,11 @@ function initializePasswordToggles() {
             const input =
                 document.getElementById(targetId);
 
+
             if (!input) {
                 return;
             }
+
 
             if (input.type === "password") {
 
@@ -68,6 +73,7 @@ function initializePasswordToggles() {
                     "aria-label",
                     "Show password"
                 );
+
             }
 
             initializeLucide();
@@ -86,39 +92,86 @@ function initializePasswordToggles() {
 function initializePasswordConfirmation() {
 
     const form =
-        document.getElementById("registerForm");
+        document.getElementById(
+            "changePasswordForm"
+        );
 
-    const password =
-        document.getElementById("password");
+    const newPassword =
+        document.getElementById(
+            "newPassword"
+        );
 
     const confirmPassword =
-        document.getElementById("confirmPassword");
+        document.getElementById(
+            "confirmPassword"
+        );
 
-    if (!form || !password || !confirmPassword) {
+    const feedback =
+        document.getElementById(
+            "passwordFeedback"
+        );
+
+
+    if (
+        !form ||
+        !newPassword ||
+        !confirmPassword
+    ) {
         return;
     }
 
 
     function checkPasswordMatch() {
 
-        // Nothing shown while confirm password is empty
         if (confirmPassword.value === "") {
 
             confirmPassword.setCustomValidity("");
+
+            confirmPassword.classList.remove(
+                "password-mismatch",
+                "password-match"
+            );
+
+            if (feedback) {
+
+                feedback.textContent = "";
+
+                feedback.className =
+                    "password-feedback";
+
+            }
 
             return;
         }
 
 
-        if (password.value !== confirmPassword.value) {
+        if (
+            newPassword.value !==
+            confirmPassword.value
+        ) {
 
             confirmPassword.setCustomValidity(
-                "Passwords do not match."
+                "New passwords do not match."
             );
 
             confirmPassword.classList.add(
                 "password-mismatch"
             );
+
+            confirmPassword.classList.remove(
+                "password-match"
+            );
+
+
+            if (feedback) {
+
+                feedback.textContent =
+                    "Passwords do not match.";
+
+                feedback.className =
+                    "password-feedback error";
+
+            }
 
         } else {
 
@@ -131,15 +184,28 @@ function initializePasswordConfirmation() {
             confirmPassword.classList.add(
                 "password-match"
             );
+
+
+            if (feedback) {
+
+                feedback.textContent =
+                    "Passwords match.";
+
+                feedback.className =
+                    "password-feedback success";
+
+            }
+
         }
 
     }
 
 
-    password.addEventListener(
+    newPassword.addEventListener(
         "input",
         checkPasswordMatch
     );
+
 
     confirmPassword.addEventListener(
         "input",
@@ -147,18 +213,22 @@ function initializePasswordConfirmation() {
     );
 
 
-    form.addEventListener("submit", function (event) {
+    form.addEventListener(
+        "submit",
+        function (event) {
 
-        checkPasswordMatch();
+            checkPasswordMatch();
 
-        if (!form.checkValidity()) {
 
-            event.preventDefault();
+            if (!form.checkValidity()) {
 
-            confirmPassword.reportValidity();
+                event.preventDefault();
+
+                confirmPassword.reportValidity();
+
+            }
 
         }
-
-    });
+    );
 
 }

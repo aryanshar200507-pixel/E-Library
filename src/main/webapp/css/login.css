@@ -1,21 +1,17 @@
 /* =========================================
-   STORIES - REGISTRATION
+   STORIES - LOGIN
    ========================================= */
 
 :root {
     --primary: #2C1810;
     --secondary: #6B4226;
     --accent: #C89B5C;
-
     --background: #F7F3EC;
     --paper: #FBF8F1;
     --surface: #FFFFFF;
-
     --text: #241F1A;
     --muted: #786F66;
-
     --border: #E7DED2;
-
     --error: #A33A32;
     --success: #527A55;
 
@@ -43,9 +39,10 @@ body {
 
 body {
     font-family: Georgia, "Times New Roman", serif;
+
     background:
         radial-gradient(
-            circle at 20% 20%,
+            circle at 80% 20%,
             rgba(200, 155, 92, 0.08),
             transparent 30%
         ),
@@ -56,7 +53,7 @@ body {
 
 
 /* =========================================
-   PAGE
+   AUTH PAGE
    ========================================= */
 
 .auth-page {
@@ -75,11 +72,10 @@ body {
 
 
 /* =========================================
-   BOOK
+   STORY BOOK
    ========================================= */
 
 .story-book {
-
     position: relative;
 
     width: min(1180px, 100%);
@@ -91,16 +87,17 @@ body {
     transform-style: preserve-3d;
 
     filter:
-        drop-shadow(0 35px 35px rgba(44, 24, 16, 0.18));
+        drop-shadow(
+            0 35px 35px rgba(44, 24, 16, 0.18)
+        );
 }
 
 
 /* =========================================
-   PAGE
+   BOOK PAGE
    ========================================= */
 
 .book-page {
-
     position: relative;
 
     background:
@@ -118,43 +115,46 @@ body {
 
 
 .book-page::before {
-
     content: "";
 
     position: absolute;
 
     inset: 18px;
 
-    border: 1px solid rgba(200, 155, 92, 0.45);
+    border: 1px solid
+        rgba(200, 155, 92, 0.45);
 
     pointer-events: none;
+
+    z-index: 0;
 }
 
 
 .story-page {
-
     border-radius: 8px 0 0 8px;
 
     box-shadow:
-        inset -18px 0 30px rgba(44, 24, 16, 0.08);
+        inset -18px 0 30px
+        rgba(44, 24, 16, 0.08);
 }
 
 
 .form-page {
-
     border-radius: 0 8px 8px 0;
 
     box-shadow:
-        inset 18px 0 30px rgba(44, 24, 16, 0.07);
+        inset 18px 0 30px
+        rgba(44, 24, 16, 0.07);
 }
 
 
 /* =========================================
-   CONTENT
+   PAGE CONTENT
+   FIX:
+   Keep content above decorative books
    ========================================= */
 
 .page-content {
-
     position: relative;
 
     z-index: 2;
@@ -165,7 +165,6 @@ body {
 
     display: flex;
     flex-direction: column;
-
     justify-content: center;
 }
 
@@ -175,7 +174,6 @@ body {
    ========================================= */
 
 .brand {
-
     position: absolute;
 
     top: 60px;
@@ -183,26 +181,22 @@ body {
 
     display: flex;
     align-items: center;
+
     gap: 10px;
 
     color: var(--primary);
 
     letter-spacing: 4px;
+
     font-size: 13px;
+
     font-weight: 700;
-}
 
-
-.brand-icon {
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    z-index: 5;
 }
 
 
 .brand-icon svg {
-
     width: 22px;
     height: 22px;
 
@@ -211,11 +205,10 @@ body {
 
 
 /* =========================================
-   ORNAMENT
+   STORY
    ========================================= */
 
 .ornament {
-
     width: 55px;
     height: 1px;
 
@@ -225,16 +218,9 @@ body {
 }
 
 
-/* =========================================
-   LEFT PAGE
-   ========================================= */
-
 .eyebrow,
 .form-eyebrow {
-
-    font-family:
-        Arial,
-        sans-serif;
+    font-family: Arial, sans-serif;
 
     font-size: 10px;
 
@@ -249,7 +235,6 @@ body {
 
 
 .story-page h1 {
-
     font-size: clamp(48px, 5vw, 70px);
 
     line-height: 0.98;
@@ -263,7 +248,6 @@ body {
 
 
 .story-page h1 span {
-
     display: block;
 
     font-style: italic;
@@ -273,7 +257,6 @@ body {
 
 
 .story-description {
-
     max-width: 390px;
 
     font-size: 17px;
@@ -286,9 +269,13 @@ body {
 
 /* =========================================
    QUOTE
+   FIXED STACKING
    ========================================= */
 
 .quote {
+    position: relative;
+
+    z-index: 5;
 
     display: flex;
 
@@ -301,10 +288,15 @@ body {
     padding-top: 22px;
 
     border-top: 1px solid var(--border);
+
+    isolation: isolate;
 }
 
 
 .quote svg {
+    position: relative;
+
+    z-index: 6;
 
     width: 18px;
     height: 18px;
@@ -316,6 +308,9 @@ body {
 
 
 .quote p {
+    position: relative;
+
+    z-index: 6;
 
     font-size: 14px;
 
@@ -324,26 +319,32 @@ body {
     font-style: italic;
 
     color: var(--muted);
+
+    background: transparent;
 }
 
 
 /* =========================================
    BOOK DECORATION
+   FIX:
+   Decoration stays behind the quote
    ========================================= */
 
 .book-decoration {
-
     position: absolute;
 
     bottom: 45px;
     left: 75px;
 
     height: 110px;
+
+    z-index: 1;
+
+    pointer-events: none;
 }
 
 
 .mini-book {
-
     width: 80px;
     height: 45px;
 
@@ -360,18 +361,17 @@ body {
     transform: rotate(-7deg);
 
     box-shadow:
-        0 7px 12px rgba(44, 24, 16, 0.18);
+        0 7px 12px
+        rgba(44, 24, 16, 0.18);
 }
 
 
 .mini-book svg {
-
     width: 20px;
 }
 
 
 .mini-book-two {
-
     position: absolute;
 
     top: 30px;
@@ -384,7 +384,6 @@ body {
 
 
 .leaf {
-
     position: absolute;
 
     color: var(--accent);
@@ -394,7 +393,6 @@ body {
 
 
 .leaf-one {
-
     left: 120px;
     top: 5px;
 
@@ -403,7 +401,6 @@ body {
 
 
 .leaf-two {
-
     left: 145px;
     top: 40px;
 
@@ -412,17 +409,15 @@ body {
 
 
 /* =========================================
-   FORM PAGE
+   FORM
    ========================================= */
 
 .form-heading {
-
     margin-bottom: 30px;
 }
 
 
 .form-heading h2 {
-
     font-size: 38px;
 
     font-weight: 400;
@@ -436,7 +431,6 @@ body {
 
 
 .form-heading h2 span {
-
     font-style: italic;
 
     color: var(--secondary);
@@ -444,7 +438,6 @@ body {
 
 
 .form-heading p:last-child {
-
     font-family: Arial, sans-serif;
 
     font-size: 13px;
@@ -462,7 +455,6 @@ body {
    ========================================= */
 
 .message {
-
     display: flex;
 
     align-items: center;
@@ -482,40 +474,38 @@ body {
 
 
 .message svg {
-
     width: 17px;
     height: 17px;
-
-    flex-shrink: 0;
 }
 
 
 .error-message {
-
     color: var(--error);
 
-    background: rgba(163, 58, 50, 0.08);
+    background:
+        rgba(163, 58, 50, 0.08);
 
-    border: 1px solid rgba(163, 58, 50, 0.18);
+    border: 1px solid
+        rgba(163, 58, 50, 0.18);
 }
 
 
 .success-message {
-
     color: var(--success);
 
-    background: rgba(82, 122, 85, 0.08);
+    background:
+        rgba(82, 122, 85, 0.08);
 
-    border: 1px solid rgba(82, 122, 85, 0.18);
+    border: 1px solid
+        rgba(82, 122, 85, 0.18);
 }
 
 
 /* =========================================
-   FORM
+   INPUTS
    ========================================= */
 
 .auth-form {
-
     display: flex;
 
     flex-direction: column;
@@ -525,7 +515,6 @@ body {
 
 
 .input-group {
-
     display: flex;
 
     flex-direction: column;
@@ -535,7 +524,6 @@ body {
 
 
 .input-group label {
-
     font-family: Arial, sans-serif;
 
     font-size: 11px;
@@ -549,7 +537,6 @@ body {
 
 
 .input-wrapper {
-
     position: relative;
 
     display: flex;
@@ -559,7 +546,6 @@ body {
 
 
 .input-wrapper > svg {
-
     position: absolute;
 
     left: 14px;
@@ -570,11 +556,12 @@ body {
     color: var(--muted);
 
     pointer-events: none;
+
+    z-index: 2;
 }
 
 
 .input-wrapper input {
-
     width: 100%;
 
     height: 48px;
@@ -587,7 +574,8 @@ body {
 
     outline: none;
 
-    background: rgba(255,255,255,0.45);
+    background:
+        rgba(255, 255, 255, 0.45);
 
     color: var(--text);
 
@@ -595,27 +583,23 @@ body {
 
     font-size: 13px;
 
-    transition:
-        border-color 0.25s ease,
-        box-shadow 0.25s ease,
-        background 0.25s ease;
-}
-
-
-.input-wrapper input::placeholder {
-
-    color: #A49A91;
+    transition: 0.25s ease;
 }
 
 
 .input-wrapper input:focus {
-
     border-color: var(--accent);
 
     background: white;
 
     box-shadow:
-        0 0 0 3px rgba(200, 155, 92, 0.12);
+        0 0 0 3px
+        rgba(200, 155, 92, 0.12);
+}
+
+
+.input-wrapper input::placeholder {
+    color: #A49A91;
 }
 
 
@@ -624,7 +608,6 @@ body {
    ========================================= */
 
 .password-toggle {
-
     position: absolute;
 
     right: 12px;
@@ -641,15 +624,76 @@ body {
     cursor: pointer;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
+    z-index: 3;
 }
 
 
 .password-toggle svg {
-
     width: 16px;
     height: 16px;
+}
+
+
+.password-toggle:hover {
+    color: var(--secondary);
+}
+
+
+/* =========================================
+   OPTIONS
+   ========================================= */
+
+.form-options {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 11px;
+
+    margin-top: -4px;
+}
+
+
+.remember-me {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    color: var(--muted);
+
+    cursor: pointer;
+}
+
+
+.remember-me input {
+    accent-color: var(--secondary);
+
+    cursor: pointer;
+}
+
+
+.form-options a {
+    color: var(--secondary);
+
+    text-decoration: none;
+
+    font-weight: 700;
+}
+
+
+.form-options a:hover {
+    text-decoration: underline;
 }
 
 
@@ -658,10 +702,7 @@ body {
    ========================================= */
 
 .primary-button {
-
     height: 52px;
-
-    margin-top: 5px;
 
     border: none;
 
@@ -689,26 +730,22 @@ body {
 
     letter-spacing: 1px;
 
-    transition:
-        background 0.25s ease,
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
+    transition: 0.25s ease;
 }
 
 
 .primary-button:hover {
-
     background: var(--secondary);
 
     transform: translateY(-2px);
 
     box-shadow:
-        0 8px 18px rgba(44, 24, 16, 0.18);
+        0 8px 18px
+        rgba(44, 24, 16, 0.18);
 }
 
 
 .primary-button svg {
-
     width: 17px;
     height: 17px;
 }
@@ -719,7 +756,6 @@ body {
    ========================================= */
 
 .switch-auth {
-
     margin-top: 25px;
 
     display: flex;
@@ -737,7 +773,6 @@ body {
 
 
 .switch-auth a {
-
     display: inline-flex;
 
     align-items: center;
@@ -757,7 +792,6 @@ body {
 
 
 .switch-auth a:hover {
-
     color: var(--primary);
 
     border-color: var(--accent);
@@ -765,7 +799,6 @@ body {
 
 
 .switch-auth svg {
-
     width: 13px;
     height: 13px;
 }
@@ -776,7 +809,6 @@ body {
    ========================================= */
 
 .page-number {
-
     position: absolute;
 
     bottom: 35px;
@@ -795,16 +827,85 @@ body {
     font-size: 9px;
 
     letter-spacing: 2px;
+
+    z-index: 5;
 }
 
 
 .page-number div {
-
     width: 35px;
-
     height: 1px;
 
     background: var(--border);
+}
+
+
+/* =========================================
+   PAGE TURN ANIMATION
+   ========================================= */
+
+.story-book {
+    transform-origin: center;
+}
+
+
+.story-book.page-turn-forward {
+    animation: pageTurnForward 0.8s var(--ease) forwards;
+}
+
+
+.story-book.page-turn-backward {
+    animation: pageTurnBackward 0.8s var(--ease) forwards;
+}
+
+
+@keyframes pageTurnForward {
+
+    0% {
+        transform:
+            rotateY(0deg)
+            scale(1);
+        opacity: 1;
+    }
+
+    45% {
+        transform:
+            rotateY(-7deg)
+            scale(0.98);
+        opacity: 0.95;
+    }
+
+    100% {
+        transform:
+            rotateY(0deg)
+            scale(1);
+        opacity: 1;
+    }
+}
+
+
+@keyframes pageTurnBackward {
+
+    0% {
+        transform:
+            rotateY(0deg)
+            scale(1);
+        opacity: 1;
+    }
+
+    45% {
+        transform:
+            rotateY(7deg)
+            scale(0.98);
+        opacity: 0.95;
+    }
+
+    100% {
+        transform:
+            rotateY(0deg)
+            scale(1);
+        opacity: 1;
+    }
 }
 
 
@@ -815,43 +916,44 @@ body {
 @media (max-width: 900px) {
 
     .story-book {
-
         grid-template-columns: 1fr;
 
         max-width: 620px;
     }
 
-    .story-page {
 
+    .story-page {
         min-height: 420px;
 
-        border-radius: 8px 8px 0 0;
+        border-radius:
+            8px 8px 0 0;
     }
+
 
     .form-page {
-
-        border-radius: 0 0 8px 8px;
+        border-radius:
+            0 0 8px 8px;
     }
 
-    .page-content {
 
+    .page-content {
         min-height: auto;
 
         padding: 65px 55px;
     }
 
-    .brand {
 
+    .brand {
         left: 55px;
     }
 
-    .book-decoration {
 
+    .book-decoration {
         display: none;
     }
 
-    .story-page h1 {
 
+    .story-page h1 {
         font-size: 50px;
     }
 }
@@ -860,50 +962,67 @@ body {
 @media (max-width: 600px) {
 
     .auth-page {
-
         padding: 15px;
     }
 
-    .story-book {
-
-        min-height: auto;
-    }
 
     .page-content {
-
         padding: 55px 35px;
     }
 
-    .brand {
 
+    .brand {
         left: 35px;
+
         top: 35px;
     }
 
-    .story-page h1 {
 
+    .story-page h1 {
         font-size: 43px;
     }
 
-    .form-heading h2 {
 
+    .form-heading h2 {
         font-size: 31px;
     }
 
-    .switch-auth {
 
+    .switch-auth {
         flex-direction: column;
 
         align-items: center;
     }
 
-    .page-number {
 
+    .page-number {
         display: none;
     }
 
-    .book-page::before {
 
+    .book-page::before {
         inset: 10px;
+    }
+
+
+    .quote {
+        max-width: 100%;
+    }
+}
+
+
+/* =========================================
+   REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 }

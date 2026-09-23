@@ -44,7 +44,8 @@
 
 <script src="https://unpkg.com/lucide@latest"></script>
 
-
+<link rel="stylesheet"
+      href="${pageContext.request.contextPath}/css/confirm-modal.css">
 <!-- =====================================================
          BOOK DETAILS CSS
          ===================================================== -->
@@ -94,9 +95,6 @@
 
 	/* =========================================================
 	   CATEGORY THEME
-
-	   Currently testing Romance.
-	   More categories can be added later.
 	   ========================================================= */
 
 	String categoryKey = "default";
@@ -1000,6 +998,7 @@
 		src="${pageContext.request.contextPath}/javascript/book-details.js">
 </script>
 
+<script src="${pageContext.request.contextPath}/javascript/confirm-modal.js"></script>
 
 </body>
 

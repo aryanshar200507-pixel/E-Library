@@ -1,0 +1,160 @@
+/* =========================================================
+   STORIES - AUTH PAGE TURN (login <-> register)
+   ========================================================= */
+
+/* ---------- the sheet of paper ---------- */
+
+.page-turn-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    pointer-events: none;
+
+    visibility: hidden;
+    transform: translate3d(100%, 0, 0);
+    will-change: transform;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(44, 24, 16, .07),
+            transparent 6%,
+            transparent 94%,
+            rgba(44, 24, 16, .07)
+        ),
+        #FBF8F1;
+
+    box-shadow: 0 0 90px rgba(44, 24, 16, .35);
+}
+
+.page-turn-overlay::before {
+    content: "";
+    position: absolute;
+    inset: 18px;
+    border: 1px solid rgba(200, 155, 92, .45);
+}
+
+.page-turn-overlay::after {
+    content: "✦";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #C89B5C;
+    font-size: 26px;
+}
+
+
+/* =========================================================
+   LEAVING: sheet covers the current page
+   ========================================================= */
+
+html.auth-leaving .page-turn-overlay {
+    visibility: visible;
+    animation: authCoverFromRight .7s cubic-bezier(.65, 0, .35, 1) forwards;
+}
+
+html.auth-leaving[data-auth-dir="back"] .page-turn-overlay {
+    animation-name: authCoverFromLeft;
+}
+
+/* book drifts slightly the opposite way (depth) */
+html.auth-leaving .story-book {
+    will-change: transform;
+    animation: authBookLeaveForward .7s cubic-bezier(.65, 0, .35, 1) forwards;
+}
+
+html.auth-leaving[data-auth-dir="back"] .story-book {
+    animation-name: authBookLeaveBack;
+}
+
+
+/* =========================================================
+   ARRIVING: sheet is already covering, then moves away
+   ========================================================= */
+
+html.auth-arriving .page-turn-overlay {
+    visibility: visible;
+    transform: translate3d(0, 0, 0);
+}
+
+html.auth-arriving.auth-reveal .page-turn-overlay {
+    animation: authRevealToLeft .9s cubic-bezier(.65, 0, .35, 1) forwards;
+}
+
+html.auth-arriving.auth-reveal[data-auth-dir="back"] .page-turn-overlay {
+    animation-name: authRevealToRight;
+}
+
+html.auth-reveal .story-book {
+    will-change: transform;
+    animation: authBookEnterFromRight .9s cubic-bezier(.22, .61, .36, 1) backwards;
+}
+
+html.auth-reveal[data-auth-dir="back"] .story-book {
+    animation-name: authBookEnterFromLeft;
+}
+
+/* content rises in one after another */
+html.auth-reveal .form-heading,
+html.auth-reveal .auth-form,
+html.auth-reveal .switch-auth {
+    animation: authRise .7s cubic-bezier(.22, .61, .36, 1) backwards;
+}
+
+html.auth-reveal .form-heading { animation-delay: .10s; }
+html.auth-reveal .auth-form    { animation-delay: .18s; }
+html.auth-reveal .switch-auth  { animation-delay: .26s; }
+
+
+/* =========================================================
+   KEYFRAMES
+   ========================================================= */
+
+@keyframes authCoverFromRight {
+    from { transform: translate3d(100%, 0, 0); }
+    to   { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes authCoverFromLeft {
+    from { transform: translate3d(-100%, 0, 0); }
+    to   { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes authRevealToLeft {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-100%, 0, 0); }
+}
+
+@keyframes authRevealToRight {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(100%, 0, 0); }
+}
+
+@keyframes authBookLeaveForward {
+    to { transform: translate3d(-4%, 0, 0) scale(.97); }
+}
+
+@keyframes authBookLeaveBack {
+    to { transform: translate3d(4%, 0, 0) scale(.97); }
+}
+
+@keyframes authBookEnterFromRight {
+    from { transform: translate3d(4%, 0, 0) scale(.97); }
+}
+
+@keyframes authBookEnterFromLeft {
+    from { transform: translate3d(-4%, 0, 0) scale(.97); }
+}
+
+@keyframes authRise {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 16px, 0);
+    }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    .page-turn-overlay { display: none; }
+}

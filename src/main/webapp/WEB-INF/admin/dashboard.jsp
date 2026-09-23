@@ -1,718 +1,1065 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java"
+    contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+
 <%@ page import="com.project.elibrary.bean.category.Category"%>
 <%@ page import="com.project.elibrary.bean.user.User"%>
 <%@ page import="java.util.List"%>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
 
-<title>E-Library Admin Dashboard</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-<style>
-* {
-	box-sizing: border-box;
-}
+    <title>Stories — Admin Dashboard</title>
 
-body {
-	margin: 0;
-	font-family: Arial, sans-serif;
-	background-color: #f5f6fa;
-	color: #222;
-}
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-/* =========================
-           ADMIN HEADER
-           ========================= */
-.admin-header {
-	background-color: #ffffff;
-	padding: 18px 40px;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	border-bottom: 1px solid #ddd;
-}
-
-.header-title h2 {
-	margin: 0;
-	font-size: 24px;
-}
-
-.admin-nav {
-	display: flex;
-	gap: 25px;
-}
-
-.admin-nav a {
-	text-decoration: none;
-	color: #333;
-	font-weight: 500;
-}
-
-.admin-nav a:hover {
-	color: #007bff;
-}
-
-/* =========================
-           MAIN CONTAINER
-           ========================= */
-.dashboard-container {
-	padding: 30px 40px;
-	max-width: 1400px;
-	margin: auto;
-}
-
-/* =========================
-           SECTION
-           ========================= */
-.dashboard-section {
-	background-color: #ffffff;
-	padding: 25px;
-	margin-bottom: 25px;
-	border-radius: 10px;
-	border: 1px solid #e1e1e1;
-}
-
-.dashboard-section h2 {
-	margin-top: 0;
-	margin-bottom: 20px;
-}
-
-/* =========================
-           OVERVIEW
-           ========================= */
-.overview-cards {
-	display: flex;
-	gap: 20px;
-}
-
-.overview-card {
-	flex: 1;
-	padding: 22px;
-	background-color: #f8f9fc;
-	border: 1px solid #e2e2e2;
-	border-radius: 8px;
-}
-
-.overview-card h3 {
-	margin: 0 0 10px 0;
-	font-size: 16px;
-	color: #666;
-}
-
-.overview-card p {
-	margin: 0;
-	font-size: 30px;
-	font-weight: bold;
-}
-
-/* =========================
-           MANAGEMENT LINKS
-           ========================= */
-.management-row {
-	display: flex;
-	gap: 20px;
-}
-
-.management-box {
-	flex: 1;
-	padding: 20px;
-	border: 1px solid #ddd;
-	border-radius: 8px;
-	background-color: #fafafa;
-}
-
-.management-box h3 {
-	margin-top: 0;
-}
-
-.management-box p {
-	color: #666;
-}
-
-.management-button {
-	display: inline-block;
-	padding: 10px 16px;
-	background-color: #007bff;
-	color: white;
-	text-decoration: none;
-	border-radius: 5px;
-}
-
-.management-button:hover {
-	background-color: #0056b3;
-}
-
-/* =========================
-           FORMS
-           ========================= */
-.form-row {
-	display: flex;
-	gap: 10px;
-	align-items: center;
-}
-
-.form-row input[type="text"] {
-	padding: 10px;
-	width: 300px;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-}
-
-button {
-	padding: 10px 16px;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
-}
-
-.primary-button {
-	background-color: #007bff;
-	color: white;
-}
-
-.primary-button:hover {
-	background-color: #0056b3;
-}
-
-.block-button {
-	background-color: #dc3545;
-	color: white;
-}
-
-.block-button:hover {
-	background-color: #b02a37;
-}
-
-.recover-button {
-	background-color: #28a745;
-	color: white;
-}
-
-.recover-button:hover {
-	background-color: #1e7e34;
-}
-
-/* =========================
-           USER TABLE
-           ========================= */
-.table-container {
-	overflow-x: auto;
-}
-
-table {
-	width: 100%;
-	border-collapse: collapse;
-}
-
-th, td {
-	padding: 12px;
-	border-bottom: 1px solid #ddd;
-	text-align: left;
-}
-
-th {
-	background-color: #f1f2f6;
-}
-
-tr:hover {
-	background-color: #fafafa;
-}
-
-td form {
-	margin: 0;
-}
-
-/* =========================
-           EMPTY MESSAGE
-           ========================= */
-.empty-message {
-	color: #777;
-	padding: 10px 0;
-}
-
-/* =========================
-           RESPONSIVE
-           ========================= */
-@media ( max-width : 800px) {
-	.admin-header {
-		flex-direction: column;
-		gap: 15px;
-		align-items: flex-start;
-	}
-	.admin-nav {
-		flex-wrap: wrap;
-	}
-	.overview-cards {
-		flex-direction: column;
-	}
-	.management-row {
-		flex-direction: column;
-	}
-	.dashboard-container {
-		padding: 20px;
-	}
-}
-
-.category-edit {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-}
-
-.edit-icon, .save-icon, .cancel-icon {
-	border: none;
-	background: none;
-	cursor: pointer;
-	font-size: 18px;
-	padding: 4px;
-}
-
-.edit-icon:hover {
-	transform: scale(1.15);
-}
-
-.edit-form {
-	display: none;
-	align-items: center;
-	gap: 5px;
-}
-
-.edit-form input {
-	width: 150px;
-	padding: 6px 8px;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-}
-
-.save-icon {
-	color: green;
-}
-
-.cancel-icon {
-	color: red;
-}
-</style>
-
+    <!-- Page CSS -->
+    <link rel="stylesheet"
+        href="${pageContext.request.contextPath}/css/admin-dashboard.css">
 </head>
-
 
 <body>
 
+    <!-- =====================================================
+         ADMIN HEADER
+         ===================================================== -->
 
-	<!-- =========================
-     ADMIN HEADER
-     ========================= -->
+    <header class="admin-header">
 
-	<header class="admin-header">
+        <div class="header-brand">
 
-		<div class="header-title">
-			<h2>E-Library Admin</h2>
-		</div>
+            <a href="${pageContext.request.contextPath}/admin/dashboard"
+               class="brand-link">
 
-		<nav class="admin-nav">
+                <div class="brand-icon">
+                    <i data-lucide="library"></i>
+                </div>
 
-			<a href="${pageContext.request.contextPath}/admin/dashboard">
-				Dashboard </a> <a
-				href="${pageContext.request.contextPath}/admin/books/add"> Add
-				Book </a> <a href="${pageContext.request.contextPath}/books"> Books
-			</a> <a href="${pageContext.request.contextPath}/admin/suggestions"
-				class="nav-link"> <i data-lucide="message-square-plus"></i> <span>Suggestions</span>
-			</a> <a href="${pageContext.request.contextPath}/logout"> Logout </a>
+                <div class="brand-text">
+                    <span class="brand-name">Stories</span>
+                    <span class="brand-subtitle">E-Library</span>
+                </div>
 
-		</nav>
+            </a>
 
-	</header>
+        </div>
 
 
-	<!-- =========================
-     DASHBOARD CONTENT
-     ========================= -->
+        <nav class="admin-nav">
 
-	<div class="dashboard-container">
+            <a href="${pageContext.request.contextPath}/admin/dashboard"
+               class="nav-link active">
 
+                <i data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
 
-		<!-- =========================
-         OVERVIEW SECTION
-         ========================= -->
+            </a>
 
-		<section class="dashboard-section">
 
-			<h2>Overview</h2>
+            <a href="${pageContext.request.contextPath}/admin/books/add"
+               class="nav-link">
 
-			<div class="overview-cards">
+                <i data-lucide="book-plus"></i>
+                <span>Add Book</span>
 
-				<div class="overview-card">
+            </a>
 
-					<h3>Total Users</h3>
 
-					<p>${totalUsers}</p>
+            <a href="${pageContext.request.contextPath}/books"
+               class="nav-link">
 
-				</div>
+                <i data-lucide="library-big"></i>
+                <span>Books</span>
 
+            </a>
 
-				<div class="overview-card">
 
-					<h3>Total Categories</h3>
+            <a href="${pageContext.request.contextPath}/admin/suggestions"
+               class="nav-link">
 
-					<p>${totalCategories}</p>
+                <i data-lucide="message-square-plus"></i>
+                <span>Suggestions</span>
 
-				</div>
+            </a>
 
 
-				<div class="overview-card">
+            <a href="${pageContext.request.contextPath}/logout"
+               class="nav-link logout-link">
 
-					<h3>Total Books</h3>
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
 
-					<p>${totalBooks}</p>
+            </a>
 
-				</div>
+        </nav>
 
-			</div>
+    </header>
 
-		</section>
 
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
 
-		<!-- =========================
-         BOOK MANAGEMENT
-         ========================= -->
+    <main class="dashboard-container">
 
 
-		<section class="dashboard-section">
+        <!-- =================================================
+             PAGE INTRO
+             ================================================= -->
 
-			<h2>Book Management</h2>
-			<div class="management-row">
+        <section class="page-intro">
 
-				<!-- ADD BOOK -->
-				<div class="management-box">
+            <div>
 
-					<h3>Add Book</h3>
+                <span class="eyebrow">
+                    ADMIN PANEL
+                </span>
 
-					<p>Add a new book to the E-Library.</p>
+                <h1>
+                    Welcome back, Admin
+                </h1>
 
-					<a class="management-button"
-						href="${pageContext.request.contextPath}/admin/books/add"> Add
-						Book </a>
+                <p>
+                    Manage your library, books, categories and users
+                    from one place.
+                </p>
 
-				</div>
+            </div>
 
+            <div class="intro-icon">
 
-				<!-- MANAGE BOOKS -->
-				<div class="management-box">
+                <i data-lucide="library-big"></i>
 
-					<h3>Manage Books</h3>
+            </div>
 
-					<p>View, edit and delete books.</p>
+        </section>
 
-					<a class="management-button"
-						href="${pageContext.request.contextPath}/books"> Manage Books
-					</a>
 
-				</div>
+        <!-- =================================================
+             OVERVIEW
+             ================================================= -->
 
+        <section class="dashboard-section">
 
-				<!-- BOOK REQUESTS -->
-				<div class="management-box">
+            <div class="section-heading">
 
-					<h3>Book Requests</h3>
+                <div>
 
-					<p>View and manage weekly book requests.</p>
+                    <span class="section-label">
+                        OVERVIEW
+                    </span>
 
-					<a class="management-button"
-						href="${pageContext.request.contextPath}/book-request"> View
-						Requests </a>
+                    <h2>
+                        Library Overview
+                    </h2>
 
-				</div>
+                </div>
 
-			</div>
+                <div class="section-heading-icon">
+                    <i data-lucide="bar-chart-3"></i>
+                </div>
 
-		</section>
+            </div>
 
 
-		<!-- =========================
-         CATEGORY MANAGEMENT
-         ========================= -->
+            <div class="overview-cards">
 
-		<section class="dashboard-section">
 
-			<h2>Category Management</h2>
+                <!-- USERS -->
 
-			<!-- ADD CATEGORY -->
-			<form action="${pageContext.request.contextPath}/admin/dashboard"
-				method="post">
+                <div class="overview-card">
 
-				<div class="form-row">
+                    <div class="overview-icon">
+                        <i data-lucide="users"></i>
+                    </div>
 
-					<input type="text" name="category"
-						placeholder="Enter category name" required> <input
-						type="hidden" name="action" value="addCategory">
+                    <div class="overview-content">
 
-					<button type="submit" class="primary-button">Add Category
-					</button>
+                        <span>
+                            Total Users
+                        </span>
 
-				</div>
+                        <strong>
+                            ${totalUsers}
+                        </strong>
 
-			</form>
+                    </div>
 
-			<br>
+                </div>
 
-			<!-- CATEGORY TABLE -->
 
-			<h3>Categories</h3>
+                <!-- CATEGORIES -->
 
-			<%
-			List<Category> categories = (List<Category>) request.getAttribute("categories");
+                <div class="overview-card">
 
-			if (categories != null && !categories.isEmpty()) {
-			%>
+                    <div class="overview-icon">
+                        <i data-lucide="tags"></i>
+                    </div>
 
-			<div class="table-container">
+                    <div class="overview-content">
 
-				<table>
+                        <span>
+                            Total Categories
+                        </span>
 
-					<tr>
+                        <strong>
+                            ${totalCategories}
+                        </strong>
 
-						<th>Category Name</th>
-						<th>Edit</th>
-						<th>Delete</th>
-					</tr>
+                    </div>
 
-					<%
-					for (Category category : categories) {
-					%>
+                </div>
 
-					<tr>
 
-						<td><%=category.getCategoryName()%></td>
+                <!-- BOOKS -->
 
-						<td>
-							<!-- Pencil button -->
-							<button type="button" class="edit-icon"
-								onclick="editCategory(<%=category.getCategoryId()%>)"
-								title="Edit category">✏️</button> <!-- Edit form, hidden initially -->
-							<form id="edit-form-<%= category.getCategoryId() %>"
-								action="${pageContext.request.contextPath}/admin/dashboard"
-								method="post" class="edit-form">
+                <div class="overview-card">
 
-								<input type="hidden" name="action" value="updateCategory">
+                    <div class="overview-icon">
+                        <i data-lucide="book-open"></i>
+                    </div>
 
-								<input type="hidden" name="categoryId"
-									value="<%=category.getCategoryId()%>"> <input
-									type="text" name="categoryName"
-									value="<%=category.getCategoryName()%>" required>
+                    <div class="overview-content">
 
-								<button type="submit" class="save-icon" title="Save">✓
-								</button>
+                        <span>
+                            Total Books
+                        </span>
 
-								<button type="button" class="cancel-icon"
-									onclick="cancelEdit(<%=category.getCategoryId()%>)"
-									title="Cancel">✕</button>
+                        <strong>
+                            ${totalBooks}
+                        </strong>
 
-							</form>
+                    </div>
 
-						</td>
-						<td>
-							<form action="${pageContext.request.contextPath}/admin/dashboard"
-								method="post"
-								onsubmit="return confirm('Are you sure you want to delete this category?');">
+                </div>
 
-								<input type="hidden" name="action" value="deleteCategory">
 
-								<input type="hidden" name="categoryId"
-									value="<%=category.getCategoryId()%>">
+            </div>
 
-								<button type="submit" class="delete-button">Delete</button>
+        </section>
 
-							</form>
-						</td>
-					</tr>
 
-					<%
-					}
-					%>
+        <!-- =================================================
+             BOOK MANAGEMENT
+             ================================================= -->
 
-				</table>
+        <section class="dashboard-section">
 
-			</div>
+            <div class="section-heading">
 
-			<%
-			} else {
-			%>
+                <div>
 
-			<p class="empty-message">No categories found.</p>
+                    <span class="section-label">
+                        LIBRARY
+                    </span>
 
-			<%
-			}
-			%>
+                    <h2>
+                        Book Management
+                    </h2>
 
-		</section>
+                </div>
 
+                <div class="section-heading-icon">
+                    <i data-lucide="book-copy"></i>
+                </div>
 
-		<!-- =========================
-         USER MANAGEMENT
-         ========================= -->
+            </div>
 
-		<section class="dashboard-section">
 
-			<h2>User Management</h2>
+            <div class="management-grid">
 
 
-			<!-- SEARCH USERS -->
+                <!-- ADD BOOK -->
 
-			<form action="${pageContext.request.contextPath}/admin/dashboard"
-				method="get">
+                <div class="management-card">
 
-				<div class="form-row">
+                    <div class="management-card-icon">
+                        <i data-lucide="book-plus"></i>
+                    </div>
 
-					<input type="text" name="keyword" placeholder="Search user">
+                    <div class="management-card-content">
 
-					<button type="submit" class="primary-button">Search</button>
+                        <h3>
+                            Add Book
+                        </h3>
 
-				</div>
+                        <p>
+                            Add a new book to your E-Library.
+                        </p>
 
-			</form>
+                        <a
+                            href="${pageContext.request.contextPath}/admin/books/add"
+                            class="management-button">
 
+                            <span>Add Book</span>
 
-			<br>
+                            <i data-lucide="arrow-right"></i>
 
+                        </a>
 
-			<!-- USER TABLE -->
+                    </div>
 
-			<h3>Users</h3>
+                </div>
 
 
-			<%
-			List<User> users = (List<User>) request.getAttribute("users");
+                <!-- MANAGE BOOKS -->
 
-			if (users != null && !users.isEmpty()) {
-			%>
+                <div class="management-card">
 
+                    <div class="management-card-icon">
+                        <i data-lucide="library-big"></i>
+                    </div>
 
-			<div class="table-container">
+                    <div class="management-card-content">
 
-				<table>
+                        <h3>
+                            Manage Books
+                        </h3>
 
-					<tr>
+                        <p>
+                            View, edit and delete books.
+                        </p>
 
-						<th>ID</th>
+                        <a
+                            href="${pageContext.request.contextPath}/books"
+                            class="management-button">
 
-						<th>Name</th>
+                            <span>Manage Books</span>
 
-						<th>Email</th>
+                            <i data-lucide="arrow-right"></i>
 
-						<th>Role</th>
+                        </a>
 
-						<th>Status</th>
+                    </div>
 
-						<th>Block</th>
+                </div>
 
-						<th>Recover</th>
 
-					</tr>
+                <!-- BOOK REQUESTS -->
 
+                <div class="management-card">
 
-					<%
-					for (User usr : users) {
-					%>
+                    <div class="management-card-icon">
+                        <i data-lucide="inbox"></i>
+                    </div>
 
+                    <div class="management-card-content">
 
-					<tr>
+                        <h3>
+                            Book Requests
+                        </h3>
 
-						<td><%=usr.getUserId()%></td>
+                        <p>
+                            View and manage weekly book requests.
+                        </p>
 
-						<td><%=usr.getName()%></td>
+                        <a
+                            href="${pageContext.request.contextPath}/book-request"
+                            class="management-button">
 
-						<td><%=usr.getEmail()%></td>
+                            <span>View Requests</span>
 
-						<td><%=usr.getRole()%></td>
+                            <i data-lucide="arrow-right"></i>
 
-						<td><%=usr.getStatus()%></td>
+                        </a>
 
+                    </div>
 
-						<td>
+                </div>
 
-							<form action="${pageContext.request.contextPath}/admin/dashboard"
-								method="post">
 
-								<input type="hidden" name="userId" value="<%=usr.getUserId()%>">
-								<input type="hidden" name="action" value="block">
+            </div>
 
-								<button type="submit" class="block-button">Block</button>
+        </section>
 
-							</form>
 
-						</td>
+        <!-- =================================================
+             CATEGORY MANAGEMENT
+             ================================================= -->
 
+        <section class="dashboard-section">
 
-						<td>
+            <div class="section-heading">
 
-							<form action="${pageContext.request.contextPath}/admin/dashboard"
-								method="post">
+                <div>
 
-								<input type="hidden" name="action" value="recover"> <input
-									type="hidden" name="userId" value="<%=usr.getUserId()%>">
+                    <span class="section-label">
+                        ORGANIZATION
+                    </span>
 
-								<button type="submit" class="recover-button">Recover</button>
+                    <h2>
+                        Category Management
+                    </h2>
 
-							</form>
+                </div>
 
-						</td>
+                <div class="section-heading-icon">
+                    <i data-lucide="folders"></i>
+                </div>
 
-					</tr>
+            </div>
 
 
-					<%
-					}
-					%>
+            <!-- ADD CATEGORY -->
 
-				</table>
+            <form
+                action="${pageContext.request.contextPath}/admin/dashboard"
+                method="post"
+                class="category-add-form">
 
-			</div>
+                <input
+                    type="hidden"
+                    name="action"
+                    value="addCategory">
 
+                <div class="category-input-wrapper">
 
-			<%
-			} else {
-			%>
+                    <i data-lucide="tag"></i>
 
+                    <input
+                        type="text"
+                        name="category"
+                        placeholder="Enter category name"
+                        autocomplete="off"
+                        required>
 
-			<p class="empty-message">No users found.</p>
+                </div>
 
+                <button
+                    type="submit"
+                    class="primary-button">
 
-			<%
-			}
-			%>
+                    <i data-lucide="plus"></i>
 
+                    <span>
+                        Add Category
+                    </span>
 
-		</section>
+                </button>
 
+            </form>
 
-	</div>
-	<script>
 
-function editCategory(categoryId) {
+            <!-- CATEGORY TABLE -->
 
-    document.querySelector(
-        ".edit-icon[onclick='editCategory(" + categoryId + ")']"
-    ).style.display = "none";
+            <div class="subsection-heading">
 
-    document.getElementById("edit-form-" + categoryId)
-            .style.display = "flex";
-}
+                <div>
 
+                    <h3>
+                        Categories
+                    </h3>
 
-function cancelEdit(categoryId) {
+                    <p>
+                        Manage your library categories.
+                    </p>
 
-    document.querySelector(
-        ".edit-icon[onclick='editCategory(" + categoryId + ")']"
-    ).style.display = "inline";
+                </div>
 
-    document.getElementById("edit-form-" + categoryId)
-            .style.display = "none";
-}
+                <span class="count-badge">
+                    ${totalCategories}
+                </span>
 
-</script>
+            </div>
+
+
+            <%
+
+            List<Category> categories =
+                (List<Category>) request.getAttribute("categories");
+
+            if (categories != null && !categories.isEmpty()) {
+
+            %>
+
+            <div class="table-container">
+
+                <table class="data-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th class="action-column">
+                                Edit
+                            </th>
+
+                            <th class="action-column">
+                                Delete
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <%
+
+                    for (Category category : categories) {
+
+                    %>
+
+                        <tr>
+
+                            <!-- CATEGORY -->
+
+                            <td>
+
+                                <div class="category-name">
+
+                                    <div class="category-icon">
+                                        <i data-lucide="folder"></i>
+                                    </div>
+
+                                    <span>
+                                        <%=category.getCategoryName()%>
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+
+                            <!-- EDIT -->
+
+                            <td class="action-column">
+
+                                <button
+                                    type="button"
+                                    class="icon-button edit-icon"
+                                    data-category-id="<%=category.getCategoryId()%>"
+                                    title="Edit category"
+                                    aria-label="Edit category">
+
+                                    <i data-lucide="pencil"></i>
+
+                                </button>
+
+
+                                <!-- Hidden Edit Form -->
+
+                                <form
+                                    id="edit-form-<%=category.getCategoryId()%>"
+                                    action="${pageContext.request.contextPath}/admin/dashboard"
+                                    method="post"
+                                    class="edit-form">
+
+                                    <input
+                                        type="hidden"
+                                        name="action"
+                                        value="updateCategory">
+
+                                    <input
+                                        type="hidden"
+                                        name="categoryId"
+                                        value="<%=category.getCategoryId()%>">
+
+                                    <div class="edit-input-wrapper">
+
+                                        <i data-lucide="tag"></i>
+
+                                        <input
+                                            type="text"
+                                            name="categoryName"
+                                            value="<%=category.getCategoryName()%>"
+                                            required>
+
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        class="icon-button save-icon"
+                                        title="Save"
+                                        aria-label="Save">
+
+                                        <i data-lucide="check"></i>
+
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="icon-button cancel-icon"
+                                        data-category-id="<%=category.getCategoryId()%>"
+                                        title="Cancel"
+                                        aria-label="Cancel">
+
+                                        <i data-lucide="x"></i>
+
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+
+                            <!-- DELETE -->
+
+                            <td class="action-column">
+
+                                <form
+                                    action="${pageContext.request.contextPath}/admin/dashboard"
+                                    method="post"
+                                    class="delete-category-form">
+
+                                    <input
+                                        type="hidden"
+                                        name="action"
+                                        value="deleteCategory">
+
+                                    <input
+                                        type="hidden"
+                                        name="categoryId"
+                                        value="<%=category.getCategoryId()%>">
+
+                                    <button
+                                        type="submit"
+                                        class="icon-button delete-icon"
+                                        title="Delete category"
+                                        aria-label="Delete category">
+
+                                        <i data-lucide="trash-2"></i>
+
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+                    <%
+
+                    }
+
+                    %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <%
+
+            } else {
+
+            %>
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        <i data-lucide="folder-open"></i>
+                    </div>
+
+                    <h3>
+                        No categories found
+                    </h3>
+
+                    <p>
+                        Add your first category to organize the library.
+                    </p>
+
+                </div>
+
+            <%
+
+            }
+
+            %>
+
+        </section>
+
+
+        <!-- =================================================
+             USER MANAGEMENT
+             ================================================= -->
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="section-label">
+                        ACCOUNTS
+                    </span>
+
+                    <h2>
+                        User Management
+                    </h2>
+
+                </div>
+
+                <div class="section-heading-icon">
+                    <i data-lucide="users-round"></i>
+                </div>
+
+            </div>
+
+
+            <!-- SEARCH USERS -->
+
+            <form
+                action="${pageContext.request.contextPath}/admin/dashboard"
+                method="get"
+                class="user-search-form">
+
+                <div class="search-input-wrapper">
+
+                    <i data-lucide="search"></i>
+
+                    <input
+                        type="text"
+                        name="keyword"
+                        placeholder="Search users..."
+                        autocomplete="off">
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="primary-button">
+
+                    <i data-lucide="search"></i>
+
+                    <span>
+                        Search
+                    </span>
+
+                </button>
+
+            </form>
+
+
+            <!-- USER TABLE -->
+
+            <div class="subsection-heading">
+
+                <div>
+
+                    <h3>
+                        Users
+                    </h3>
+
+                    <p>
+                        Manage registered library users.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <%
+
+            List<User> users =
+                (List<User>) request.getAttribute("users");
+
+            if (users != null && !users.isEmpty()) {
+
+            %>
+
+            <div class="table-container">
+
+                <table class="data-table user-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                User
+                            </th>
+
+                            <th>
+                                Email
+                            </th>
+
+                            <th>
+                                Role
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th class="action-column">
+                                Block
+                            </th>
+
+                            <th class="action-column">
+                                Recover
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <%
+
+                    for (User usr : users) {
+
+                    %>
+
+                        <tr>
+
+                            <td>
+
+                                <span class="user-id">
+                                    #<%=usr.getUserId()%>
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="user-name">
+
+                                    <div class="user-avatar">
+
+                                        <i data-lucide="user"></i>
+
+                                    </div>
+
+                                    <span>
+                                        <%=usr.getName()%>
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="user-email">
+                                    <%=usr.getEmail()%>
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="role-badge">
+                                    <%=usr.getRole()%>
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="status-badge">
+                                    <%=usr.getStatus()%>
+                                </span>
+
+                            </td>
+
+
+                            <!-- BLOCK -->
+
+                            <td class="action-column">
+
+                                <form
+                                    action="${pageContext.request.contextPath}/admin/dashboard"
+                                    method="post">
+
+                                    <input
+                                        type="hidden"
+                                        name="userId"
+                                        value="<%=usr.getUserId()%>">
+
+                                    <input
+                                        type="hidden"
+                                        name="action"
+                                        value="block">
+
+                                    <button
+                                        type="submit"
+                                        class="icon-button block-icon"
+                                        title="Block user"
+                                        aria-label="Block user">
+
+                                        <i data-lucide="user-round-x"></i>
+
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+
+                            <!-- RECOVER -->
+
+                            <td class="action-column">
+
+                                <form
+                                    action="${pageContext.request.contextPath}/admin/dashboard"
+                                    method="post">
+
+                                    <input
+                                        type="hidden"
+                                        name="action"
+                                        value="recover">
+
+                                    <input
+                                        type="hidden"
+                                        name="userId"
+                                        value="<%=usr.getUserId()%>">
+
+                                    <button
+                                        type="submit"
+                                        class="icon-button recover-icon"
+                                        title="Recover user"
+                                        aria-label="Recover user">
+
+                                        <i data-lucide="user-round-check"></i>
+
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+                    <%
+
+                    }
+
+                    %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <%
+
+            } else {
+
+            %>
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        <i data-lucide="users-round"></i>
+                    </div>
+
+                    <h3>
+                        No users found
+                    </h3>
+
+                    <p>
+                        There are currently no users to display.
+                    </p>
+
+                </div>
+
+            <%
+
+            }
+
+            %>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         DELETE CONFIRMATION MODAL
+         ===================================================== -->
+
+    <div
+        id="deleteModal"
+        class="delete-modal"
+        aria-hidden="true">
+
+        <div class="delete-modal-backdrop"></div>
+
+        <div
+            class="delete-modal-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="deleteModalTitle">
+
+            <div class="delete-modal-icon">
+
+                <i data-lucide="trash-2"></i>
+
+            </div>
+
+            <div class="delete-modal-content">
+
+                <h3 id="deleteModalTitle">
+                    Delete Category?
+                </h3>
+
+                <p>
+                    Are you sure you want to delete this category?
+                    This action cannot be undone.
+                </p>
+
+            </div>
+
+            <div class="delete-modal-actions">
+
+                <button
+                    type="button"
+                    id="deleteCancelButton"
+                    class="modal-cancel-button">
+
+                    Cancel
+
+                </button>
+
+                <button
+                    type="button"
+                    id="deleteConfirmButton"
+                    class="modal-delete-button">
+
+                    <i data-lucide="trash-2"></i>
+
+                    <span>
+                        Delete
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Page JavaScript -->
+    <script
+        src="${pageContext.request.contextPath}/javascript/admin-dashboard.js">
+    </script>
 
 </body>
 

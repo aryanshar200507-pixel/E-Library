@@ -1,5 +1,5 @@
 /* =========================================
-   STORIES - REGISTRATION
+   STORIES - VERIFY OTP
    ========================================= */
 
 :root {
@@ -9,7 +9,6 @@
 
     --background: #F7F3EC;
     --paper: #FBF8F1;
-    --surface: #FFFFFF;
 
     --text: #241F1A;
     --muted: #786F66;
@@ -17,7 +16,6 @@
     --border: #E7DED2;
 
     --error: #A33A32;
-    --success: #527A55;
 
     --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
@@ -42,10 +40,15 @@ body {
 
 
 body {
-    font-family: Georgia, "Times New Roman", serif;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
     background:
         radial-gradient(
-            circle at 20% 20%,
+            circle at 80% 20%,
             rgba(200, 155, 92, 0.08),
             transparent 30%
         ),
@@ -59,18 +62,16 @@ body {
    PAGE
    ========================================= */
 
-.auth-page {
+.otp-page {
+
     min-height: 100vh;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     padding: 40px 25px;
-
-    perspective: 2200px;
-
-    overflow: hidden;
 }
 
 
@@ -78,20 +79,21 @@ body {
    BOOK
    ========================================= */
 
-.story-book {
-
-    position: relative;
+.otp-book {
 
     width: min(1180px, 100%);
-    min-height: 720px;
+
+    min-height: 680px;
 
     display: grid;
+
     grid-template-columns: 1fr 1fr;
 
-    transform-style: preserve-3d;
-
     filter:
-        drop-shadow(0 35px 35px rgba(44, 24, 16, 0.18));
+        drop-shadow(
+            0 35px 35px
+            rgba(44, 24, 16, 0.18)
+        );
 }
 
 
@@ -125,7 +127,8 @@ body {
 
     inset: 18px;
 
-    border: 1px solid rgba(200, 155, 92, 0.45);
+    border: 1px solid
+        rgba(200, 155, 92, 0.45);
 
     pointer-events: none;
 }
@@ -136,7 +139,8 @@ body {
     border-radius: 8px 0 0 8px;
 
     box-shadow:
-        inset -18px 0 30px rgba(44, 24, 16, 0.08);
+        inset -18px 0 30px
+        rgba(44, 24, 16, 0.08);
 }
 
 
@@ -145,7 +149,8 @@ body {
     border-radius: 0 8px 8px 0;
 
     box-shadow:
-        inset 18px 0 30px rgba(44, 24, 16, 0.07);
+        inset 18px 0 30px
+        rgba(44, 24, 16, 0.07);
 }
 
 
@@ -159,11 +164,12 @@ body {
 
     z-index: 2;
 
-    min-height: 720px;
+    min-height: 680px;
 
     padding: 70px 75px;
 
     display: flex;
+
     flex-direction: column;
 
     justify-content: center;
@@ -178,17 +184,23 @@ body {
 
     position: absolute;
 
-    top: 60px;
+    top: 55px;
     left: 75px;
 
     display: flex;
+
     align-items: center;
+
     gap: 10px;
 
     color: var(--primary);
 
     letter-spacing: 4px;
+
+    font-family: Arial, sans-serif;
+
     font-size: 13px;
+
     font-weight: 700;
 }
 
@@ -196,8 +208,8 @@ body {
 .brand-icon {
 
     display: flex;
+
     align-items: center;
-    justify-content: center;
 }
 
 
@@ -211,7 +223,7 @@ body {
 
 
 /* =========================================
-   ORNAMENT
+   LEFT STORY
    ========================================= */
 
 .ornament {
@@ -225,16 +237,9 @@ body {
 }
 
 
-/* =========================================
-   LEFT PAGE
-   ========================================= */
+.eyebrow {
 
-.eyebrow,
-.form-eyebrow {
-
-    font-family:
-        Arial,
-        sans-serif;
+    font-family: Arial, sans-serif;
 
     font-size: 10px;
 
@@ -250,7 +255,7 @@ body {
 
 .story-page h1 {
 
-    font-size: clamp(48px, 5vw, 70px);
+    font-size: clamp(50px, 5vw, 70px);
 
     line-height: 0.98;
 
@@ -266,9 +271,9 @@ body {
 
     display: block;
 
-    font-style: italic;
-
     color: var(--secondary);
+
+    font-style: italic;
 }
 
 
@@ -354,13 +359,15 @@ body {
     color: var(--accent);
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     transform: rotate(-7deg);
 
     box-shadow:
-        0 7px 12px rgba(44, 24, 16, 0.18);
+        0 7px 12px
+        rgba(44, 24, 16, 0.18);
 }
 
 
@@ -412,7 +419,42 @@ body {
 
 
 /* =========================================
-   FORM PAGE
+   FORM ICON
+   ========================================= */
+
+.form-icon {
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    margin-bottom: 20px;
+
+    color: var(--secondary);
+
+    background:
+        rgba(200, 155, 92, 0.12);
+
+    border: 1px solid
+        rgba(200, 155, 92, 0.35);
+}
+
+
+.form-icon svg {
+
+    width: 21px;
+    height: 21px;
+}
+
+
+/* =========================================
+   FORM HEADING
    ========================================= */
 
 .form-heading {
@@ -421,13 +463,29 @@ body {
 }
 
 
+.form-eyebrow {
+
+    font-family: Arial, sans-serif;
+
+    font-size: 10px;
+
+    letter-spacing: 3px;
+
+    color: var(--accent);
+
+    font-weight: 700;
+
+    margin-bottom: 15px;
+}
+
+
 .form-heading h2 {
 
-    font-size: 38px;
-
-    font-weight: 400;
+    font-size: 39px;
 
     line-height: 1.15;
+
+    font-weight: 400;
 
     color: var(--primary);
 
@@ -437,28 +495,28 @@ body {
 
 .form-heading h2 span {
 
-    font-style: italic;
-
     color: var(--secondary);
+
+    font-style: italic;
 }
 
 
 .form-heading p:last-child {
 
+    max-width: 380px;
+
     font-family: Arial, sans-serif;
 
     font-size: 13px;
 
-    line-height: 1.6;
+    line-height: 1.7;
 
     color: var(--muted);
-
-    max-width: 360px;
 }
 
 
 /* =========================================
-   MESSAGES
+   ERROR
    ========================================= */
 
 .message {
@@ -481,6 +539,18 @@ body {
 }
 
 
+.error-message {
+
+    color: var(--error);
+
+    background:
+        rgba(163, 58, 50, 0.08);
+
+    border: 1px solid
+        rgba(163, 58, 50, 0.18);
+}
+
+
 .message svg {
 
     width: 17px;
@@ -490,51 +560,19 @@ body {
 }
 
 
-.error-message {
-
-    color: var(--error);
-
-    background: rgba(163, 58, 50, 0.08);
-
-    border: 1px solid rgba(163, 58, 50, 0.18);
-}
-
-
-.success-message {
-
-    color: var(--success);
-
-    background: rgba(82, 122, 85, 0.08);
-
-    border: 1px solid rgba(82, 122, 85, 0.18);
-}
-
-
 /* =========================================
-   FORM
+   OTP FORM
    ========================================= */
 
-.auth-form {
+.otp-form {
 
     display: flex;
 
     flex-direction: column;
-
-    gap: 18px;
 }
 
 
-.input-group {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 7px;
-}
-
-
-.input-group label {
+.otp-label {
 
     font-family: Arial, sans-serif;
 
@@ -545,111 +583,86 @@ body {
     letter-spacing: 1px;
 
     color: var(--secondary);
+
+    margin-bottom: 12px;
 }
 
 
-.input-wrapper {
+/* =========================================
+   OTP BOXES
+   ========================================= */
 
-    position: relative;
+.otp-inputs {
 
     display: flex;
 
-    align-items: center;
+    gap: 10px;
 }
 
 
-.input-wrapper > svg {
+.otp-box {
 
-    position: absolute;
-
-    left: 14px;
-
-    width: 17px;
-    height: 17px;
-
-    color: var(--muted);
-
-    pointer-events: none;
-}
-
-
-.input-wrapper input {
-
-    width: 100%;
-
-    height: 48px;
-
-    padding: 0 45px;
+    width: 50px;
+    height: 56px;
 
     border: 1px solid var(--border);
 
-    border-radius: 4px;
+    border-radius: 5px;
 
     outline: none;
 
-    background: rgba(255,255,255,0.45);
+    background:
+        rgba(255, 255, 255, 0.5);
 
-    color: var(--text);
+    text-align: center;
 
-    font-family: Arial, sans-serif;
+    font-family: Georgia, serif;
 
-    font-size: 13px;
+    font-size: 24px;
+
+    font-weight: 700;
+
+    color: var(--primary);
 
     transition:
         border-color 0.25s ease,
         box-shadow 0.25s ease,
+        transform 0.25s ease,
         background 0.25s ease;
 }
 
 
-.input-wrapper input::placeholder {
-
-    color: #A49A91;
-}
-
-
-.input-wrapper input:focus {
+.otp-box:focus {
 
     border-color: var(--accent);
 
     background: white;
 
+    transform: translateY(-2px);
+
     box-shadow:
-        0 0 0 3px rgba(200, 155, 92, 0.12);
+        0 5px 15px
+        rgba(44, 24, 16, 0.08),
+        0 0 0 3px
+        rgba(200, 155, 92, 0.12);
 }
 
 
 /* =========================================
-   PASSWORD
+   OTP HINT
    ========================================= */
 
-.password-toggle {
+.otp-hint {
 
-    position: absolute;
+    margin-top: 12px;
 
-    right: 12px;
+    margin-bottom: 23px;
 
-    width: 30px;
-    height: 30px;
+    font-family: Arial, sans-serif;
 
-    border: none;
-
-    background: transparent;
+    font-size: 11px;
 
     color: var(--muted);
-
-    cursor: pointer;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-.password-toggle svg {
-
-    width: 16px;
-    height: 16px;
 }
 
 
@@ -660,8 +673,6 @@ body {
 .primary-button {
 
     height: 52px;
-
-    margin-top: 5px;
 
     border: none;
 
@@ -703,7 +714,8 @@ body {
     transform: translateY(-2px);
 
     box-shadow:
-        0 8px 18px rgba(44, 24, 16, 0.18);
+        0 8px 18px
+        rgba(44, 24, 16, 0.18);
 }
 
 
@@ -715,59 +727,53 @@ body {
 
 
 /* =========================================
-   SWITCH
+   BACK LINK
    ========================================= */
 
-.switch-auth {
-
-    margin-top: 25px;
+.back-link {
 
     display: flex;
 
     justify-content: center;
 
-    gap: 6px;
+    margin-top: 28px;
+}
+
+
+.back-link a {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    color: var(--secondary);
+
+    text-decoration: none;
 
     font-family: Arial, sans-serif;
 
     font-size: 12px;
 
-    color: var(--muted);
-}
-
-
-.switch-auth a {
-
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: 3px;
-
-    color: var(--secondary);
-
     font-weight: 700;
-
-    text-decoration: none;
-
-    border-bottom: 1px solid transparent;
 
     transition: 0.25s ease;
 }
 
 
-.switch-auth a:hover {
+.back-link a:hover {
 
     color: var(--primary);
 
-    border-color: var(--accent);
+    transform: translateX(-3px);
 }
 
 
-.switch-auth svg {
+.back-link svg {
 
-    width: 13px;
-    height: 13px;
+    width: 15px;
+    height: 15px;
 }
 
 
@@ -801,7 +807,6 @@ body {
 .page-number div {
 
     width: 35px;
-
     height: 1px;
 
     background: var(--border);
@@ -814,7 +819,7 @@ body {
 
 @media (max-width: 900px) {
 
-    .story-book {
+    .otp-book {
 
         grid-template-columns: 1fr;
 
@@ -859,14 +864,9 @@ body {
 
 @media (max-width: 600px) {
 
-    .auth-page {
+    .otp-page {
 
         padding: 15px;
-    }
-
-    .story-book {
-
-        min-height: auto;
     }
 
     .page-content {
@@ -890,11 +890,17 @@ body {
         font-size: 31px;
     }
 
-    .switch-auth {
+    .otp-inputs {
 
-        flex-direction: column;
+        gap: 6px;
+    }
 
-        align-items: center;
+    .otp-box {
+
+        width: 43px;
+        height: 50px;
+
+        font-size: 21px;
     }
 
     .page-number {
@@ -905,5 +911,20 @@ body {
     .book-page::before {
 
         inset: 10px;
+    }
+}
+
+
+@media (max-width: 400px) {
+
+    .otp-inputs {
+
+        gap: 4px;
+    }
+
+    .otp-box {
+
+        width: 39px;
+        height: 47px;
     }
 }
