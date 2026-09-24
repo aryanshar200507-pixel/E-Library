@@ -1,292 +1,555 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8" %>
 
-<%@ page import="java.util.List"%>
-<%@ page import="java.util.Map"%>
-<%@ page import="com.project.elibrary.bean.book.Book"%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="com.project.elibrary.bean.book.Book" %>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>E-Library | Home</title>
+    <title>Stories E-Library | Read Beyond Walls</title>
 
-<!-- Google Fonts: Playfair Display (bookish serif) + Inter (clean body) -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link
-	href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap"
-	rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<!-- Stylesheet -->
-<link rel="stylesheet"
-	href="<%=request.getContextPath()%>/css/home.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Instrument+Sans:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
 
+    <!-- Main stylesheet -->
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/css/home.css?v=3">
 </head>
 
 <body>
-	
 
-	<!-- ================= NAVBAR ================= -->
+<%
+    String ctx = request.getContextPath();
 
-	<nav class="navbar" id="navbar">
+    List<Book> books =
+        (List<Book>) request.getAttribute("books");
 
-		<a href="<%=request.getContextPath()%>/home" class="logo"> <i
-			data-lucide="book-marked" class="logo-icon"></i> <span>E-Library</span>
-		</a>
+    Map<Long, String> bookCoverUrlMap =
+        (Map<Long, String>) request.getAttribute("bookCoverUrlMap");
+%>
 
-		<button class="nav-toggle" id="navToggle"
-			aria-label="Toggle navigation">
-			<i data-lucide="menu"></i>
-		</button>
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
 
-		<div class="nav-links" id="navLinks">
+<nav class="navbar" id="navbar">
 
-			<a href="<%=request.getContextPath()%>/home"> Home </a> <a
-				href="<%=request.getContextPath()%>/books"> Books </a> <a
-				href="#latest-books"> Explore </a>
+    <a href="<%=ctx%>/home" class="logo">
+        <i data-lucide="book-marked" class="logo-icon"></i>
 
-			<div class="nav-auth">
+        <span>
+            Stories
+            <small class="logo-subtitle">E-LIBRARY</small>
+        </span>
+    </a>
 
-				<a href="<%=request.getContextPath()%>/login.jsp"
-					class="nav-login"> Login </a> <a
-					href="<%=request.getContextPath()%>/Register.jsp"
-					class="nav-register"> Register </a>
+    <button class="nav-toggle"
+            id="navToggle"
+            type="button"
+            aria-label="Toggle navigation"
+            aria-expanded="false">
+        <i data-lucide="menu"></i>
+    </button>
 
-			</div>
+    <div class="nav-links" id="navLinks">
 
-		</div>
+        <a href="<%=ctx%>/home">Home</a>
 
-	</nav>
+        <a href="<%=ctx%>/books">Books</a>
 
+        <a href="#categories">Explore</a>
 
-	<!-- ================= HERO SECTION ================= -->
+        <a href="#about">About</a>
 
-	<section class="hero">
+        <div class="nav-auth">
 
-		<div class="hero-bg-shapes" aria-hidden="true">
-			<i data-lucide="book-open" class="float-icon icon-1"></i> <i
-				data-lucide="bookmark" class="float-icon icon-2"></i> <i
-				data-lucide="feather" class="float-icon icon-3"></i> <i
-				data-lucide="scroll-text" class="float-icon icon-4"></i>
-		</div>
+            <a href="<%=ctx%>/login.jsp"
+               class="nav-login">
+                Login
+            </a>
 
-		<div class="hero-content">
+            <a href="<%=ctx%>/Register.jsp"
+               class="nav-register">
+                Register
+            </a>
 
-			<span class="hero-eyebrow"> <i data-lucide="sparkles"></i>
-				Your story starts here
-			</span>
+        </div>
 
-			<h1>
-				A Library Without <span class="highlight">Walls</span>
-			</h1>
+    </div>
+</nav>
 
-			<p>Read online and lose yourself in a growing shelf of stories
-				&mdash; anytime, anywhere.</p>
 
-			<div class="hero-actions">
+<!-- =====================================================
+     HERO BANNER
+     Background image is configured in home.css
+===================================================== -->
 
-				<a href="#latest-books" class="btn btn-primary"> <i
-					data-lucide="compass"></i> Explore Books
-				</a> <a href="<%=request.getContextPath()%>/Register.jsp"
-					class="btn btn-secondary"> <i data-lucide="user-plus"></i> Join
-					the Library
-				</a>
+<section class="hero" id="home">
 
-			</div>
+    <div class="hero-content">
 
-			<div class="hero-stats">
+        <p class="hero-eyebrow">
+            READ <span>·</span> LEARN <span>·</span> GROW
+        </p>
 
-				<div class="stat">
-					<i data-lucide="library"></i>
-					<div>
-						<strong>Read Online</strong> <span>No downloads needed</span>
-					</div>
-				</div>
+        <h1>
+            <span>A Library Without</span>
+            <span class="hero-line-2">Walls.</span>
+        </h1>
 
-				<div class="stat">
-					<i data-lucide="download"></i>
-					<div>
-						<strong>PDF Access</strong> <span>Take it offline</span>
-					</div>
-				</div>
+        <p class="hero-text">
+            Read online, explore a world of knowledge and lose
+            yourself in a growing shelf of stories — anytime,
+            anywhere.
+        </p>
 
-				<div class="stat">
-					<i data-lucide="clock"></i>
-					<div>
-						<strong>Open 24/7</strong> <span>Always on the shelf</span>
-					</div>
-				</div>
+        <div class="hero-actions">
 
-			</div>
+            <a href="#latest-books" class="btn btn-primary">
+                <i data-lucide="book-open"></i>
+                Explore Books
+                <i data-lucide="arrow-right"></i>
+            </a>
 
-		</div>
+            <a href="<%=ctx%>/Register.jsp"
+               class="btn btn-secondary">
+                <i data-lucide="user-round"></i>
+                Join the Library
+            </a>
 
-	</section>
+        </div>
+
+    </div>
 
+    <!-- Feature strip -->
+    <div class="hero-strip">
+
+        <div class="hero-strip-inner">
 
-	<!-- ================= BOOK SECTION ================= -->
+            <div class="stat">
+                <i data-lucide="book-open"></i>
+                <div>
+                    <strong>Read Online</strong>
+                    <span>No downloads needed</span>
+                </div>
+            </div>
 
-	<main class="container" id="latest-books">
+            <div class="stat">
+                <i data-lucide="file-down"></i>
+                <div>
+                    <strong>PDF Access</strong>
+                    <span>Take it offline</span>
+                </div>
+            </div>
 
-		<div class="section-title">
+            <div class="stat">
+                <i data-lucide="clock-3"></i>
+                <div>
+                    <strong>Open 24/7</strong>
+                    <span>Always on the shelf</span>
+                </div>
+            </div>
 
-			<span class="section-tag"> <i data-lucide="sparkle"></i> Fresh
-				on the Shelf
-			</span>
+        </div>
+    </div>
 
-			<h2>Latest Books</h2>
+</section>
 
-			<p>Explore the latest books available in our library.</p>
 
-		</div>
+<!-- =====================================================
+     CATEGORY SHOWCASE
+     Decorative category cards; carousel controlled by home.js
+===================================================== -->
 
+<section class="category-section reveal" id="categories">
 
-		<%
-		List<Book> books = (List<Book>) request.getAttribute("books");
+    <div class="category-heading">
 
-		Map<Long, String> bookCoverUrlMap = (Map<Long, String>) request.getAttribute("bookCoverUrlMap");
+        <p class="section-eyebrow">
+            <span></span>
+            BROWSE OUR COLLECTION
+            <span></span>
+        </p>
 
-		if (books != null && !books.isEmpty()) {
-		%>
+        <h2>Explore by Category</h2>
 
+        <p>
+            Find your next favorite book from a wide range of categories.
+        </p>
 
-		<div class="book-grid">
+    </div>
 
+    <div class="category-carousel-wrap">
 
-			<%
-			for (Book book : books) {
+        <button type="button"
+                class="category-arrow category-prev"
+                aria-label="Previous categories">
+            <i data-lucide="chevron-left"></i>
+        </button>
 
-				String coverUrl = null;
+        <div class="category-track" id="categoryTrack">
 
-				if (bookCoverUrlMap != null) {
+            <a href="<%=ctx%>/books" class="category-card">
+                <i data-lucide="book-open"></i>
+                <span>Fiction</span>
+            </a>
 
-					coverUrl = bookCoverUrlMap.get(book.getBookId());
+            <a href="<%=ctx%>/books" class="category-card">
+                <i data-lucide="scroll-text"></i>
+                <span>Non-Fiction</span>
+            </a>
 
-				}
-			%>
+            <a href="<%=ctx%>/books" class="category-card">
+                <i data-lucide="flask-conical"></i>
+                <span>Science</span>
+            </a>
 
+            <a href="<%=ctx%>/books" class="category-card">
+                <i data-lucide="monitor"></i>
+                <span>Technology</span>
+            </a>
 
-			<!-- ================= BOOK CARD ================= -->
+            <a href="<%=ctx%>/books" class="category-card">
+                <i data-lucide="heart"></i>
+                <span>Romance</span>
+            </a>
 
-			<div class="book-card">
+            <a href="<%=ctx%>/books" class="category-card">
+                <i data-lucide="search"></i>
+                <span>Mystery</span>
+            </a>
 
+            <a href="<%=ctx%>/books" class="category-card">
+                <i data-lucide="feather"></i>
+                <span>Self-Help</span>
+            </a>
 
-				<div class="book-cover-container">
+            <a href="<%=ctx%>/books" class="category-card">
+                <i data-lucide="landmark"></i>
+                <span>History</span>
+            </a>
 
-					<%
-					if (coverUrl != null) {
-					%>
+        </div>
 
-					<img src="<%=coverUrl%>" alt="<%=book.getTitle()%>"
-						class="book-cover">
+        <button type="button"
+                class="category-arrow category-next"
+                aria-label="Next categories">
+            <i data-lucide="chevron-right"></i>
+        </button>
 
-					<%
-					} else {
-					%>
+    </div>
 
-					<div class="no-cover">
-						<i data-lucide="book-open"></i> <span>No Cover Available</span>
-					</div>
+</section>
 
-					<%
-					}
-					%>
 
-					<span class="cover-ribbon"> <i data-lucide="bookmark"></i>
-					</span>
+<!-- =====================================================
+     LATEST BOOKS
+===================================================== -->
 
-				</div>
+<main class="container reveal" id="latest-books">
 
+    <div class="section-title">
 
-				<div class="book-info">
+        <div>
+            <p class="section-eyebrow">FRESH ON THE SHELF</p>
 
+            <h2>Latest Books</h2>
 
-					<h3 class="book-title">
-						<%=book.getTitle()%>
-					</h3>
+            <p>
+                Discover new stories and explore our growing collection.
+            </p>
+        </div>
 
+        <a href="<%=ctx%>/books" class="section-link">
+            View All
+            <i data-lucide="arrow-right"></i>
+        </a>
 
-					<p class="book-author">
-						<i data-lucide="feather"></i> By
-						<%=book.getAuthor()%>
-					</p>
+    </div>
 
 
-					<p class="book-description">
-						<%=book.getDescription()%>
-					</p>
+    <%
+        if (books != null && !books.isEmpty()) {
+    %>
 
+    <div class="book-grid">
 
-					<a
-						href="<%=request.getContextPath()%>/books/details?id=<%=book.getBookId()%>"
-						class="view-button"> <i
-						data-lucide="book-open"></i> View Details
-					</a>
+        <%
+            for (Book book : books) {
 
+                String coverUrl = null;
 
-				</div>
+                if (bookCoverUrlMap != null) {
+                    coverUrl = bookCoverUrlMap.get(book.getBookId());
+                }
+        %>
 
+        <article class="book-card reveal">
 
-			</div>
+            <!-- Book cover -->
+            <div class="book-cover-container">
 
+                <%
+                    if (coverUrl != null && !coverUrl.isBlank()) {
+                %>
 
-			<%
-			}
-			%>
+                <img src="<%=coverUrl%>"
+                     alt="<%=book.getTitle()%> cover"
+                     class="book-cover"
+                     loading="lazy">
 
+                <%
+                    } else {
+                %>
 
-		</div>
+                <div class="no-cover">
+                    <i data-lucide="book-open"></i>
+                    <span>No cover available</span>
+                </div>
 
+                <%
+                    }
+                %>
 
-		<%
-		} else {
-		%>
+                <span class="cover-ribbon">
+                    <i data-lucide="bookmark"></i>
+                </span>
 
+            </div>
 
-		<div class="no-books">
+            <!-- Book details -->
+            <div class="book-info">
 
-			<i data-lucide="library"></i>
+                <h3 class="book-title">
+                    <%=book.getTitle()%>
+                </h3>
 
-			<h3>No books available</h3>
+                <p class="book-author">
+                    <i data-lucide="feather"></i>
+                    By <%=book.getAuthor()%>
+                </p>
 
-			<p>There are currently no books available in the library.</p>
+                <p class="book-description">
+                    <%=book.getDescription() != null
+                        ? book.getDescription()
+                        : "Discover this book in Stories E-Library."%>
+                </p>
 
-		</div>
+                <a href="<%=ctx%>/books/details?id=<%=book.getBookId()%>"
+                   class="view-button">
+                    <i data-lucide="book-open"></i>
+                    View Details
+                    <i data-lucide="arrow-up-right"></i>
+                </a>
 
+            </div>
 
-		<%
-		}
-		%>
+        </article>
 
+        <%
+            }
+        %>
 
-	</main>
+    </div>
 
+    <%
+        } else {
+    %>
 
-	<!-- ================= FOOTER ================= -->
+    <div class="no-books reveal">
 
-	<footer class="footer">
+        <i data-lucide="library"></i>
 
-		<div class="footer-content">
+        <h3>No Books Yet</h3>
 
-			<div class="footer-brand">
-				<i data-lucide="book-marked"></i> <span>E-Library</span>
-			</div>
+        <p>
+            The shelves are empty right now. Check back soon for new stories.
+        </p>
 
-			<p>&copy; 2026 E-Library. All rights reserved.</p>
+    </div>
 
-		</div>
+    <%
+        }
+    %>
 
-	</footer>
-	
-<!-- Lucide Icons -->
+</main>
+
+
+<!-- =====================================================
+     ABOUT / CTA SECTION
+===================================================== -->
+
+<section class="about-section reveal" id="about">
+
+    <div class="about-content">
+
+        <p class="section-eyebrow">MORE THAN BOOKS</p>
+
+        <h2>
+            A Better You,<br>
+            One Book at a Time
+        </h2>
+
+        <p>
+            Stories E-Library is your space to read, learn and grow.
+            From timeless classics to modern stories, knowledge is
+            just a click away.
+        </p>
+
+        <a href="<%=ctx%>/Register.jsp" class="btn btn-primary">
+            Get Started
+            <i data-lucide="arrow-right"></i>
+        </a>
+
+    </div>
+
+    <div class="about-stats">
+
+        <div class="about-stat">
+            <i data-lucide="book-open"></i>
+            <div>
+                <strong>Explore</strong>
+                <span>Books across categories</span>
+            </div>
+        </div>
+
+        <div class="about-stat">
+            <i data-lucide="library"></i>
+            <div>
+                <strong>Discover</strong>
+                <span>Stories for every reader</span>
+            </div>
+        </div>
+
+        <div class="about-stat">
+            <i data-lucide="clock-3"></i>
+            <div>
+                <strong>Anytime</strong>
+                <span>Read at your own pace</span>
+            </div>
+        </div>
+
+        <div class="about-stat">
+            <i data-lucide="heart"></i>
+            <div>
+                <strong>Keep Growing</strong>
+                <span>A new chapter every day</span>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="footer">
+
+    <div class="footer-content">
+
+        <div class="footer-brand">
+
+            <div class="footer-brand-name">
+                <i data-lucide="book-marked"></i>
+                <span>Stories E-Library</span>
+            </div>
+
+            <p>Stories Beyond Walls.</p>
+
+            <div class="social-links">
+
+                <a href="#"
+                   aria-label="Social media"
+                   title="Social media">
+                    <i data-lucide="message-circle"></i>
+                </a>
+
+                <a href="#"
+                   aria-label="Photo sharing"
+                   title="Photo sharing">
+                    <i data-lucide="camera"></i>
+                </a>
+
+                <a href="#"
+                   aria-label="Video channel"
+                   title="Video channel">
+                    <i data-lucide="circle-play"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-column">
+            <h3>Quick Links</h3>
+            <a href="<%=ctx%>/home">Home</a>
+            <a href="<%=ctx%>/books">Books</a>
+            <a href="#categories">Explore</a>
+            <a href="#about">About</a>
+        </div>
+
+
+        <div class="footer-column">
+            <h3>Categories</h3>
+            <a href="<%=ctx%>/books">Fiction</a>
+            <a href="<%=ctx%>/books">Non-Fiction</a>
+            <a href="<%=ctx%>/books">Science</a>
+            <a href="<%=ctx%>/books">Technology</a>
+            <a href="<%=ctx%>/books">Romance</a>
+        </div>
+
+
+        <div class="footer-newsletter">
+
+            <h3>Stay Updated</h3>
+
+            <p>
+                Get updates about new books and stories.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            &copy; 2026 Stories E-Library. All rights reserved.
+        </p>
+
+        <div>
+            <span>Read</span>
+            <span>Learn</span>
+            <span>Grow</span>
+            <span>Together</span>
+        </div>
+
+    </div>
+
+</footer>
+
+
+<!-- =====================================================
+     SCRIPTS
+===================================================== -->
+
 <script src="https://unpkg.com/lucide@latest"></script>
-	<!-- Script -->
-	<script src="<%=request.getContextPath()%>/javascript/home.js"></script>
+
+<script src="<%=ctx%>/javascript/home.js?v=3"></script>
 
 </body>
-
 </html>
