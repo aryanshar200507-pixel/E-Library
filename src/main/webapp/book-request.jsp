@@ -4,9 +4,9 @@
 
 <%@ page import="java.util.List"%>
 <%@ page import="com.project.elibrary.bean.bookrequest.BookRequest"%>
-
 <%@ page import="com.project.elibrary.bean.user.User"%>
 <%@ page import="com.project.elibrary.bean.enums.Role"%>
+<%@ page import="com.project.elibrary.service.bookrequestservice.BookRequestVoteService"%>
 
 <%
     List<BookRequest> requests =
@@ -20,9 +20,7 @@
 
     String success =
             (String) request.getAttribute("success");
-%>
 
-<%
     String voteSuccess =
             (String) session.getAttribute("voteSuccess");
 
@@ -35,299 +33,868 @@
     String deleteError =
             (String) session.getAttribute("deleteError");
 
-    // Remove messages after reading them
     session.removeAttribute("voteSuccess");
     session.removeAttribute("voteError");
     session.removeAttribute("deleteSuccess");
     session.removeAttribute("deleteError");
-%>
 
-<%
     User loggedInUser =
             (User) session.getAttribute("loggedInUser");
 
     boolean isAdmin =
             loggedInUser != null
             && loggedInUser.getRole() == Role.ADMIN;
+
+    int totalRequests =
+            requestCount != null ? requestCount : 0;
+
+    int remainingRequests =
+            Math.max(0, 10 - totalRequests);
+
+    BookRequestVoteService voteService =
+            new BookRequestVoteService();
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
     <meta charset="UTF-8">
 
-    <title>Weekly Book Requests</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <style>
+    <meta name="theme-color" content="#2C1810">
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4efe6;
-            margin: 0;
-            padding: 30px;
-        }
+    <title>Book Requests | Stories</title>
 
-        .container {
-            max-width: 900px;
-            margin: auto;
-        }
+    <!-- Google Font -->
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
 
-        h1 {
-            color: #5c3b24;
-        }
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
 
-        .count {
-            background: #e8dccb;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            color: #5c3b24;
-            font-weight: bold;
-        }
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
+          rel="stylesheet">
 
-        .message {
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-        }
+    <!-- Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-        .error {
-            background: #f8d7da;
-            color: #842029;
-        }
-
-        .success {
-            background: #d1e7dd;
-            color: #0f5132;
-        }
-
-        .form-box {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-        }
-
-        label {
-            display: block;
-            margin-top: 12px;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-        }
-
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: #6b4423;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .request {
-            background: white;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-        }
-
-        .request h3 {
-            margin-top: 0;
-            color: #5c3b24;
-        }
-
-    </style>
+    <!-- Book Request CSS -->
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/css/book-request.css">
 
 </head>
 
 <body>
 
-<div class="container">
+<div class="page-shell">
 
-    <h1>Weekly Book Requests</h1>
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
-    <div class="count">
-        Requests this week:
-        <%= requestCount != null ? requestCount : 0 %> / 10
-    </div>
+    <header class="site-header">
 
-    <% if (error != null) { %>
+        <div class="header-inner">
 
-        <div class="message error">
-            <%= error %>
+            <!-- BRAND -->
+
+            <!-- BRAND -->
+
+<a href="${pageContext.request.contextPath}/user/dashboard"
+   class="brand">
+
+    <span class="brand-icon">
+        <i data-lucide="book-open"></i>
+    </span>
+
+    <span class="brand-text">
+
+        <span class="brand-name">
+            Stories
+        </span>
+
+        <span class="brand-subtitle">
+            E-LIBRARY
+        </span>
+
+    </span>
+
+</a>
+
+
+            <!-- DESKTOP NAV -->
+
+            <nav class="desktop-nav">
+
+                <a href="${pageContext.request.contextPath}/user/dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="${pageContext.request.contextPath}/books">
+                    <i data-lucide="library"></i>
+                    <span>Categories</span>
+                </a>
+
+                <a href="${pageContext.request.contextPath}/book-request"
+                   class="active">
+                    <i data-lucide="book-plus"></i>
+                    <span>Book Requests</span>
+                </a>
+
+                <a href="${pageContext.request.contextPath}/books/bookmark-book">
+                    <i data-lucide="bookmark"></i>
+                    <span>Bookmarks</span>
+                </a>
+
+                <a href="${pageContext.request.contextPath}/user/suggestion">
+                    <i data-lucide="message-square-plus"></i>
+                    <span>Suggestions</span>
+                </a>
+
+                <a href="${pageContext.request.contextPath}/books/history">
+                    <i data-lucide="history"></i>
+                    <span>History</span>
+                </a>
+
+                <a href="${pageContext.request.contextPath}/profile">
+                    <i data-lucide="user"></i>
+                    <span>Profile</span>
+                </a>
+
+            </nav>
+
+
+            <!-- RIGHT SIDE -->
+
+            <div class="header-actions">
+
+                <a href="${pageContext.request.contextPath}/logout"
+                   class="logout-link">
+
+                    <i data-lucide="log-out"></i>
+
+                    <span>Logout</span>
+
+                </a>
+
+
+               <button
+                   type="button"
+                   class="mobile-menu-button"
+                   id="mobileMenuButton"
+                   aria-label="Open navigation"
+                   aria-expanded="false">
+                   <i data-lucide="menu"></i>
+               </button>
+
+            </div>
+
         </div>
 
-    <% } %>
 
-    <% if (success != null) { %>
+        <!-- MOBILE NAV -->
 
-        <div class="message success">
-            <%= success %>
-        </div>
+        <nav class="mobile-nav"
+             id="mobileNav">
 
-    <% } %>
-    
-    
-    <% if (voteSuccess != null) { %>
+            <a href="${pageContext.request.contextPath}/user/dashboard">
+                <i data-lucide="layout-dashboard"></i>
+                Dashboard
+            </a>
 
-    <div class="message success">
-        <%= voteSuccess %>
-    </div>
+            <a href="${pageContext.request.contextPath}/books">
+                <i data-lucide="library"></i>
+                Categories
+            </a>
 
-<% } %>
+            <a href="${pageContext.request.contextPath}/book-request"
+               class="active">
+                <i data-lucide="book-plus"></i>
+                Book Requests
+            </a>
 
-<% if (voteError != null) { %>
+            <a href="${pageContext.request.contextPath}/books/bookmark-book">
+                <i data-lucide="bookmark"></i>
+                Bookmarks
+            </a>
 
-    <div class="message error">
-        <%= voteError %>
-    </div>
+            <a href="${pageContext.request.contextPath}/user/suggestion">
+                <i data-lucide="message-square-plus"></i>
+                Suggestions
+            </a>
 
-<% } %>
+            <a href="${pageContext.request.contextPath}/books/history">
+                <i data-lucide="history"></i>
+                History
+            </a>
 
-<% if (deleteSuccess != null) { %>
+            <a href="${pageContext.request.contextPath}/profile">
+                <i data-lucide="user"></i>
+                Profile
+            </a>
 
-    <div class="message success">
-        <%= deleteSuccess %>
-    </div>
+            <a href="${pageContext.request.contextPath}/logout">
+                <i data-lucide="log-out"></i>
+                Logout
+            </a>
 
-<% } %>
+        </nav>
 
-<% if (deleteError != null) { %>
-
-    <div class="message error">
-        <%= deleteError %>
-    </div>
-
-<% } %>
-
-
-    <% if (!isAdmin && (requestCount == null || requestCount < 10)) { %>
-
-    <div class="form-box">
-
-        <h2>Request a Book</h2>
-
-        <form action="<%= request.getContextPath() %>/book-request"
-              method="post">
-
-            <label>Book Title *</label>
-
-            <input type="text"
-                   name="title"
-                   required
-                   maxlength="255">
-
-            <label>Author</label>
-
-            <input type="text"
-                   name="author"
-                   maxlength="255">
-
-            <button type="submit">
-                Submit Request
-            </button>
-
-        </form>
-
-    </div>
-
-<% } %>
+    </header>
 
 
-    <h2>Requested Books</h2>
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
 
-    <%
-        if (requests != null && !requests.isEmpty()) {
+    <main class="main-content">
 
-            for (BookRequest bookRequest : requests) {
-    %>
+        <!-- PAGE INTRO -->
 
-        <div class="request">
+        <section class="page-intro">
 
-            <h3>
-                <%= bookRequest.getTitle() %>
-            </h3>
+            <div class="intro-copy">
 
-            <% if (bookRequest.getAuthor() != null
-                    && !bookRequest.getAuthor().isEmpty()) { %>
+                <span class="eyebrow">
+                    COMMUNITY LIBRARY
+                </span>
+
+                <h1>
+                    Request a
+                    <em>book.</em>
+                </h1>
 
                 <p>
-                    Author:
-                    <%= bookRequest.getAuthor() %>
+                    Can't find the book you're looking for?
+                    Request it here and let the community help
+                    decide what should be added next.
                 </p>
+
+            </div>
+
+
+            <!-- REQUEST COUNTER -->
+
+            <div class="request-counter">
+
+                <div class="counter-icon">
+                    <i data-lucide="library-big"></i>
+                </div>
+
+                <div class="counter-content">
+
+                    <span class="counter-label">
+                        WEEKLY REQUESTS
+                    </span>
+
+                    <div class="counter-number">
+
+                        <strong>
+                            <%= totalRequests %>
+                        </strong>
+
+                        <span>/ 10</span>
+
+                    </div>
+
+                    <div class="progress-track">
+
+                        <div class="progress-bar"
+                             style="width: <%= (totalRequests * 10) %>%;">
+                        </div>
+
+                    </div>
+
+                    <span class="counter-note">
+
+                        <%= remainingRequests %>
+                        request<%= remainingRequests == 1 ? "" : "s" %>
+                        remaining
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             MESSAGES
+        ================================================== -->
+
+        <% if (error != null) { %>
+
+            <div class="alert alert-error"
+                 role="alert">
+
+                <span class="alert-icon">
+                    <i data-lucide="circle-alert"></i>
+                </span>
+
+                <div>
+                    <strong>Request not submitted</strong>
+                    <p><%= error %></p>
+                </div>
+
+                <button type="button"
+                        class="alert-close"
+                        aria-label="Close message">
+
+                    <i data-lucide="x"></i>
+
+                </button>
+
+            </div>
+
+        <% } %>
+
+
+        <% if (success != null) { %>
+
+            <div class="alert alert-success"
+                 role="alert">
+
+                <span class="alert-icon">
+                    <i data-lucide="circle-check"></i>
+                </span>
+
+                <div>
+                    <strong>Request submitted</strong>
+                    <p><%= success %></p>
+                </div>
+
+                <button type="button"
+                        class="alert-close"
+                        aria-label="Close message">
+
+                    <i data-lucide="x"></i>
+
+                </button>
+
+            </div>
+
+        <% } %>
+
+
+        <% if (voteSuccess != null) { %>
+
+            <div class="alert alert-success"
+                 role="alert">
+
+                <span class="alert-icon">
+                    <i data-lucide="circle-check"></i>
+                </span>
+
+                <div>
+                    <strong>Vote added</strong>
+                    <p><%= voteSuccess %></p>
+                </div>
+
+                <button type="button"
+                        class="alert-close"
+                        aria-label="Close message">
+
+                    <i data-lucide="x"></i>
+
+                </button>
+
+            </div>
+
+        <% } %>
+
+
+        <% if (voteError != null) { %>
+
+            <div class="alert alert-error"
+                 role="alert">
+
+                <span class="alert-icon">
+                    <i data-lucide="circle-alert"></i>
+                </span>
+
+                <div>
+                    <strong>Vote not added</strong>
+                    <p><%= voteError %></p>
+                </div>
+
+                <button type="button"
+                        class="alert-close"
+                        aria-label="Close message">
+
+                    <i data-lucide="x"></i>
+
+                </button>
+
+            </div>
+
+        <% } %>
+
+
+        <% if (deleteSuccess != null) { %>
+
+            <div class="alert alert-success"
+                 role="alert">
+
+                <span class="alert-icon">
+                    <i data-lucide="circle-check"></i>
+                </span>
+
+                <div>
+                    <strong>Request deleted</strong>
+                    <p><%= deleteSuccess %></p>
+                </div>
+
+                <button type="button"
+                        class="alert-close"
+                        aria-label="Close message">
+
+                    <i data-lucide="x"></i>
+
+                </button>
+
+            </div>
+
+        <% } %>
+
+
+        <% if (deleteError != null) { %>
+
+            <div class="alert alert-error"
+                 role="alert">
+
+                <span class="alert-icon">
+                    <i data-lucide="circle-alert"></i>
+                </span>
+
+                <div>
+                    <strong>Unable to delete</strong>
+                    <p><%= deleteError %></p>
+                </div>
+
+                <button type="button"
+                        class="alert-close"
+                        aria-label="Close message">
+
+                    <i data-lucide="x"></i>
+
+                </button>
+
+            </div>
+
+        <% } %>
+
+
+        <!-- =================================================
+             REQUEST FORM
+        ================================================== -->
+
+        <% if (!isAdmin && totalRequests < 10) { %>
+
+            <section class="request-form-card">
+
+                <div class="card-heading">
+
+                    <div class="heading-icon">
+                        <i data-lucide="pen-line"></i>
+                    </div>
+
+                    <div>
+
+                        <span class="section-label">
+                            ADD TO THE LIBRARY
+                        </span>
+
+                        <h2>
+                            What should we read next?
+                        </h2>
+
+                        <p>
+                            Tell us about a book you'd like
+                            to see in Stories.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form action="${pageContext.request.contextPath}/book-request"
+                      method="post"
+                      class="request-form"
+                      id="bookRequestForm">
+
+
+                    <div class="form-grid">
+
+                        <!-- TITLE -->
+
+                        <div class="form-field field-title">
+
+                            <label for="title">
+                                Book Title
+                                <span>*</span>
+                            </label>
+
+                            <div class="input-shell">
+
+                                <i data-lucide="book-open"></i>
+
+                                <input
+                                    type="text"
+                                    id="title"
+                                    name="title"
+                                    placeholder="Enter the book title"
+                                    maxlength="255"
+                                    autocomplete="off"
+                                    required>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- AUTHOR -->
+
+                        <div class="form-field">
+
+                            <label for="author">
+                                Author
+                            </label>
+
+                            <div class="input-shell">
+
+                                <i data-lucide="user-round"></i>
+
+                                <input
+                                    type="text"
+                                    id="author"
+                                    name="author"
+                                    placeholder="Enter the author name"
+                                    maxlength="255"
+                                    autocomplete="off">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-footer">
+
+                        <span class="form-hint">
+                            <i data-lucide="info"></i>
+                            Requests are reviewed weekly.
+                        </span>
+
+                        <button type="submit"
+                                class="submit-button">
+
+                            <span>
+                                Submit Request
+                            </span>
+
+                            <i data-lucide="arrow-up-right"></i>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+        <% } else if (!isAdmin && totalRequests >= 10) { %>
+
+            <section class="limit-card">
+
+                <div class="limit-icon">
+                    <i data-lucide="circle-check"></i>
+                </div>
+
+                <div>
+
+                    <span class="section-label">
+                        WEEKLY LIMIT REACHED
+                    </span>
+
+                    <h2>
+                        All 10 requests are in.
+                    </h2>
+
+                    <p>
+                        Check back next week to submit
+                        another book request.
+                    </p>
+
+                </div>
+
+            </section>
+
+        <% } %>
+
+
+        <!-- =================================================
+             REQUEST LIST
+        ================================================== -->
+
+        <section class="requests-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span class="section-label">
+                        THIS WEEK
+                    </span>
+
+                    <h2>
+                        Requested Books
+                    </h2>
+
+                </div>
+
+                <div class="request-count-pill">
+
+                    <i data-lucide="layers"></i>
+
+                    <span>
+                        <%= totalRequests %> / 10
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <% if (requests != null && !requests.isEmpty()) { %>
+
+                <div class="request-grid">
+
+                    <%
+                    for (BookRequest bookRequest : requests) {
+
+                        int voteCount =
+                                voteService.getVoteCount(
+                                    bookRequest.getRequestId()
+                                );
+                    %>
+
+                        <article class="request-card">
+
+                            <div class="request-card-top">
+
+                                <div class="book-number">
+
+                                    <i data-lucide="book-marked"></i>
+
+                                </div>
+
+                                <span class="request-week">
+                                    THIS WEEK
+                                </span>
+
+                            </div>
+
+
+                            <div class="request-card-content">
+
+                                <h3>
+                                    <%= bookRequest.getTitle() %>
+                                </h3>
+
+
+                                <% if (bookRequest.getAuthor() != null
+                                    && !bookRequest.getAuthor().trim().isEmpty()) { %>
+
+                                    <p class="author">
+
+                                        <i data-lucide="user"></i>
+
+                                        <span>
+                                            <%= bookRequest.getAuthor() %>
+                                        </span>
+
+                                    </p>
+
+                                <% } else { %>
+
+                                    <p class="author muted">
+
+                                        <i data-lucide="user"></i>
+
+                                        <span>
+                                            Author not specified
+                                        </span>
+
+                                    </p>
+
+                                <% } %>
+
+
+                                <div class="request-meta">
+
+                                    <span>
+
+                                        <i data-lucide="calendar-days"></i>
+
+                                        <%= bookRequest.getCreatedAt() != null
+                                            ? bookRequest.getCreatedAt()
+                                            : "Recently requested" %>
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="request-card-footer">
+
+                                <div class="vote-count">
+
+                                    <span class="vote-icon">
+                                        <i data-lucide="heart"></i>
+                                    </span>
+
+                                    <div>
+
+                                        <strong>
+                                            <%= voteCount %>
+                                        </strong>
+
+                                        <small>
+                                            vote<%= voteCount == 1 ? "" : "s" %>
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+
+                                <% if (isAdmin) { %>
+
+                                    <form
+                                        action="${pageContext.request.contextPath}/book-request/delete"
+                                        method="post"
+                                        class="action-form delete-form">
+
+                                        <input
+                                            type="hidden"
+                                            name="requestId"
+                                            value="<%= bookRequest.getRequestId() %>">
+
+                                        <button
+                                            type="submit"
+                                            class="delete-button">
+
+                                            <i data-lucide="trash-2"></i>
+
+                                            <span>Delete</span>
+
+                                        </button>
+
+                                    </form>
+
+                                <% } else { %>
+
+                                    <form
+                                        action="${pageContext.request.contextPath}/book-request/vote"
+                                        method="post"
+                                        class="action-form">
+
+                                        <input
+                                            type="hidden"
+                                            name="requestId"
+                                            value="<%= bookRequest.getRequestId() %>">
+
+                                        <button
+                                            type="submit"
+                                            class="vote-button">
+
+                                            <i data-lucide="heart"></i>
+
+                                            <span>Vote</span>
+
+                                        </button>
+
+                                    </form>
+
+                                <% } %>
+
+                            </div>
+
+                        </article>
+
+                    <%
+                    }
+                    %>
+
+                </div>
+
+            <% } else { %>
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+
+                        <i data-lucide="book-open"></i>
+
+                    </div>
+
+                    <span class="section-label">
+                        A QUIET SHELF
+                    </span>
+
+                    <h2>
+                        No requests yet.
+                    </h2>
+
+                    <p>
+                        Be the first reader to request a book
+                        for this week's community list.
+                    </p>
+
+                </div>
 
             <% } %>
 
-            <%
-    int voteCount =
-            ((com.project.elibrary.service.bookrequestservice.BookRequestVoteService)
-            new com.project.elibrary.service.bookrequestservice.BookRequestVoteService())
-            .getVoteCount(bookRequest.getRequestId());
-%>
+        </section>
 
-<p>
-    Votes: <%= voteCount %>
-</p>
+    </main>
 
-<% if (isAdmin) { %>
 
-    <!-- ADMIN can delete the request -->
-    <form action="<%= request.getContextPath() %>/book-request/delete"
-          method="post">
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
 
-        <input type="hidden"
-               name="requestId"
-               value="<%= bookRequest.getRequestId() %>">
+    <footer class="site-footer">
 
-        <button type="submit">
-            Delete
-        </button>
+        <span>
+            STORIES E-LIBRARY
+        </span>
 
-    </form>
+        <span class="footer-line"></span>
 
-<% } else { %>
+        <span>
+            READ · DISCOVER · SHARE
+        </span>
 
-    <!-- Normal USER can vote -->
-    <form action="<%= request.getContextPath() %>/book-request/vote"
-          method="post">
-
-        <input type="hidden"
-               name="requestId"
-               value="<%= bookRequest.getRequestId() %>">
-
-        <button type="submit">
-            Vote
-        </button>
-
-    </form>
-
-<% } %>
-
-        </div>
-
-    <%
-            }
-
-        } else {
-    %>
-
-        <p>No book requests this week.</p>
-
-    <%
-        }
-    %>
+    </footer>
 
 </div>
+
+<script src="${pageContext.request.contextPath}/javascript/book-request.js?v=2"></script>
 
 </body>
 
 </html>
+
