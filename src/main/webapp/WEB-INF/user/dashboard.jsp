@@ -42,9 +42,15 @@
 				class="nav-link"> <i data-lucide="message-square-plus"></i> <span>Suggestions</span>
 			</a> <a href="${pageContext.request.contextPath}/books/history"
 				class="nav-link"> <i data-lucide="history"></i> <span>History</span>
+			<!-- User Profile -->
+			<a href="${pageContext.request.contextPath}/profile">
+    <i data-lucide="user"></i>
+    Profile
+</a>
 			</a> <a href="${pageContext.request.contextPath}/logout"> <i
 				data-lucide="log-out"></i> Logout
 			</a>
+			
 		</nav>
 	</header>
 
