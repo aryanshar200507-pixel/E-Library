@@ -15,6 +15,9 @@
     <meta charset="UTF-8">
 
     <title>Edit Book - E-Library</title>
+    
+    <link rel="stylesheet"
+      href="${pageContext.request.contextPath}/css/background.css">
 
 </head>
 

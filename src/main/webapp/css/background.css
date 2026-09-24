@@ -1,0 +1,69 @@
+
+/* =========================================
+   STORIES E-LIBRARY — GLOBAL BACKGROUND
+   ========================================= */
+
+html {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    background-color: #2C1810 !important;
+
+    background-image:
+        linear-gradient(
+            rgba(247, 243, 236, 0.18),
+            rgba(247, 243, 236, 0.28)
+        ),
+        url("../images/library.jpg") !important;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+/* =========================================
+   KEEP PAGE WRAPPERS TRANSPARENT
+   ========================================= */
+
+.books-page,
+.category-books-page,
+main {
+    background-color: transparent;
+}
+
+/* =========================================
+   TEXT VISIBILITY
+   ========================================= */
+
+.books-page h1,
+.books-page h2 {
+    color: #2C1810;
+    text-shadow: 0 1px 3px rgba(247, 243, 236, 0.75);
+}
+
+.books-page p {
+    color: #241F1A;
+    text-shadow: 0 1px 3px rgba(247, 243, 236, 0.8);
+}
+
+.books-page .eyebrow {
+    color: #6B4226;
+    font-weight: 700;
+    text-shadow: 0 1px 3px rgba(247, 243, 236, 0.85);
+}
+
+/* =========================================
+   BOOK DETAIL PAGE — EXCLUDE BACKGROUND
+   ========================================= */
+
+body:has(.book-details-page),
+body.book-detail-page {
+    background-image: none !important;
+    background-color: #F7F3EC !important;
+    color: #241F1A;
+}

@@ -1,5 +1,4 @@
-<%@ page language="java"
-	contentType="text/html; charset=UTF-8"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
 <%@ page import="java.util.List"%>
@@ -15,27 +14,30 @@
 
 <head>
 
-	<meta charset="UTF-8">
+<meta charset="UTF-8">
 
-	<meta name="viewport"
-		  content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<title>Category Books - E-Library</title>
+<title>Category Books - E-Library</title>
 
 
-	<!-- =================================================
+<!-- =================================================
 	     CSS
 	     ================================================= -->
 
-	<link rel="stylesheet"
-		  href="${pageContext.request.contextPath}/css/category-books.css">
+<!-- Category Books CSS -->
+<link rel="stylesheet"
+      href="${pageContext.request.contextPath}/css/category-books.css">
 
+<!-- Library Background -->
+<link rel="stylesheet"
+      href="${pageContext.request.contextPath}/css/background.css">
 
-	<!-- =================================================
+<!-- =================================================
 	     LUCIDE ICONS
 	     ================================================= -->
 
-	<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 
 </head>
 
@@ -43,332 +45,250 @@
 <body>
 
 
-<%
-/* =====================================================
-   GET DATA FROM SERVLET
-   ===================================================== */
+	<%
+	/* =====================================================
+	   GET DATA FROM SERVLET
+	   ===================================================== */
 
+	/* Selected category */
 
-/* Selected category */
+	Category category = (Category) request.getAttribute("category");
 
-Category category =
-		(Category) request.getAttribute("category");
+	/* Books */
 
+	List<Book> books = (List<Book>) request.getAttribute("books");
 
-/* Books */
+	/* Cover URL map */
 
-List<Book> books =
-		(List<Book>) request.getAttribute("books");
+	Map<Long, String> coverUrlMap = (Map<Long, String>) request.getAttribute("coverUrlMap");
 
+	/* Average rating map */
 
-/* Cover URL map */
+	Map<Long, Double> averageRatingMap = (Map<Long, Double>) request.getAttribute("averageRatingMap");
 
-Map<Long, String> coverUrlMap =
-		(Map<Long, String>) request.getAttribute("coverUrlMap");
+	/* Rating count map */
 
+	Map<Long, Integer> ratingCountMap = (Map<Long, Integer>) request.getAttribute("ratingCountMap");
 
-/* Average rating map */
+	/* Pagination */
 
-Map<Long, Double> averageRatingMap =
-		(Map<Long, Double>)
-		request.getAttribute("averageRatingMap");
+	Integer currentPage = (Integer) request.getAttribute("currentPage");
 
+	Integer totalPages = (Integer) request.getAttribute("totalPages");
 
-/* Rating count map */
+	/* Search keyword */
 
-Map<Long, Integer> ratingCountMap =
-		(Map<Long, Integer>)
-		request.getAttribute("ratingCountMap");
+	String keyword = (String) request.getAttribute("keyword");
 
+	if (keyword == null) {
 
-/* Pagination */
+		keyword = "";
 
-Integer currentPage =
-		(Integer) request.getAttribute("currentPage");
+	}
 
-Integer totalPages =
-		(Integer) request.getAttribute("totalPages");
+	/*
+	 * Encode keyword for HTML data attribute.
+	 *
+	 * JavaScript will decode it again.
+	 *
+	 * This prevents quotes and special characters
+	 * in the search keyword from breaking the HTML.
+	 */
 
+	String encodedKeyword = java.net.URLEncoder.encode(keyword, "UTF-8");
 
-/* Search keyword */
+	/* Logged-in user */
 
-String keyword =
-		(String) request.getAttribute("keyword");
+	User loggedInUser = (User) session.getAttribute("loggedInUser");
 
-if (keyword == null) {
+	/* Only normal USER can bookmark */
 
-	keyword = "";
+	boolean isUser = loggedInUser != null && loggedInUser.getRole() == Role.USER;
 
-}
+	/* Safe pagination defaults */
 
+	int safeCurrentPage = currentPage != null ? currentPage : 1;
 
-/*
- * Encode keyword for HTML data attribute.
- *
- * JavaScript will decode it again.
- *
- * This prevents quotes and special characters
- * in the search keyword from breaking the HTML.
- */
-
-String encodedKeyword =
-		java.net.URLEncoder.encode(
-			keyword,
-			"UTF-8"
-		);
-
-
-/* Logged-in user */
-
-User loggedInUser =
-		(User) session.getAttribute("loggedInUser");
-
-
-/* Only normal USER can bookmark */
-
-boolean isUser =
-		loggedInUser != null &&
-		loggedInUser.getRole() == Role.USER;
-
-
-/* Safe pagination defaults */
-
-int safeCurrentPage =
-		currentPage != null
-			? currentPage
-			: 1;
-
-
-int safeTotalPages =
-		totalPages != null
-			? totalPages
-			: 1;
-
-%>
+	int safeTotalPages = totalPages != null ? totalPages : 1;
+	%>
 
 
 
-<!-- =====================================================
+	<!-- =====================================================
      HEADER
      ===================================================== -->
 
-<header class="site-header">
+	<header class="site-header">
 
 
-	<div class="header-inner">
+		<div class="header-inner">
 
 
-		<!-- ================= BRAND ================= -->
+			<!-- ================= BRAND ================= -->
 
-		<div class="brand">
+			<div class="brand">
 
 
-			<div class="brand-icon">
+				<div class="brand-icon">
 
-				<i data-lucide="library"></i>
+					<i data-lucide="library"></i>
+
+				</div>
+
+
+				<div class="brand-text">
+
+					<h1>Stories</h1>
+
+					<span>E-Library</span>
+
+				</div>
+
 
 			</div>
 
 
-			<div class="brand-text">
 
-				<h1>Stories</h1>
+			<!-- ================= BACK ================= -->
 
-				<span>E-Library</span>
+			<a class="back-link" href="${pageContext.request.contextPath}/books">
 
-			</div>
+				<i data-lucide="arrow-left"></i> <span>Categories</span>
+
+			</a> <a href="${pageContext.request.contextPath}/user/dashboard"> <i
+				data-lucide="layout-dashboard"></i> Dashboard
+			</a> <a href="${pageContext.request.contextPath}/books/bookmark-book">
+				<i data-lucide="bookmark"></i> Bookmarks
+			</a> <a href="${pageContext.request.contextPath}/books/history"
+				class="nav-link"> <i data-lucide="history"></i> <span>History</span>
+			</a>
 
 
 		</div>
 
-
-
-		<!-- ================= BACK ================= -->
-
-		<a
-			class="back-link"
-			href="${pageContext.request.contextPath}/books">
-
-			<i data-lucide="arrow-left"></i>
-
-			<span>Categories</span>
-
-		</a>
-		
-		<a href="${pageContext.request.contextPath}/user/dashboard"> <i
-				data-lucide="layout-dashboard"></i> Dashboard
-			</a> 
-			
-			<a href="${pageContext.request.contextPath}/books/bookmark-book">
-				<i data-lucide="bookmark"></i> Bookmarks
-			</a>
-			
-			<a href="${pageContext.request.contextPath}/books/history"
-				class="nav-link"> <i data-lucide="history"></i> <span>History</span>
-			</a> 
-
-
-	</div>
-
-</header>
+	</header>
 
 
 
-<!-- =====================================================
+	<!-- =====================================================
      MAIN CONTENT
      ===================================================== -->
 
-<main class="container">
+	<main class="container">
 
 
-	<!-- =================================================
+		<!-- =================================================
 	     CATEGORY HEADER
 	     ================================================= -->
 
-	<section class="category-header">
+		<section class="category-header">
 
 
-		<div>
+			<div>
 
 
-			<span class="eyebrow">
+				<span class="eyebrow"> <i data-lucide="layers"></i> Category
 
-				<i data-lucide="layers"></i>
-
-				Category
-
-			</span>
+				</span>
 
 
-			<h2>
+				<h2>
 
-				<%= category.getCategoryName() %>
+					<%=category.getCategoryName()%>
 
-			</h2>
-
-
-			<p>
-
-				Explore books available in this category.
-
-			</p>
+				</h2>
 
 
-		</div>
+				<p>Explore books available in this category.</p>
 
 
-	</section>
+			</div>
+
+
+		</section>
 
 
 
-	<!-- =================================================
+		<!-- =================================================
 	     SEARCH
 	     ================================================= -->
 
-	<form
-		method="get"
-		action="${pageContext.request.contextPath}/books/category"
-		class="category-search">
+		<form method="get"
+			action="${pageContext.request.contextPath}/books/category"
+			class="category-search">
 
 
-		<!-- Category -->
+			<!-- Category -->
 
-		<input
-			type="hidden"
-			name="id"
-			value="<%= category.getCategoryId() %>">
+			<input type="hidden" name="id"
+				value="<%=category.getCategoryId()%>">
 
 
 
-		<!-- Search input -->
+			<!-- Search input -->
 
-		<div class="search-input-wrapper">
-
-
-			<i data-lucide="search"></i>
+			<div class="search-input-wrapper">
 
 
-			<input
-				type="text"
-				name="keyword"
-				value="<%= keyword %>"
-				placeholder="Search books in this category..."
-				autocomplete="off">
+				<i data-lucide="search"></i> <input type="text" name="keyword"
+					value="<%=keyword%>"
+					placeholder="Search books in this category..." autocomplete="off">
 
 
-		</div>
+			</div>
 
 
 
-		<!-- Search button -->
+			<!-- Search button -->
 
-		<button
-			type="submit"
-			class="search-button">
+			<button type="submit" class="search-button">
 
-			<i data-lucide="search"></i>
+				<i data-lucide="search"></i> <span>Search</span>
 
-			<span>Search</span>
-
-		</button>
+			</button>
 
 
 
-		<!-- Clear -->
+			<!-- Clear -->
 
-		<%
+			<%
+			if (!keyword.isBlank()) {
+			%>
 
-		if (!keyword.isBlank()) {
-
-		%>
-
-			<a
-				class="clear-button"
+			<a class="clear-button"
 				href="${pageContext.request.contextPath}/books/category?id=<%= category.getCategoryId() %>">
 
-				<i data-lucide="x"></i>
-
-				<span>Clear</span>
+				<i data-lucide="x"></i> <span>Clear</span>
 
 			</a>
 
-		<%
-
-		}
-
-		%>
+			<%
+			}
+			%>
 
 
-	</form>
+		</form>
 
 
 
-	<!-- =================================================
+		<!-- =================================================
 	     BOOKS SECTION
 	     ================================================= -->
 
-	<section
-		class="books-section"
-		id="booksSection"
-
-		data-category-id="<%= category.getCategoryId() %>"
-
-		data-keyword="<%= encodedKeyword %>"
-
-		data-current-page="<%= safeCurrentPage %>"
-
-		data-total-pages="<%= safeTotalPages %>">
+		<section class="books-section" id="booksSection"
+			data-category-id="<%=category.getCategoryId()%>"
+			data-keyword="<%=encodedKeyword%>"
+			data-current-page="<%=safeCurrentPage%>"
+			data-total-pages="<%=safeTotalPages%>">
 
 
-		<%
+			<%
+			/* =================================================
+			   EMPTY STATE
+			   ================================================= */
 
-		/* =================================================
-		   EMPTY STATE
-		   ================================================= */
-
-		if (books == null || books.isEmpty()) {
-
-		%>
+			if (books == null || books.isEmpty()) {
+			%>
 
 
 			<div class="empty-state">
@@ -382,72 +302,51 @@ int safeTotalPages =
 
 
 				<%
-
 				if (!keyword.isBlank()) {
-
 				%>
 
 
-					<h3>
-						No books found
-					</h3>
+				<h3>No books found</h3>
 
 
-					<p>
+				<p>
 
-						No books found matching
+					No books found matching <strong> "<%=keyword%>"
+					</strong> in this category.
 
-						<strong>
-							"<%= keyword %>"
-						</strong>
-
-						in this category.
-
-					</p>
+				</p>
 
 
 				<%
-
 				} else {
-
 				%>
 
 
-					<h3>
-						No books available
-					</h3>
+				<h3>No books available</h3>
 
 
-					<p>
-						There are currently no books
-						in this category.
-					</p>
+				<p>There are currently no books in this category.</p>
 
 
 				<%
-
 				}
-
 				%>
 
 
 			</div>
 
 
-		<%
+			<%
+			}
 
-		}
-
-		else {
-
+			else {
 
 			/* =================================================
 			   DISPLAY BOOKS
 			   ================================================= */
 
 			for (Book book : books) {
-
-		%>
+			%>
 
 
 			<!-- =============================================
@@ -463,52 +362,32 @@ int safeTotalPages =
 
 
 					<%
+					String coverUrl = coverUrlMap.get(book.getBookId());
 
-					String coverUrl =
-							coverUrlMap.get(
-								book.getBookId()
-							);
-
-
-					if (
-						coverUrl != null &&
-						!coverUrl.isBlank()
-					) {
-
+					if (coverUrl != null && !coverUrl.isBlank()) {
 					%>
 
 
-						<img
-							class="book-cover"
-							src="<%= coverUrl %>"
-							alt="<%= book.getTitle() %> cover"
-							loading="lazy">
+					<img class="book-cover" src="<%=coverUrl%>"
+						alt="<%=book.getTitle()%> cover" loading="lazy">
 
 
 					<%
-
 					}
 
 					else {
-
 					%>
 
 
-						<div class="cover-placeholder">
+					<div class="cover-placeholder">
 
-							<i data-lucide="book-open"></i>
+						<i data-lucide="book-open"></i> <span> No Cover </span>
 
-							<span>
-								No Cover
-							</span>
-
-						</div>
+					</div>
 
 
 					<%
-
 					}
-
 					%>
 
 
@@ -525,7 +404,7 @@ int safeTotalPages =
 
 					<h3 class="book-title">
 
-						<%= book.getTitle() %>
+						<%=book.getTitle()%>
 
 					</h3>
 
@@ -535,11 +414,7 @@ int safeTotalPages =
 
 					<div class="book-meta">
 
-						<i data-lucide="user"></i>
-
-						<span>
-
-							<%= book.getAuthor() %>
+						<i data-lucide="user"></i> <span> <%=book.getAuthor()%>
 
 						</span>
 
@@ -553,78 +428,36 @@ int safeTotalPages =
 
 
 						<%
+						Double averageRating = averageRatingMap.get(book.getBookId());
 
-						Double averageRating =
-								averageRatingMap.get(
-									book.getBookId()
-								);
+						Integer ratingCount = ratingCountMap.get(book.getBookId());
 
-
-						Integer ratingCount =
-								ratingCountMap.get(
-									book.getBookId()
-								);
-
-
-						if (
-							ratingCount != null &&
-							ratingCount > 0
-						) {
-
+						if (ratingCount != null && ratingCount > 0) {
 						%>
 
 
-							<i
-								data-lucide="star"
-								class="rating-icon">
-							</i>
+						<i data-lucide="star" class="rating-icon"> </i> <strong>
 
+							<%=String.format("%.1f", averageRating)%>
 
-							<strong>
+						</strong> <span> / 5 </span> <span class="rating-count"> (<%=ratingCount%>
+							ratings)
 
-								<%= String.format(
-									"%.1f",
-									averageRating
-								) %>
-
-							</strong>
-
-
-							<span>
-								/ 5
-							</span>
-
-
-							<span class="rating-count">
-
-								(<%= ratingCount %> ratings)
-
-							</span>
+						</span>
 
 
 						<%
-
 						}
 
 						else {
-
 						%>
 
 
-							<i
-								data-lucide="star">
-							</i>
-
-
-							<span>
-								No ratings yet
-							</span>
+						<i data-lucide="star"> </i> <span> No ratings yet </span>
 
 
 						<%
-
 						}
-
 						%>
 
 
@@ -637,65 +470,41 @@ int safeTotalPages =
 					<div class="description">
 
 
-						<span class="description-label">
-
-							Description
-
-						</span>
+						<span class="description-label"> Description </span>
 
 
 						<%
+						String description = book.getDescription();
 
-						String description =
-								book.getDescription();
-
-
-						if (
-							description == null ||
-							description.isBlank()
-						) {
-
+						if (description == null || description.isBlank()) {
 						%>
 
 
-							<p>
-								No description available.
-							</p>
+						<p>No description available.</p>
 
 
 						<%
-
 						}
 
 						else {
 
+						if (description.length() > 250) {
 
-							if (
-								description.length() > 250
-							) {
+							description = description.substring(0, 250) + "...";
 
-								description =
-									description.substring(
-										0,
-										250
-									) + "...";
-
-							}
-
+						}
 						%>
 
 
-							<p>
+						<p>
 
-								<%= description %>
+							<%=description%>
 
-							</p>
+						</p>
 
 
 						<%
-
 						}
-
 						%>
 
 
@@ -709,57 +518,36 @@ int safeTotalPages =
 
 
 						<%
-
 						/* Only USER can bookmark */
 
 						if (isUser) {
-
 						%>
 
 
-							<button
-								type="button"
-								class="bookmark-button"
-								data-book-id="<%= book.getBookId() %>"
-								aria-label="Bookmark <%= book.getTitle() %>">
+						<button type="button" class="bookmark-button"
+							data-book-id="<%=book.getBookId()%>"
+							aria-label="Bookmark <%=book.getTitle()%>">
 
 
-								<i
-									data-lucide="bookmark">
-								</i>
+							<i data-lucide="bookmark"> </i> <span> Bookmark </span>
 
 
-								<span>
-									Bookmark
-								</span>
-
-
-							</button>
+						</button>
 
 
 						<%
-
 						}
-
 						%>
 
 
 
 						<!-- READ MORE -->
 
-						<a
-							class="read-more"
+						<a class="read-more"
 							href="${pageContext.request.contextPath}/books/details?id=<%= book.getBookId() %>">
 
 
-							<span>
-								Read More
-							</span>
-
-
-							<i
-								data-lucide="arrow-right">
-							</i>
+							<span> Read More </span> <i data-lucide="arrow-right"> </i>
 
 
 						</a>
@@ -774,107 +562,88 @@ int safeTotalPages =
 			</article>
 
 
-		<%
-
+			<%
 			}
 
-		}
-
-		%>
-
-
-	</section>
+			}
+			%>
 
 
+		</section>
 
-	<!-- =================================================
+
+
+		<!-- =================================================
 	     INFINITE SCROLL LOADER
 	     ================================================= -->
 
-	<div
-		id="booksLoader"
-		class="books-loader">
+		<div id="booksLoader" class="books-loader">
 
 
-		<div class="loader-spinner">
+			<div class="loader-spinner">
 
-			<i data-lucide="loader-circle"></i>
+				<i data-lucide="loader-circle"></i>
+
+			</div>
+
+
+			<span> Loading more books... </span>
+
 
 		</div>
 
 
-		<span>
-			Loading more books...
-		</span>
 
 
-	</div>
-
-	
-
-
-	<!-- =================================================
+		<!-- =================================================
 	     END MESSAGE
 	     ================================================= -->
 
-	<div
-		id="booksEndMessage"
-		class="books-end-message">
+		<div id="booksEndMessage" class="books-end-message">
 
 
-		<i data-lucide="check"></i>
+			<i data-lucide="check"></i> <span> You have reached the end. </span>
 
 
-		<span>
-			You have reached the end.
-		</span>
+		</div>
 
 
-	</div>
-
-
-</main>
+	</main>
 
 
 
-<!-- =====================================================
+	<!-- =====================================================
      JAVASCRIPT CONFIG
      ===================================================== -->
 
-<script>
-
-	const contextPath =
-		"${pageContext.request.contextPath}";
-
-</script>
+	<script>
+		const contextPath = "${pageContext.request.contextPath}";
+	</script>
 
 
 
-<!-- =====================================================
+	<!-- =====================================================
      CATEGORY BOOKS JAVASCRIPT
      ===================================================== -->
 
-<script
-	src="${pageContext.request.contextPath}/javascript/category-books.js">
-</script>
+	<script
+		src="${pageContext.request.contextPath}/javascript/category-books.js">
+		
+	</script>
 
 
 
-<!-- =====================================================
+	<!-- =====================================================
      LUCIDE
      ===================================================== -->
 
-<script>
+	<script>
+		if (typeof lucide !== "undefined") {
 
-	if (
-		typeof lucide !== "undefined"
-	) {
+			lucide.createIcons();
 
-		lucide.createIcons();
-
-	}
-
-</script>
+		}
+	</script>
 
 
 </body>

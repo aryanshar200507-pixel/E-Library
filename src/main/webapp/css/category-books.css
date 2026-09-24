@@ -1530,3 +1530,15 @@ body {
         height: 18px;
     }
 }
+
+/* =========================================
+   WHITE TEXT SHADOW FOR OUTSIDE TEXT
+   ========================================= */
+
+/* White shadow for text outside book cards */
+.container > *:not(.books-section):not(.category-search),
+.category-header * {
+    text-shadow:
+        0 1px 3px rgba(255, 255, 255, 0.95),
+        0 2px 8px rgba(255, 255, 255, 0.75);
+}

@@ -30,6 +30,9 @@
           content="width=device-width, initial-scale=1.0">
 
     <title>App Suggestions - Admin</title>
+    
+    <link rel="stylesheet"
+      href="${pageContext.request.contextPath}/css/background.css">
 
     <style>
 

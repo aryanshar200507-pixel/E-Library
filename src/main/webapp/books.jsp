@@ -47,6 +47,8 @@
 	<link rel="stylesheet"
 
       href="${pageContext.request.contextPath}/css/confirm-modal.css">
+      
+
 
 
 
@@ -69,6 +71,9 @@
 <link rel="stylesheet"
 
 	href="${pageContext.request.contextPath}/css/books.css">
+	
+	<link rel="stylesheet"
+      href="${pageContext.request.contextPath}/css/background.css">
 
 </head>
 

@@ -7,6 +7,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Add Book</title>
+
+<link rel="stylesheet"
+      href="${pageContext.request.contextPath}/css/background.css">
 </head>
 
 <body>

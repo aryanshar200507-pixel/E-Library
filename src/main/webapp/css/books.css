@@ -66,26 +66,40 @@ html {
 
 
 
+/* =========================================
+   GLOBAL BOOKS PAGE BACKGROUND
+   ========================================= */
+
 body {
-
     margin: 0;
+    padding: 0;
 
-    font-family:
+    font-family: Inter, Arial, sans-serif;
+    color: var(--text);
+    line-height: 1.5;
+    overflow-x: hidden;
 
-        "DM Sans",
+    /* Library background */
+    background-color: #2C1810;
 
-        sans-serif;
+    background-image:
+        linear-gradient(
+            rgba(247, 243, 236, 0.18),
+            rgba(247, 243, 236, 0.28)
+        ),
+        url("../images/library.jpg");
 
-    color:
-
-        var(--text);
-
-    background:
-
-        var(--background);
-
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
+/* Keep the page wrapper transparent */
+.books-page {
+    background: transparent;
+    min-height: 100vh;
+}
 
 
 /* =========================================================

@@ -23,6 +23,9 @@
     <!-- Page CSS -->
     <link rel="stylesheet"
         href="${pageContext.request.contextPath}/css/admin-dashboard.css">
+        
+        <link rel="stylesheet"
+      href="${pageContext.request.contextPath}/css/background.css">
 </head>
 
 <body>
