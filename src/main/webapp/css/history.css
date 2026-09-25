@@ -1,6 +1,41 @@
-/* =========================================
+/* =========================================================
+   STORIES E-LIBRARY
+   HISTORY PAGE
+   ========================================================= */
+
+:root {
+    --primary: #2C1810;
+    --primary-light: #4A2A1D;
+    --secondary: #6B4226;
+    --accent: #C89B5C;
+    --accent-light: #E8D3AD;
+
+    --background: #F7F3EC;
+    --paper: #FBF8F1;
+    --surface: #FFFFFF;
+
+    --text: #241F1A;
+    --muted: #786F66;
+    --border: #E7DED2;
+
+    --success: #527A55;
+    --success-bg: #EFF6EF;
+
+    --shadow-sm: 0 4px 14px rgba(44, 24, 16, 0.06);
+    --shadow-md: 0 12px 30px rgba(44, 24, 16, 0.10);
+    --shadow-lg: 0 20px 50px rgba(44, 24, 16, 0.14);
+
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 22px;
+
+    --transition: 0.25s ease;
+}
+
+
+/* =========================================================
    RESET
-========================================= */
+   ========================================================= */
 
 * {
     margin: 0;
@@ -8,563 +43,1235 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f6f7fb;
-    color: #222;
+    font-family: "DM Sans", sans-serif;
+    background: var(--background);
+    color: var(--text);
+    line-height: 1.6;
     min-height: 100vh;
 }
 
+body,
+button,
 a {
-    text-decoration: none;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
     color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font: inherit;
+}
+
+button,
+a {
+    -webkit-tap-highlight-color: transparent;
 }
 
 
-/* =========================================
-   HEADER
-========================================= */
-
-.main-header {
-    height: 72px;
-    background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 0 40px;
-
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    font-size: 22px;
-    font-weight: 700;
-}
-
-.logo svg {
-    width: 25px;
-    height: 25px;
-}
-
-.header-nav {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.nav-link {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-
-    padding: 10px 14px;
-
-    border-radius: 8px;
-
-    color: #555;
-
-    font-size: 14px;
-    font-weight: 500;
-
-    transition: 0.2s ease;
-}
-
-.nav-link svg {
-    width: 18px;
-    height: 18px;
-}
-
-.nav-link:hover {
-    background: #f1f3f7;
-    color: #111;
-}
-
-.nav-link.active {
-    background: #111827;
-    color: #ffffff;
-}
-
-
-/* =========================================
-   MAIN CONTAINER
-========================================= */
-
-.history-container {
-    width: min(1200px, calc(100% - 48px));
-
-    margin: 40px auto 60px;
-}
-
-
-/* =========================================
-   PAGE HEADING
-========================================= */
-
-.page-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    margin-bottom: 30px;
-}
-
-.heading-content {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.heading-icon {
-    width: 52px;
-    height: 52px;
-
-    border-radius: 12px;
-
-    background: #ffffff;
-
-    border: 1px solid #e5e7eb;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.heading-icon svg {
-    width: 26px;
-    height: 26px;
-}
-
-.page-heading h1 {
-    font-size: 30px;
-    margin-bottom: 5px;
-}
-
-.page-heading p {
-    color: #6b7280;
-    font-size: 15px;
-}
-
-.book-count {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    color: #6b7280;
-
-    font-size: 14px;
-}
-
-.book-count svg {
-    width: 18px;
-    height: 18px;
-}
-
-
-/* =========================================
-   HISTORY GRID
-========================================= */
-
-.history-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap: 22px;
-}
-
-
-/* =========================================
-   HISTORY CARD
-========================================= */
-
-.history-card {
-    background: #ffffff;
-
-    border: 1px solid #e5e7eb;
-
-    border-radius: 14px;
-
-    padding: 18px;
-
-    display: flex;
-
-    gap: 18px;
-
-    min-height: 240px;
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.history-card:hover {
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.07);
-}
-
-
-/* =========================================
-   COVER
-========================================= */
-
-.book-cover-container {
-    width: 125px;
-
-    min-width: 125px;
-
-    height: 180px;
-
-    border-radius: 8px;
-
-    overflow: hidden;
-
-    background: #f1f3f5;
-}
-
-.book-cover {
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-
-    display: block;
-}
-
-.cover-placeholder {
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    color: #9ca3af;
-}
-
-.cover-placeholder svg {
-    width: 40px;
-    height: 40px;
-}
-
-
-/* =========================================
-   BOOK INFORMATION
-========================================= */
-
-.book-info {
-    flex: 1;
-
+/* =========================================================
+   PAGE SHELL
+   ========================================================= */
+
+.page-shell {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-.book-title {
-    font-size: 20px;
-    line-height: 1.3;
 
-    margin-bottom: 8px;
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    background: rgba(251, 248, 241, 0.96);
+    border-bottom: 1px solid var(--border);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
 }
 
-.book-author {
+.header-inner {
+    width: min(1200px, calc(100% - 40px));
+    min-height: 76px;
+    margin: 0 auto;
+
     display: flex;
     align-items: center;
-    gap: 6px;
-
-    color: #6b7280;
-
-    font-size: 14px;
-
-    margin-bottom: 14px;
-}
-
-.book-author svg {
-    width: 16px;
-    height: 16px;
-}
-
-.book-description {
-    color: #555;
-
-    font-size: 14px;
-
-    line-height: 1.6;
-
-    margin-bottom: 16px;
+    justify-content: space-between;
+    gap: 24px;
 }
 
 
-/* =========================================
-   CONTINUE READING BUTTON
-========================================= */
+/* =========================================================
+   BRAND
+   ========================================================= */
 
-.continue-button {
-    margin-top: auto;
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
 
-    width: fit-content;
+.brand-icon {
+    width: 42px;
+    height: 42px;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--paper);
+    background: var(--primary);
+
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+}
+
+.brand-icon svg {
+    width: 21px;
+    height: 21px;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.brand-name {
+    font-family: "Playfair Display", serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: 0.2px;
+}
+
+.brand-subtitle {
+    margin-top: 4px;
+
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--muted);
+
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   DESKTOP NAVIGATION
+   ========================================================= */
+
+.desktop-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    flex: 1;
+}
+
+.desktop-nav a {
+    position: relative;
+
+    padding: 9px 11px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    border-radius: 8px;
+
+    transition:
+        color var(--transition),
+        background var(--transition);
+}
+
+.desktop-nav a:hover {
+    color: var(--primary);
+    background: rgba(44, 24, 16, 0.05);
+}
+
+.desktop-nav a.active {
+    color: var(--primary);
+    background: rgba(200, 155, 92, 0.13);
+}
+
+.desktop-nav a.active::after {
+    content: "";
+
+    position: absolute;
+    left: 50%;
+    bottom: 3px;
+
+    width: 4px;
+    height: 4px;
+
+    background: var(--accent);
+    border-radius: 50%;
+
+    transform: translateX(-50%);
+}
+
+
+/* =========================================================
+   HEADER ACTIONS
+   ========================================================= */
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.logout-link {
     display: inline-flex;
     align-items: center;
     gap: 7px;
 
-    padding: 10px 14px;
+    padding: 9px 13px;
 
-    background: #111827;
-    color: #ffffff;
+    color: var(--primary);
 
-    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+
+    border: 1px solid var(--border);
+    border-radius: 9px;
+
+    background: var(--surface);
+
+    transition:
+        color var(--transition),
+        background var(--transition),
+        border-color var(--transition),
+        transform var(--transition);
+}
+
+.logout-link:hover {
+    color: var(--paper);
+    background: var(--primary);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.logout-link svg {
+    width: 15px;
+    height: 15px;
+}
+
+
+/* =========================================================
+   MOBILE MENU BUTTON
+   ========================================================= */
+
+.mobile-menu-button {
+    display: none;
+
+    width: 42px;
+    height: 42px;
+
+    align-items: center;
+    justify-content: center;
+
+    color: var(--primary);
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    transition:
+        background var(--transition),
+        border-color var(--transition);
+}
+
+.mobile-menu-button:hover {
+    background: var(--accent-light);
+    border-color: var(--accent);
+}
+
+.mobile-menu-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+
+/* =========================================================
+   MOBILE NAVIGATION
+   ========================================================= */
+
+.mobile-nav {
+    display: none;
+
+    width: min(1200px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 0 0 16px;
+}
+
+.mobile-nav.open {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.mobile-nav a {
+    display: flex;
+    align-items: center;
+
+    min-height: 44px;
+    padding: 10px 13px;
+
+    color: var(--muted);
 
     font-size: 14px;
     font-weight: 600;
 
-    transition: 0.2s ease;
+    border-radius: 9px;
+
+    transition:
+        color var(--transition),
+        background var(--transition);
 }
 
-.continue-button svg {
-    width: 17px;
-    height: 17px;
+.mobile-nav a:hover,
+.mobile-nav a.active {
+    color: var(--primary);
+    background: rgba(200, 155, 92, 0.14);
 }
 
-.continue-button:hover {
-    background: #000000;
-    transform: translateY(-1px);
+.mobile-nav a.active {
+    font-weight: 700;
 }
 
 
-/* =========================================
-   EMPTY STATE
-========================================= */
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
 
-.empty-state {
-    background: #ffffff;
+.main-content {
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
 
-    border: 1px solid #e5e7eb;
+    flex: 1;
 
-    border-radius: 14px;
+    padding: 60px 0 80px;
+    
+}
 
-    padding: 70px 30px;
+
+/* =========================================================
+   PAGE INTRO
+   ========================================================= */
+
+.page-intro {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 40px;
+
+    padding-bottom: 48px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.intro-copy {
+    max-width: 720px;
+    
+    text-shadow:
+    0 0 6px rgba(255, 255, 255, 0.95),
+    0 0 14px rgba(255, 255, 255, 0.85),
+    0 0 26px rgba(255, 255, 255, 0.6),
+    0 1px 2px rgba(255, 255, 255, 0.25);
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    margin-bottom: 12px;
+
+    color: var(--secondary);
+
+    font-size: 11px;
+    font-weight: 800;
+
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.eyebrow::before {
+    content: "";
+
+    width: 22px;
+    height: 1px;
+
+    background: var(--accent);
+}
+
+.intro-copy h1 {
+    font-family: "Playfair Display", serif;
+
+    font-size: clamp(40px, 5vw, 62px);
+    line-height: 1.05;
+
+    color: var(--primary);
+    font-weight: 700;
+
+    letter-spacing: -1.5px;
+}
+
+.intro-copy h1 em {
+    color: var(--secondary);
+    font-weight: 400;
+}
+
+.intro-copy p {
+    max-width: 620px;
+
+    margin-top: 18px;
+
+    color: var(--muted);
+
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   HISTORY SUMMARY
+   ========================================================= */
+
+.history-summary {
+    min-width: 230px;
+
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    padding: 18px 20px;
+
+    background: var(--paper);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+
+    box-shadow: var(--shadow-sm);
+}
+
+.summary-icon {
+    width: 46px;
+    height: 46px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--secondary);
+    background: var(--accent-light);
+
+    border-radius: 12px;
+}
+
+.summary-icon svg {
+    width: 21px;
+    height: 21px;
+}
+
+.summary-content {
+    min-width: 0;
+}
+
+.summary-label {
+    display: block;
+
+    color: var(--muted);
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.summary-number {
+    display: block;
+
+    margin-top: 1px;
+
+    color: var(--primary);
+
+    font-family: "Playfair Display", serif;
+    font-size: 28px;
+    font-weight: 700;
+
+    line-height: 1.15;
+}
+
+.summary-note {
+    display: block;
+
+    margin-top: 2px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   HISTORY SECTION
+   ========================================================= */
+
+.history-section {
+    padding-top: 48px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 24px;
+}
+
+.section-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--secondary);
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    
+    text-shadow:
+    0 0 6px rgba(255, 255, 255, 0.95),
+    0 0 14px rgba(255, 255, 255, 0.85),
+    0 0 26px rgba(255, 255, 255, 0.6),
+    0 1px 2px rgba(255, 255, 255, 0.25);
+    
+}
+
+.section-heading h2 {
+    color: var(--primary);
+
+    font-family: "Playfair Display", serif;
+    font-size: 30px;
+    font-weight: 700;
+
+    line-height: 1.2;
+    text-shadow:
+    0 0 6px rgba(255, 255, 255, 0.95),
+    0 0 14px rgba(255, 255, 255, 0.85),
+    0 0 26px rgba(255, 255, 255, 0.6),
+    0 1px 2px rgba(255, 255, 255, 0.25);
+}
+
+.history-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 8px 12px;
+
+    color: var(--muted);
+
+    background: var(--paper);
+
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.history-count svg {
+    width: 15px;
+    height: 15px;
+
+    color: var(--accent);
+}
+
+
+/* =========================================================
+   HISTORY LIST
+   ========================================================= */
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.history-card {
+    display: grid;
+
+    grid-template-columns: 44px 54px minmax(0, 1fr) auto 44px;
+    align-items: center;
+
+    gap: 18px;
+
+    min-height: 104px;
+    padding: 17px 20px;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        border-color var(--transition);
+}
+
+.history-card:hover {
+    transform: translateY(-3px);
+
+    border-color: rgba(200, 155, 92, 0.65);
+
+    box-shadow: var(--shadow-md);
+}
+
+
+/* =========================================================
+   HISTORY NUMBER
+   ========================================================= */
+
+.history-number {
+    color: #B5A99D;
+
+    font-family: "Playfair Display", serif;
+    font-size: 17px;
+    font-weight: 700;
 
     text-align: center;
 }
 
-.empty-icon {
+
+/* =========================================================
+   BOOK ICON
+   ========================================================= */
+
+.history-book-icon {
+    width: 54px;
+    height: 68px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--accent);
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            var(--primary-light)
+        );
+
+    border-radius: 6px 9px 9px 6px;
+
+    box-shadow:
+        4px 4px 0 rgba(200, 155, 92, 0.18),
+        var(--shadow-sm);
+}
+
+.history-book-icon svg {
+    width: 23px;
+    height: 23px;
+}
+
+
+/* =========================================================
+   BOOK INFORMATION
+   ========================================================= */
+
+.history-info {
+    min-width: 0;
+}
+
+.history-info h3 {
+    overflow: hidden;
+
+    color: var(--primary);
+
+    font-family: "Playfair Display", serif;
+    font-size: 19px;
+    font-weight: 700;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.history-author {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    margin-top: 5px;
+
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+.history-author svg {
+    width: 14px;
+    height: 14px;
+
+    color: var(--accent);
+}
+
+
+/* =========================================================
+   DATE
+   ========================================================= */
+
+.history-date {
+    min-width: 95px;
+
+    text-align: right;
+}
+
+.date-label {
+    display: block;
+
+    color: #A69B91;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    letter-spacing: 1.4px;
+}
+
+.date-value {
+    display: block;
+
+    margin-top: 2px;
+
+    color: var(--secondary);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   HISTORY ACTION
+   ========================================================= */
+
+.history-action {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: var(--primary);
+    background: var(--background);
+
+    border: 1px solid var(--border);
+    border-radius: 50%;
+
+    transition:
+        color var(--transition),
+        background var(--transition),
+        border-color var(--transition),
+        transform var(--transition);
+}
+
+.history-action:hover {
+    color: var(--paper);
+    background: var(--primary);
+    border-color: var(--primary);
+
+    transform: translate(2px, -2px);
+}
+
+.history-action svg {
+    width: 17px;
+    height: 17px;
+}
+
+
+/* =========================================================
+   EMPTY HISTORY
+   ========================================================= */
+
+.empty-history {
+    padding: 70px 30px;
+
+    text-align: center;
+
+    background: var(--paper);
+
+    border: 1px dashed #D8CBBB;
+    border-radius: var(--radius-lg);
+}
+
+.empty-history-icon {
     width: 70px;
     height: 70px;
 
     margin: 0 auto 20px;
 
-    border-radius: 50%;
-
-    background: #f3f4f6;
-
     display: flex;
     align-items: center;
     justify-content: center;
+
+    color: var(--secondary);
+    background: var(--accent-light);
+
+    border-radius: 50%;
 }
 
-.empty-icon svg {
-    width: 32px;
-    height: 32px;
+.empty-history-icon svg {
+    width: 29px;
+    height: 29px;
 }
 
-.empty-state h2 {
-    font-size: 22px;
-
-    margin-bottom: 8px;
+.empty-history .section-label {
+    margin-bottom: 7px;
 }
 
-.empty-state p {
-    color: #6b7280;
+.empty-history h2 {
+    color: var(--primary);
+
+    font-family: "Playfair Display", serif;
+    font-size: 30px;
+}
+
+.empty-history p {
+    max-width: 500px;
+
+    margin: 10px auto 24px;
+
+    color: var(--muted);
 
     font-size: 14px;
-
-    margin-bottom: 24px;
+    line-height: 1.75;
 }
+
+
+/* =========================================================
+   BROWSE BUTTON
+   ========================================================= */
 
 .browse-button {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
 
-    background: #111827;
-    color: #ffffff;
+    min-height: 44px;
+    padding: 11px 19px;
 
-    padding: 11px 16px;
+    color: var(--paper);
+    background: var(--primary);
 
-    border-radius: 8px;
+    border: 1px solid var(--primary);
+    border-radius: 9px;
 
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 700;
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        background var(--transition),
+        transform var(--transition),
+        box-shadow var(--transition);
+}
+
+.browse-button:hover {
+    background: var(--primary-light);
+
+    transform: translateY(-2px);
+
+    box-shadow: var(--shadow-md);
 }
 
 .browse-button svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
 }
 
 
-/* =========================================
-   PAGINATION
-========================================= */
+/* =========================================================
+   FOOTER
+   ========================================================= */
 
-.pagination {
-    margin-top: 32px;
+.site-footer {
+    width: min(1180px, calc(100% - 40px));
+
+    margin: 0 auto;
+    padding: 24px 0 30px;
 
     display: flex;
     align-items: center;
     justify-content: center;
-
     gap: 12px;
+
+    color: #9A8E83;
+
+    border-top: 1px solid var(--border);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1.7px;
+    text-transform: uppercase;
+    
 }
 
-.page-numbers {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.pagination-button,
-.page-number {
-    min-width: 40px;
-    height: 40px;
-
-    padding: 0 12px;
-
-    border: 1px solid #e5e7eb;
-
-    border-radius: 8px;
-
-    background: #ffffff;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 6px;
-
-    font-size: 14px;
-
-    transition: 0.2s ease;
-}
-
-.pagination-button svg {
-    width: 17px;
-    height: 17px;
-}
-
-.pagination-button:hover,
-.page-number:hover {
-    background: #f3f4f6;
-}
-
-.page-number.active {
-    background: #111827;
-    color: #ffffff;
-
-    border-color: #111827;
-}
-
-.pagination-button.disabled {
-    opacity: 0.45;
-
-    cursor: not-allowed;
-
-    pointer-events: none;
+.site-footer span:first-child {
+    color: var(--secondary);
 }
 
 
-/* =========================================
-   RESPONSIVE
-========================================= */
+/* =========================================================
+   TABLET
+   ========================================================= */
 
-@media (max-width: 900px) {
+@media (max-width: 1050px) {
 
-    .main-header {
-        padding: 0 20px;
+    .header-inner {
+        width: min(100% - 28px, 1180px);
     }
 
-    .header-nav {
-        gap: 2px;
+    .desktop-nav {
+        gap: 0;
     }
 
-    .nav-link span {
+    .desktop-nav a {
+        padding: 8px 8px;
+        font-size: 12px;
+    }
+
+    .logout-link {
+        padding: 8px 10px;
+    }
+
+    .logout-link span {
         display: none;
     }
 
-    .nav-link {
-        padding: 10px;
+    .main-content {
+        width: min(100% - 32px, 1180px);
+        padding-top: 48px;
     }
 
-    .history-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-
-@media (max-width: 600px) {
-
-    .history-container {
-        width: min(100% - 28px, 1200px);
-
-        margin-top: 25px;
-    }
-
-    .main-header {
-        height: 64px;
-    }
-
-    .logo span {
-        display: none;
-    }
-
-    .page-heading {
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    .page-heading h1 {
-        font-size: 24px;
-    }
-
-    .book-count {
-        display: none;
+    .page-intro {
+        gap: 25px;
     }
 
     .history-card {
-        padding: 14px;
+        grid-template-columns: 38px 50px minmax(0, 1fr) auto 40px;
+        gap: 14px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE NAV BREAKPOINT
+   ========================================================= */
+
+@media (max-width: 800px) {
+
+    .header-inner {
+        min-height: 68px;
     }
 
-    .book-cover-container {
-        width: 95px;
-        min-width: 95px;
-        height: 140px;
+    .desktop-nav {
+        display: none;
     }
 
-    .book-title {
+    .mobile-menu-button {
+        display: flex;
+    }
+
+    .header-actions {
+        margin-left: auto;
+    }
+
+    .logout-link {
+        display: none;
+    }
+
+    .mobile-nav {
+        width: calc(100% - 28px);
+    }
+
+    .main-content {
+        width: calc(100% - 28px);
+        padding-top: 40px;
+        padding-bottom: 60px;
+    }
+
+    .page-intro {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 28px;
+        padding-bottom: 36px;
+    }
+
+    .history-summary {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .intro-copy h1 {
+        font-size: clamp(38px, 10vw, 52px);
+    }
+
+    .history-section {
+        padding-top: 38px;
+    }
+
+    .history-card {
+        grid-template-columns: 38px 52px minmax(0, 1fr) 40px;
+    }
+
+    .history-date {
+        grid-column: 3;
+        grid-row: 2;
+
+        text-align: left;
+
+        min-width: 0;
+    }
+
+    .history-action {
+        grid-column: 4;
+        grid-row: 1 / span 2;
+    }
+
+    .history-info {
+        grid-column: 3;
+    }
+
+    .history-number {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+    }
+
+    .history-book-icon {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+    }
+
+    .site-footer {
+        width: calc(100% - 28px);
+        text-align: center;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .brand-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    .brand-name {
+        font-size: 16px;
+    }
+
+    .brand-subtitle {
+        font-size: 8px;
+        letter-spacing: 1.5px;
+    }
+
+    .main-content {
+        width: calc(100% - 24px);
+    }
+
+    .intro-copy p {
+        font-size: 14px;
+    }
+
+    .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .section-heading h2 {
+        font-size: 27px;
+    }
+
+    .history-card {
+        grid-template-columns: 34px 48px minmax(0, 1fr) 38px;
+        gap: 11px;
+
+        padding: 15px;
+    }
+
+    .history-book-icon {
+        width: 48px;
+        height: 62px;
+    }
+
+    .history-info h3 {
         font-size: 17px;
     }
 
-    .book-description {
-        font-size: 13px;
+    .history-author {
+        font-size: 11px;
     }
 
-    .continue-button {
-        font-size: 13px;
-        padding: 9px 11px;
+    .history-number {
+        font-size: 15px;
     }
 
-    .pagination-button span {
+    .history-action {
+        width: 36px;
+        height: 36px;
+    }
+
+    .empty-history {
+        padding: 55px 20px;
+    }
+
+    .empty-history h2 {
+        font-size: 26px;
+    }
+
+    .site-footer {
+        flex-direction: column;
+        gap: 7px;
+
+        padding-bottom: 25px;
+
+        font-size: 9px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+    .header-inner {
+        width: calc(100% - 20px);
+    }
+
+    .brand-subtitle {
         display: none;
+    }
+
+    .brand-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .mobile-menu-button {
+        width: 39px;
+        height: 39px;
+    }
+
+    .main-content {
+        width: calc(100% - 20px);
+        padding-top: 32px;
+    }
+
+    .intro-copy h1 {
+        font-size: 36px;
+    }
+
+    .history-card {
+        grid-template-columns: 30px 44px minmax(0, 1fr) 34px;
+        gap: 9px;
+
+        padding: 13px;
+    }
+
+    .history-book-icon {
+        width: 44px;
+        height: 57px;
+    }
+
+    .history-book-icon svg {
+        width: 19px;
+        height: 19px;
+    }
+
+    .history-info h3 {
+        font-size: 15px;
+    }
+
+    .history-author {
+        font-size: 10px;
+    }
+
+    .history-action {
+        width: 32px;
+        height: 32px;
+    }
+
+    .history-action svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .summary-number {
+        font-size: 25px;
+    }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY / REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
     }
 }
