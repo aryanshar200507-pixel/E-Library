@@ -44,7 +44,7 @@
 <nav class="navbar" id="navbar">
 
     <a href="<%=ctx%>/home" class="logo">
-        <i data-lucide="book-marked" class="logo-icon"></i>
+        <i data-lucide="library" class="logo-icon"></i>
 
         <span>
             Stories

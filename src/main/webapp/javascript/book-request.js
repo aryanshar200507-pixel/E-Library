@@ -112,29 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 5000);
 
 
-    /* =====================================================
-       DELETE CONFIRMATION
-       ===================================================== */
-
-    const deleteButtons =
-        document.querySelectorAll(".delete-button");
-
-    deleteButtons.forEach(function (button) {
-
-        button.addEventListener("click", function (event) {
-
-            const confirmed = confirm(
-                "Are you sure you want to delete this request?"
-            );
-
-            if (!confirmed) {
-                event.preventDefault();
-            }
-
-        });
-
-    });
-
+   
 
     /* =====================================================
        REQUEST FORM

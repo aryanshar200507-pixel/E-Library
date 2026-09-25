@@ -1,7 +1,6 @@
-
 /* =========================================
    STORIES E-LIBRARY — GLOBAL BACKGROUND
-   ========================================= */
+========================================= */
 
 html {
     min-height: 100%;
@@ -21,11 +20,10 @@ body {
         url("../images/library.jpg") !important;
 
     background-size: cover;
-    background-position: center;
+    background-position: center center;
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
-
 /* =========================================
    KEEP PAGE WRAPPERS TRANSPARENT
    ========================================= */

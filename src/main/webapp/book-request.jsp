@@ -1,58 +1,44 @@
-<%@ page language="java"
-    contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 
 <%@ page import="java.util.List"%>
 <%@ page import="com.project.elibrary.bean.bookrequest.BookRequest"%>
 <%@ page import="com.project.elibrary.bean.user.User"%>
 <%@ page import="com.project.elibrary.bean.enums.Role"%>
-<%@ page import="com.project.elibrary.service.bookrequestservice.BookRequestVoteService"%>
+<%@ page
+	import="com.project.elibrary.service.bookrequestservice.BookRequestVoteService"%>
 
 <%
-    List<BookRequest> requests =
-            (List<BookRequest>) request.getAttribute("requests");
+List<BookRequest> requests = (List<BookRequest>) request.getAttribute("requests");
 
-    Integer requestCount =
-            (Integer) request.getAttribute("requestCount");
+Integer requestCount = (Integer) request.getAttribute("requestCount");
 
-    String error =
-            (String) request.getAttribute("error");
+String error = (String) request.getAttribute("error");
 
-    String success =
-            (String) request.getAttribute("success");
+String success = (String) request.getAttribute("success");
 
-    String voteSuccess =
-            (String) session.getAttribute("voteSuccess");
+String voteSuccess = (String) session.getAttribute("voteSuccess");
 
-    String voteError =
-            (String) session.getAttribute("voteError");
+String voteError = (String) session.getAttribute("voteError");
 
-    String deleteSuccess =
-            (String) session.getAttribute("deleteSuccess");
+String deleteSuccess = (String) session.getAttribute("deleteSuccess");
 
-    String deleteError =
-            (String) session.getAttribute("deleteError");
+String deleteError = (String) session.getAttribute("deleteError");
 
-    session.removeAttribute("voteSuccess");
-    session.removeAttribute("voteError");
-    session.removeAttribute("deleteSuccess");
-    session.removeAttribute("deleteError");
+session.removeAttribute("voteSuccess");
+session.removeAttribute("voteError");
+session.removeAttribute("deleteSuccess");
+session.removeAttribute("deleteError");
 
-    User loggedInUser =
-            (User) session.getAttribute("loggedInUser");
+User loggedInUser = (User) session.getAttribute("loggedInUser");
 
-    boolean isAdmin =
-            loggedInUser != null
-            && loggedInUser.getRole() == Role.ADMIN;
+boolean isAdmin = loggedInUser != null && loggedInUser.getRole() == Role.ADMIN;
 
-    int totalRequests =
-            requestCount != null ? requestCount : 0;
+int totalRequests = requestCount != null ? requestCount : 0;
 
-    int remainingRequests =
-            Math.max(0, 10 - totalRequests);
+int remainingRequests = Math.max(0, 10 - totalRequests);
 
-    BookRequestVoteService voteService =
-            new BookRequestVoteService();
+BookRequestVoteService voteService = new BookRequestVoteService();
 %>
 
 <!DOCTYPE html>
@@ -60,839 +46,698 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="theme-color" content="#2C1810">
+<meta name="theme-color" content="#2C1810">
 
-    <title>Book Requests | Stories</title>
+<title>Book Requests | Stories</title>
 
-    <!-- Google Font -->
-    <link rel="preconnect"
-          href="https://fonts.googleapis.com">
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
 
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
-          rel="stylesheet">
+<link
+	href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap"
+	rel="stylesheet">
 
-    <!-- Lucide -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+<!-- Lucide -->
+<script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Book Request CSS -->
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/css/book-request.css">
+
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/confirm-modal.css">
+	
+	<link rel="stylesheet"
+      href="${pageContext.request.contextPath}/css/background.css">
+
+<!-- Book Request CSS -->
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/book-request.css">
 
 </head>
 
 <body>
 
-<div class="page-shell">
+	<div class="page-shell">
 
-    <!-- =====================================================
+		<!-- =====================================================  
          HEADER
     ====================================================== -->
 
-    <header class="site-header">
+		<header class="site-header">
 
-        <div class="header-inner">
+			<div class="header-inner">
 
-            <!-- BRAND -->
+				<!-- BRAND -->
 
-            <!-- BRAND -->
+				<!-- BRAND -->
 
-<a href="${pageContext.request.contextPath}/user/dashboard"
-   class="brand">
+				<a href="${pageContext.request.contextPath}/user/dashboard"
+					class="brand"> <span class="brand-icon"> <i
+						data-lucide="library"></i>
+				</span> <span class="brand-text"> <span class="brand-name">
+							Stories </span> <span class="brand-subtitle"> E-LIBRARY </span>
 
-    <span class="brand-icon">
-        <i data-lucide="book-open"></i>
-    </span>
+				</span>
 
-    <span class="brand-text">
-
-        <span class="brand-name">
-            Stories
-        </span>
-
-        <span class="brand-subtitle">
-            E-LIBRARY
-        </span>
-
-    </span>
-
-</a>
+				</a>
 
 
-            <!-- DESKTOP NAV -->
+				<!-- DESKTOP NAV -->
 
-            <nav class="desktop-nav">
+				<nav class="desktop-nav">
 
-                <a href="${pageContext.request.contextPath}/user/dashboard">
-                    <i data-lucide="layout-dashboard"></i>
-                    <span>Dashboard</span>
-                </a>
+					<a href="${pageContext.request.contextPath}/user/dashboard"> <i
+						data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+					</a> <a href="${pageContext.request.contextPath}/books"> <i
+						data-lucide="library"></i> <span>Categories</span>
+					</a> <a href="${pageContext.request.contextPath}/book-request"
+						class="active"> <i data-lucide="book-plus"></i> <span>Book
+							Requests</span>
+					</a> <a href="${pageContext.request.contextPath}/books/bookmark-book">
+						<i data-lucide="bookmark"></i> <span>Bookmarks</span>
+					</a> <a href="${pageContext.request.contextPath}/user/suggestion">
+						<i data-lucide="message-square-plus"></i> <span>Suggestions</span>
+					</a> <a href="${pageContext.request.contextPath}/books/history"> <i
+						data-lucide="history"></i> <span>History</span>
+					</a> <a href="${pageContext.request.contextPath}/profile"> <i
+						data-lucide="user"></i> <span>Profile</span>
+					</a>
 
-                <a href="${pageContext.request.contextPath}/books">
-                    <i data-lucide="library"></i>
-                    <span>Categories</span>
-                </a>
-
-                <a href="${pageContext.request.contextPath}/book-request"
-                   class="active">
-                    <i data-lucide="book-plus"></i>
-                    <span>Book Requests</span>
-                </a>
-
-                <a href="${pageContext.request.contextPath}/books/bookmark-book">
-                    <i data-lucide="bookmark"></i>
-                    <span>Bookmarks</span>
-                </a>
-
-                <a href="${pageContext.request.contextPath}/user/suggestion">
-                    <i data-lucide="message-square-plus"></i>
-                    <span>Suggestions</span>
-                </a>
-
-                <a href="${pageContext.request.contextPath}/books/history">
-                    <i data-lucide="history"></i>
-                    <span>History</span>
-                </a>
-
-                <a href="${pageContext.request.contextPath}/profile">
-                    <i data-lucide="user"></i>
-                    <span>Profile</span>
-                </a>
-
-            </nav>
+				</nav>
 
 
-            <!-- RIGHT SIDE -->
+				<!-- RIGHT SIDE -->
 
-            <div class="header-actions">
+				<div class="header-actions">
 
-                <a href="${pageContext.request.contextPath}/logout"
-                   class="logout-link">
+					<a href="${pageContext.request.contextPath}/logout"
+						class="logout-link"> <i data-lucide="log-out"></i> <span>Logout</span>
 
-                    <i data-lucide="log-out"></i>
-
-                    <span>Logout</span>
-
-                </a>
+					</a>
 
 
-               <button
-                   type="button"
-                   class="mobile-menu-button"
-                   id="mobileMenuButton"
-                   aria-label="Open navigation"
-                   aria-expanded="false">
-                   <i data-lucide="menu"></i>
-               </button>
+					<button type="button" class="mobile-menu-button"
+						id="mobileMenuButton" aria-label="Open navigation"
+						aria-expanded="false">
+						<i data-lucide="menu"></i>
+					</button>
 
-            </div>
+				</div>
 
-        </div>
+			</div>
 
 
-        <!-- MOBILE NAV -->
+			<!-- MOBILE NAV -->
 
-        <nav class="mobile-nav"
-             id="mobileNav">
+			<nav class="mobile-nav" id="mobileNav">
 
-            <a href="${pageContext.request.contextPath}/user/dashboard">
-                <i data-lucide="layout-dashboard"></i>
-                Dashboard
-            </a>
+				<a href="${pageContext.request.contextPath}/user/dashboard"> <i
+					data-lucide="layout-dashboard"></i> Dashboard
+				</a> <a href="${pageContext.request.contextPath}/books"> <i
+					data-lucide="library"></i> Categories
+				</a> <a href="${pageContext.request.contextPath}/book-request"
+					class="active"> <i data-lucide="book-plus"></i> Book Requests
+				</a> <a href="${pageContext.request.contextPath}/books/bookmark-book">
+					<i data-lucide="bookmark"></i> Bookmarks
+				</a> <a href="${pageContext.request.contextPath}/user/suggestion"> <i
+					data-lucide="message-square-plus"></i> Suggestions
+				</a> <a href="${pageContext.request.contextPath}/books/history"> <i
+					data-lucide="history"></i> History
+				</a> <a href="${pageContext.request.contextPath}/profile"> <i
+					data-lucide="user"></i> Profile
+				</a> <a href="${pageContext.request.contextPath}/logout"> <i
+					data-lucide="log-out"></i> Logout
+				</a>
 
-            <a href="${pageContext.request.contextPath}/books">
-                <i data-lucide="library"></i>
-                Categories
-            </a>
+			</nav>
 
-            <a href="${pageContext.request.contextPath}/book-request"
-               class="active">
-                <i data-lucide="book-plus"></i>
-                Book Requests
-            </a>
-
-            <a href="${pageContext.request.contextPath}/books/bookmark-book">
-                <i data-lucide="bookmark"></i>
-                Bookmarks
-            </a>
-
-            <a href="${pageContext.request.contextPath}/user/suggestion">
-                <i data-lucide="message-square-plus"></i>
-                Suggestions
-            </a>
-
-            <a href="${pageContext.request.contextPath}/books/history">
-                <i data-lucide="history"></i>
-                History
-            </a>
-
-            <a href="${pageContext.request.contextPath}/profile">
-                <i data-lucide="user"></i>
-                Profile
-            </a>
-
-            <a href="${pageContext.request.contextPath}/logout">
-                <i data-lucide="log-out"></i>
-                Logout
-            </a>
-
-        </nav>
-
-    </header>
+		</header>
 
 
-    <!-- =====================================================
+		<!-- =====================================================
          MAIN
     ====================================================== -->
 
-    <main class="main-content">
+		<main class="main-content">
 
-        <!-- PAGE INTRO -->
+			<!-- PAGE INTRO -->
 
-        <section class="page-intro">
+			<section class="page-intro">
 
-            <div class="intro-copy">
+				<div class="intro-copy">
 
-                <span class="eyebrow">
-                    COMMUNITY LIBRARY
-                </span>
+					<span class="eyebrow"> COMMUNITY LIBRARY </span>
 
-                <h1>
-                    Request a
-                    <em>book.</em>
-                </h1>
+					<h1>
+						Request a <em>book.</em>
+					</h1>
 
-                <p>
-                    Can't find the book you're looking for?
-                    Request it here and let the community help
-                    decide what should be added next.
-                </p>
+					<p>Can't find the book you're looking for? Request it here and
+						let the community help decide what should be added next.</p>
 
-            </div>
+				</div>
 
 
-            <!-- REQUEST COUNTER -->
+				<!-- REQUEST COUNTER -->
 
-            <div class="request-counter">
+				<div class="request-counter">
 
-                <div class="counter-icon">
-                    <i data-lucide="library-big"></i>
-                </div>
+					<div class="counter-icon">
+						<i data-lucide="library-big"></i>
+					</div>
 
-                <div class="counter-content">
+					<div class="counter-content">
 
-                    <span class="counter-label">
-                        WEEKLY REQUESTS
-                    </span>
+						<span class="counter-label"> WEEKLY REQUESTS </span>
 
-                    <div class="counter-number">
+						<div class="counter-number">
 
-                        <strong>
-                            <%= totalRequests %>
-                        </strong>
+							<strong> <%=totalRequests%>
+							</strong> <span>/ 10</span>
 
-                        <span>/ 10</span>
+						</div>
 
-                    </div>
+						<div class="progress-track">
 
-                    <div class="progress-track">
+							<div class="progress-bar"
+								style="width: <%=(totalRequests * 10)%>%;"></div>
 
-                        <div class="progress-bar"
-                             style="width: <%= (totalRequests * 10) %>%;">
-                        </div>
+						</div>
 
-                    </div>
+						<span class="counter-note"> <%=remainingRequests%> request<%=remainingRequests == 1 ? "" : "s"%>
+							remaining
 
-                    <span class="counter-note">
+						</span>
 
-                        <%= remainingRequests %>
-                        request<%= remainingRequests == 1 ? "" : "s" %>
-                        remaining
+					</div>
 
-                    </span>
+				</div>
 
-                </div>
-
-            </div>
-
-        </section>
+			</section>
 
 
-        <!-- =================================================
+			<!-- =================================================
              MESSAGES
         ================================================== -->
 
-        <% if (error != null) { %>
+			<%
+			if (error != null) {
+			%>
 
-            <div class="alert alert-error"
-                 role="alert">
+			<div class="alert alert-error" role="alert">
 
-                <span class="alert-icon">
-                    <i data-lucide="circle-alert"></i>
-                </span>
+				<span class="alert-icon"> <i data-lucide="circle-alert"></i>
+				</span>
 
-                <div>
-                    <strong>Request not submitted</strong>
-                    <p><%= error %></p>
-                </div>
+				<div>
+					<strong>Request not submitted</strong>
+					<p><%=error%></p>
+				</div>
 
-                <button type="button"
-                        class="alert-close"
-                        aria-label="Close message">
+				<button type="button" class="alert-close" aria-label="Close message">
 
-                    <i data-lucide="x"></i>
+					<i data-lucide="x"></i>
 
-                </button>
+				</button>
 
-            </div>
+			</div>
 
-        <% } %>
-
-
-        <% if (success != null) { %>
-
-            <div class="alert alert-success"
-                 role="alert">
-
-                <span class="alert-icon">
-                    <i data-lucide="circle-check"></i>
-                </span>
-
-                <div>
-                    <strong>Request submitted</strong>
-                    <p><%= success %></p>
-                </div>
-
-                <button type="button"
-                        class="alert-close"
-                        aria-label="Close message">
-
-                    <i data-lucide="x"></i>
-
-                </button>
-
-            </div>
-
-        <% } %>
+			<%
+			}
+			%>
 
 
-        <% if (voteSuccess != null) { %>
+			<%
+			if (success != null) {
+			%>
 
-            <div class="alert alert-success"
-                 role="alert">
+			<div class="alert alert-success" role="alert">
 
-                <span class="alert-icon">
-                    <i data-lucide="circle-check"></i>
-                </span>
+				<span class="alert-icon"> <i data-lucide="circle-check"></i>
+				</span>
 
-                <div>
-                    <strong>Vote added</strong>
-                    <p><%= voteSuccess %></p>
-                </div>
+				<div>
+					<strong>Request submitted</strong>
+					<p><%=success%></p>
+				</div>
 
-                <button type="button"
-                        class="alert-close"
-                        aria-label="Close message">
+				<button type="button" class="alert-close" aria-label="Close message">
 
-                    <i data-lucide="x"></i>
+					<i data-lucide="x"></i>
 
-                </button>
+				</button>
 
-            </div>
+			</div>
 
-        <% } %>
-
-
-        <% if (voteError != null) { %>
-
-            <div class="alert alert-error"
-                 role="alert">
-
-                <span class="alert-icon">
-                    <i data-lucide="circle-alert"></i>
-                </span>
-
-                <div>
-                    <strong>Vote not added</strong>
-                    <p><%= voteError %></p>
-                </div>
-
-                <button type="button"
-                        class="alert-close"
-                        aria-label="Close message">
-
-                    <i data-lucide="x"></i>
-
-                </button>
-
-            </div>
-
-        <% } %>
+			<%
+			}
+			%>
 
 
-        <% if (deleteSuccess != null) { %>
+			<%
+			if (voteSuccess != null) {
+			%>
 
-            <div class="alert alert-success"
-                 role="alert">
+			<div class="alert alert-success" role="alert">
 
-                <span class="alert-icon">
-                    <i data-lucide="circle-check"></i>
-                </span>
+				<span class="alert-icon"> <i data-lucide="circle-check"></i>
+				</span>
 
-                <div>
-                    <strong>Request deleted</strong>
-                    <p><%= deleteSuccess %></p>
-                </div>
+				<div>
+					<strong>Vote added</strong>
+					<p><%=voteSuccess%></p>
+				</div>
 
-                <button type="button"
-                        class="alert-close"
-                        aria-label="Close message">
+				<button type="button" class="alert-close" aria-label="Close message">
 
-                    <i data-lucide="x"></i>
+					<i data-lucide="x"></i>
 
-                </button>
+				</button>
 
-            </div>
+			</div>
 
-        <% } %>
-
-
-        <% if (deleteError != null) { %>
-
-            <div class="alert alert-error"
-                 role="alert">
-
-                <span class="alert-icon">
-                    <i data-lucide="circle-alert"></i>
-                </span>
-
-                <div>
-                    <strong>Unable to delete</strong>
-                    <p><%= deleteError %></p>
-                </div>
-
-                <button type="button"
-                        class="alert-close"
-                        aria-label="Close message">
-
-                    <i data-lucide="x"></i>
-
-                </button>
-
-            </div>
-
-        <% } %>
+			<%
+			}
+			%>
 
 
-        <!-- =================================================
+			<%
+			if (voteError != null) {
+			%>
+
+			<div class="alert alert-error" role="alert">
+
+				<span class="alert-icon"> <i data-lucide="circle-alert"></i>
+				</span>
+
+				<div>
+					<strong>Vote not added</strong>
+					<p><%=voteError%></p>
+				</div>
+
+				<button type="button" class="alert-close" aria-label="Close message">
+
+					<i data-lucide="x"></i>
+
+				</button>
+
+			</div>
+
+			<%
+			}
+			%>
+
+
+			<%
+			if (deleteSuccess != null) {
+			%>
+
+			<div class="alert alert-success" role="alert">
+
+				<span class="alert-icon"> <i data-lucide="circle-check"></i>
+				</span>
+
+				<div>
+					<strong>Request deleted</strong>
+					<p><%=deleteSuccess%></p>
+				</div>
+
+				<button type="button" class="alert-close" aria-label="Close message">
+
+					<i data-lucide="x"></i>
+
+				</button>
+
+			</div>
+
+			<%
+			}
+			%>
+
+
+			<%
+			if (deleteError != null) {
+			%>
+
+			<div class="alert alert-error" role="alert">
+
+				<span class="alert-icon"> <i data-lucide="circle-alert"></i>
+				</span>
+
+				<div>
+					<strong>Unable to delete</strong>
+					<p><%=deleteError%></p>
+				</div>
+
+				<button type="button" class="alert-close" aria-label="Close message">
+
+					<i data-lucide="x"></i>
+
+				</button>
+
+			</div>
+
+			<%
+			}
+			%>
+
+
+			<!-- =================================================
              REQUEST FORM
         ================================================== -->
 
-        <% if (!isAdmin && totalRequests < 10) { %>
+			<%
+			if (!isAdmin && totalRequests < 10) {
+			%>
 
-            <section class="request-form-card">
+			<section class="request-form-card">
 
-                <div class="card-heading">
+				<div class="card-heading">
 
-                    <div class="heading-icon">
-                        <i data-lucide="pen-line"></i>
-                    </div>
+					<div class="heading-icon">
+						<i data-lucide="pen-line"></i>
+					</div>
 
-                    <div>
+					<div>
 
-                        <span class="section-label">
-                            ADD TO THE LIBRARY
-                        </span>
+						<span class="section-label"> ADD TO THE LIBRARY </span>
 
-                        <h2>
-                            What should we read next?
-                        </h2>
+						<h2>What should we read next?</h2>
 
-                        <p>
-                            Tell us about a book you'd like
-                            to see in Stories.
-                        </p>
+						<p>Tell us about a book you'd like to see in Stories.</p>
 
-                    </div>
+					</div>
 
-                </div>
+				</div>
 
 
-                <form action="${pageContext.request.contextPath}/book-request"
-                      method="post"
-                      class="request-form"
-                      id="bookRequestForm">
+				<form action="${pageContext.request.contextPath}/book-request"
+					method="post" class="request-form" id="bookRequestForm">
 
 
-                    <div class="form-grid">
+					<div class="form-grid">
 
-                        <!-- TITLE -->
+						<!-- TITLE -->
 
-                        <div class="form-field field-title">
+						<div class="form-field field-title">
 
-                            <label for="title">
-                                Book Title
-                                <span>*</span>
-                            </label>
+							<label for="title"> Book Title <span>*</span>
+							</label>
 
-                            <div class="input-shell">
+							<div class="input-shell">
 
-                                <i data-lucide="book-open"></i>
+								<i data-lucide="book-open"></i> <input type="text" id="title"
+									name="title" placeholder="Enter the book title" maxlength="255"
+									autocomplete="off" required>
 
-                                <input
-                                    type="text"
-                                    id="title"
-                                    name="title"
-                                    placeholder="Enter the book title"
-                                    maxlength="255"
-                                    autocomplete="off"
-                                    required>
+							</div>
 
-                            </div>
-
-                        </div>
+						</div>
 
 
-                        <!-- AUTHOR -->
+						<!-- AUTHOR -->
 
-                        <div class="form-field">
+						<div class="form-field">
 
-                            <label for="author">
-                                Author
-                            </label>
+							<label for="author"> Author </label>
 
-                            <div class="input-shell">
+							<div class="input-shell">
 
-                                <i data-lucide="user-round"></i>
+								<i data-lucide="user-round"></i> <input type="text" id="author"
+									name="author" placeholder="Enter the author name"
+									maxlength="255" autocomplete="off">
 
-                                <input
-                                    type="text"
-                                    id="author"
-                                    name="author"
-                                    placeholder="Enter the author name"
-                                    maxlength="255"
-                                    autocomplete="off">
+							</div>
 
-                            </div>
+						</div>
 
-                        </div>
-
-                    </div>
+					</div>
 
 
-                    <div class="form-footer">
+					<div class="form-footer">
 
-                        <span class="form-hint">
-                            <i data-lucide="info"></i>
-                            Requests are reviewed weekly.
-                        </span>
+						<span class="form-hint"> <i data-lucide="info"></i>
+							Requests are reviewed weekly.
+						</span>
 
-                        <button type="submit"
-                                class="submit-button">
+						<button type="submit" class="submit-button">
 
-                            <span>
-                                Submit Request
-                            </span>
+							<span> Submit Request </span> <i data-lucide="arrow-up-right"></i>
 
-                            <i data-lucide="arrow-up-right"></i>
+						</button>
 
-                        </button>
+					</div>
 
-                    </div>
+				</form>
 
-                </form>
+			</section>
 
-            </section>
+			<%
+			} else if (!isAdmin && totalRequests >= 10) {
+			%>
 
-        <% } else if (!isAdmin && totalRequests >= 10) { %>
+			<section class="limit-card">
 
-            <section class="limit-card">
+				<div class="limit-icon">
+					<i data-lucide="circle-check"></i>
+				</div>
 
-                <div class="limit-icon">
-                    <i data-lucide="circle-check"></i>
-                </div>
+				<div>
 
-                <div>
+					<span class="section-label"> WEEKLY LIMIT REACHED </span>
 
-                    <span class="section-label">
-                        WEEKLY LIMIT REACHED
-                    </span>
+					<h2>All 10 requests are in.</h2>
 
-                    <h2>
-                        All 10 requests are in.
-                    </h2>
+					<p>Check back next week to submit another book request.</p>
 
-                    <p>
-                        Check back next week to submit
-                        another book request.
-                    </p>
+				</div>
 
-                </div>
+			</section>
 
-            </section>
-
-        <% } %>
+			<%
+			}
+			%>
 
 
-        <!-- =================================================
+			<!-- =================================================
              REQUEST LIST
         ================================================== -->
 
-        <section class="requests-section">
+			<section class="requests-section">
 
-            <div class="section-heading">
+				<div class="section-heading">
 
-                <div>
+					<div>
 
-                    <span class="section-label">
-                        THIS WEEK
-                    </span>
+						<span class="section-label"> THIS WEEK </span>
 
-                    <h2>
-                        Requested Books
-                    </h2>
+						<h2>Requested Books</h2>
 
-                </div>
+					</div>
 
-                <div class="request-count-pill">
+					<div class="request-count-pill">
 
-                    <i data-lucide="layers"></i>
+						<i data-lucide="layers"></i> <span> <%=totalRequests%> / 10
+						</span>
 
-                    <span>
-                        <%= totalRequests %> / 10
-                    </span>
+					</div>
 
-                </div>
+				</div>
 
-            </div>
 
+				<%
+				if (requests != null && !requests.isEmpty()) {
+				%>
 
-            <% if (requests != null && !requests.isEmpty()) { %>
+				<div class="request-grid">
 
-                <div class="request-grid">
+					<%
+					for (BookRequest bookRequest : requests) {
 
-                    <%
-                    for (BookRequest bookRequest : requests) {
+						int voteCount = voteService.getVoteCount(bookRequest.getRequestId());
+					%>
 
-                        int voteCount =
-                                voteService.getVoteCount(
-                                    bookRequest.getRequestId()
-                                );
-                    %>
+					<article class="request-card">
 
-                        <article class="request-card">
+						<div class="request-card-top">
 
-                            <div class="request-card-top">
+							<div class="book-number">
 
-                                <div class="book-number">
+								<i data-lucide="book-marked"></i>
 
-                                    <i data-lucide="book-marked"></i>
+							</div>
 
-                                </div>
+							<span class="request-week"> THIS WEEK </span>
 
-                                <span class="request-week">
-                                    THIS WEEK
-                                </span>
+						</div>
 
-                            </div>
 
+						<div class="request-card-content">
 
-                            <div class="request-card-content">
+							<h3>
+								<%=bookRequest.getTitle()%>
+							</h3>
 
-                                <h3>
-                                    <%= bookRequest.getTitle() %>
-                                </h3>
 
+							<%
+							if (bookRequest.getAuthor() != null && !bookRequest.getAuthor().trim().isEmpty()) {
+							%>
 
-                                <% if (bookRequest.getAuthor() != null
-                                    && !bookRequest.getAuthor().trim().isEmpty()) { %>
+							<p class="author">
 
-                                    <p class="author">
+								<i data-lucide="user"></i> <span> <%=bookRequest.getAuthor()%>
+								</span>
 
-                                        <i data-lucide="user"></i>
+							</p>
 
-                                        <span>
-                                            <%= bookRequest.getAuthor() %>
-                                        </span>
+							<%
+							} else {
+							%>
 
-                                    </p>
+							<p class="author muted">
 
-                                <% } else { %>
+								<i data-lucide="user"></i> <span> Author not specified </span>
 
-                                    <p class="author muted">
+							</p>
 
-                                        <i data-lucide="user"></i>
+							<%
+							}
+							%>
 
-                                        <span>
-                                            Author not specified
-                                        </span>
 
-                                    </p>
+							<div class="request-meta">
 
-                                <% } %>
+								<span> <i data-lucide="calendar-days"></i> <%=bookRequest.getCreatedAt() != null ? bookRequest.getCreatedAt() : "Recently requested"%>
 
+								</span>
 
-                                <div class="request-meta">
+							</div>
 
-                                    <span>
+						</div>
 
-                                        <i data-lucide="calendar-days"></i>
 
-                                        <%= bookRequest.getCreatedAt() != null
-                                            ? bookRequest.getCreatedAt()
-                                            : "Recently requested" %>
+						<div class="request-card-footer">
 
-                                    </span>
+							<div class="vote-count">
 
-                                </div>
+								<span class="vote-icon"> <i data-lucide="heart"></i>
+								</span>
 
-                            </div>
+								<div>
 
+									<strong> <%=voteCount%>
+									</strong> <small> vote<%=voteCount == 1 ? "" : "s"%>
+									</small>
 
-                            <div class="request-card-footer">
+								</div>
 
-                                <div class="vote-count">
+							</div>
 
-                                    <span class="vote-icon">
-                                        <i data-lucide="heart"></i>
-                                    </span>
 
-                                    <div>
+							<%
+							if (isAdmin) {
+							%>
 
-                                        <strong>
-                                            <%= voteCount %>
-                                        </strong>
+							<form
+								action="${pageContext.request.contextPath}/book-request/delete"
+								method="post" class="action-form delete-form">
 
-                                        <small>
-                                            vote<%= voteCount == 1 ? "" : "s" %>
-                                        </small>
+								<input type="hidden" name="requestId"
+									value="<%=bookRequest.getRequestId()%>">
 
-                                    </div>
+								<button type="submit" class="delete-button"
+									data-confirm="Are you sure you want to delete this book request? This action cannot be undone."
+									data-confirm-title="Delete Book Request?"
+									data-confirm-label="Delete">
 
-                                </div>
+									<i data-lucide="trash-2"></i> <span>Delete</span>
+								</button>
+							</form>
 
+							<%
+							} else {
+							%>
 
-                                <% if (isAdmin) { %>
+							<form
+								action="${pageContext.request.contextPath}/book-request/vote"
+								method="post" class="action-form">
 
-                                    <form
-                                        action="${pageContext.request.contextPath}/book-request/delete"
-                                        method="post"
-                                        class="action-form delete-form">
+								<input type="hidden" name="requestId"
+									value="<%=bookRequest.getRequestId()%>">
 
-                                        <input
-                                            type="hidden"
-                                            name="requestId"
-                                            value="<%= bookRequest.getRequestId() %>">
+								<button type="submit" class="vote-button">
 
-                                        <button
-                                            type="submit"
-                                            class="delete-button">
+									<i data-lucide="heart"></i> <span>Vote</span>
 
-                                            <i data-lucide="trash-2"></i>
+								</button>
 
-                                            <span>Delete</span>
+							</form>
 
-                                        </button>
+							<%
+							}
+							%>
 
-                                    </form>
+						</div>
 
-                                <% } else { %>
+					</article>
 
-                                    <form
-                                        action="${pageContext.request.contextPath}/book-request/vote"
-                                        method="post"
-                                        class="action-form">
+					<%
+					}
+					%>
 
-                                        <input
-                                            type="hidden"
-                                            name="requestId"
-                                            value="<%= bookRequest.getRequestId() %>">
+				</div>
 
-                                        <button
-                                            type="submit"
-                                            class="vote-button">
+				<%
+				} else {
+				%>
 
-                                            <i data-lucide="heart"></i>
+				<div class="empty-state">
 
-                                            <span>Vote</span>
+					<div class="empty-icon">
 
-                                        </button>
+						<i data-lucide="book-open"></i>
 
-                                    </form>
+					</div>
 
-                                <% } %>
+					<span class="section-label"> A QUIET SHELF </span>
 
-                            </div>
+					<h2>No requests yet.</h2>
 
-                        </article>
+					<p>Be the first reader to request a book for this week's
+						community list.</p>
 
-                    <%
-                    }
-                    %>
+				</div>
 
-                </div>
+				<%
+				}
+				%>
 
-            <% } else { %>
+			</section>
 
-                <div class="empty-state">
+		</main>
 
-                    <div class="empty-icon">
 
-                        <i data-lucide="book-open"></i>
-
-                    </div>
-
-                    <span class="section-label">
-                        A QUIET SHELF
-                    </span>
-
-                    <h2>
-                        No requests yet.
-                    </h2>
-
-                    <p>
-                        Be the first reader to request a book
-                        for this week's community list.
-                    </p>
-
-                </div>
-
-            <% } %>
-
-        </section>
-
-    </main>
-
-
-    <!-- =====================================================
+		<!-- =====================================================
          FOOTER
     ====================================================== -->
 
-    <footer class="site-footer">
+		<footer class="site-footer">
 
-        <span>
-            STORIES E-LIBRARY
-        </span>
+			<span> STORIES E-LIBRARY </span> <span class="footer-line"></span> <span>
+				READ · DISCOVER · SHARE </span>
 
-        <span class="footer-line"></span>
+		</footer>
 
-        <span>
-            READ · DISCOVER · SHARE
-        </span>
+	</div>
 
-    </footer>
-
-</div>
-
-<script src="${pageContext.request.contextPath}/javascript/book-request.js?v=2"></script>
+	<script
+		src="${pageContext.request.contextPath}/javascript/book-request.js?v=2"></script>
+	<script
+		src="${pageContext.request.contextPath}/javascript/confirm-modal.js"></script>
 
 </body>
 
