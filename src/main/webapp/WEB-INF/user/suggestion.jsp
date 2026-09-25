@@ -1,354 +1,429 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8" %>
 
-<%@ page import="com.project.elibrary.bean.user.User"%>
+<%@ page import="com.project.elibrary.bean.user.User" %>
 
 <%
-User loggedInUser = (User) request.getAttribute("loggedInUser");
+    User loggedInUser = (User) request.getAttribute("loggedInUser");
 
-String error = (String) request.getAttribute("error");
+    String error = (String) request.getAttribute("error");
+    String success = (String) request.getAttribute("success");
 
-String success = (String) request.getAttribute("success");
+    String userName = loggedInUser != null && loggedInUser.getName() != null
+            ? loggedInUser.getName() : "";
+
+    String userEmail = loggedInUser != null && loggedInUser.getEmail() != null
+            ? loggedInUser.getEmail() : "";
 %>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+    <title>Suggest an App | Stories E-Library</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Existing Dashboard CSS -->
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/css/dashboard.css">
 
-<title>Suggest an App - Stories</title>
+    <!-- User Suggestion CSS -->
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/css/user-suggestion.css">
 
-<!-- Dashboard CSS -->
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/dashboard.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-<!-- Lucide Icons CDN -->
-<script src="https://unpkg.com/lucide@latest"></script>
-
-<style>
-.suggestion-container {
-	max-width: 800px;
-	margin: 40px auto;
-	padding: 0 20px;
-}
-
-.suggestion-card {
-	background: #ffffff;
-	border-radius: 12px;
-	padding: 30px;
-	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-}
-
-.suggestion-header {
-	margin-bottom: 25px;
-}
-
-.suggestion-header h2 {
-	margin: 0 0 8px;
-}
-
-.suggestion-header p {
-	margin: 0;
-	color: #666;
-}
-
-.form-group {
-	margin-bottom: 20px;
-}
-
-.form-group label {
-	display: block;
-	margin-bottom: 8px;
-	font-weight: 600;
-}
-
-.form-control {
-	width: 100%;
-	box-sizing: border-box;
-	padding: 12px 14px;
-	border: 1px solid #ccc;
-	border-radius: 8px;
-	font-size: 15px;
-	font-family: inherit;
-}
-
-.form-control:focus {
-	outline: none;
-	border-color: #555;
-}
-
-.readonly-field {
-	background-color: #f5f5f5;
-	cursor: not-allowed;
-}
-
-.suggestion-textarea {
-	min-height: 180px;
-	resize: vertical;
-}
-
-.character-info {
-	display: flex;
-	justify-content: space-between;
-	margin-top: 6px;
-	font-size: 13px;
-	color: #777;
-}
-
-.submit-button {
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
-	padding: 12px 20px;
-	border: none;
-	border-radius: 8px;
-	cursor: pointer;
-	font-size: 15px;
-	font-weight: 600;
-}
-
-.back-button {
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
-	margin-left: 10px;
-	padding: 12px 20px;
-	border-radius: 8px;
-	text-decoration: none;
-	font-size: 15px;
-	font-weight: 600;
-}
-
-.message {
-	padding: 12px 15px;
-	border-radius: 8px;
-	margin-bottom: 20px;
-}
-
-.success-message {
-	background-color: #e8f5e9;
-	color: #2e7d32;
-}
-
-.error-message {
-	background-color: #ffebee;
-	color: #c62828;
-}
-
-.form-note {
-	margin-top: 8px;
-	font-size: 13px;
-	color: #777;
-}
-
-@media ( max-width : 600px) {
-	.suggestion-container {
-		margin: 20px auto;
-		padding: 0 15px;
-	}
-	.suggestion-card {
-		padding: 20px;
-	}
-	.back-button {
-		margin-left: 0;
-		margin-top: 10px;
-	}
-	
-	
-}
-
-.app-brand {
-    display: flex;
-    flex-direction: column;
-}
-
-.app-brand h2 {
-    margin: 0;
-}
-
-.app-subtitle {
-    margin: 3px 0 0;
-    font-size: 12px;
-    font-weight: 400;
-    color: #8a8178;
-    letter-spacing: 0.3px;
-}
-</style>
-
+    <!-- User Suggestion JS -->
+    <script
+        src="${pageContext.request.contextPath}/javascript/user-suggestion.js"
+        defer>
+    </script>
 </head>
 
 <body>
 
-	<!-- HEADER -->
+<!-- ================= HEADER ================= -->
 
-	<header class="header">
+<header class="header">
 
-		<div class="app-brand">
-			<h2>Stories E-Library</h2>
-			<p class="app-subtitle">Read. Discover. Explore.</p>
-		</div>
+    <a href="${pageContext.request.contextPath}/user/dashboard"
+       class="app-brand">
 
-		<nav class="nav">
+        <span class="brand-icon">
+            <i data-lucide="book-open"></i>
+        </span>
 
-			<a href="${pageContext.request.contextPath}/user/dashboard"> <i
-				data-lucide="layout-dashboard"></i> Dashboard
-			</a> <a href="${pageContext.request.contextPath}/books"> <i
-				data-lucide="library"></i> Categories
-			</a> <a href="${pageContext.request.contextPath}/books/bookmark-book">
-				<i data-lucide="bookmark"></i> Bookmarks
-			</a> <a href="${pageContext.request.contextPath}/books/history"
-				class="nav-link"> <i data-lucide="history"></i> <span>History</span>
-			</a> <a href="${pageContext.request.contextPath}/logout"> <i
-				data-lucide="log-out"></i> Logout
-			</a>
+        <span class="brand-copy">
+            <strong>Stories E-Library</strong>
+            <small class="app-subtitle">Read. Discover. Explore.</small>
+        </span>
 
-		</nav>
+    </a>
 
-	</header>
+    <nav class="nav">
 
+        <a href="${pageContext.request.contextPath}/user/dashboard">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+        </a>
 
-	<!-- MAIN CONTAINER -->
+        <a href="${pageContext.request.contextPath}/books">
+            <i data-lucide="library"></i>
+            <span>Categories</span>
+        </a>
 
-	<div class="suggestion-container">
+        <a href="${pageContext.request.contextPath}/books/bookmark-book">
+            <i data-lucide="bookmark"></i>
+            <span>Bookmarks</span>
+        </a>
 
-		<div class="suggestion-card">
+        <a href="${pageContext.request.contextPath}/books/history">
+            <i data-lucide="history"></i>
+            <span>History</span>
+        </a>
 
-			<!-- PAGE HEADER -->
+        <a href="${pageContext.request.contextPath}/logout">
+            <i data-lucide="log-out"></i>
+            <span>Logout</span>
+        </a>
 
-			<div class="suggestion-header">
+    </nav>
 
-				<h2>
-					<i data-lucide="message-square-plus"></i> Suggest an App
-				</h2>
+</header>
 
-				<p>Have an idea that could improve the Stories? Share your
-					suggestion with us.</p>
+<!-- ================= MAIN CONTENT ================= -->
 
-			</div>
+<main class="suggestion-page">
 
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="${pageContext.request.contextPath}/user/dashboard">
+            <i data-lucide="house"></i>
+            Dashboard
+        </a>
 
-			<!-- SUCCESS MESSAGE -->
+        <i data-lucide="chevron-right" class="breadcrumb-arrow"></i>
 
-			<%
-			if (success != null && !success.isBlank()) {
-			%>
+        <span>Suggest an App</span>
+    </div>
 
-			<div class="message success-message">
-				<%=success%>
-			</div>
+    <!-- Hero Section -->
+    <section class="suggestion-hero">
 
-			<%
-			}
-			%>
+        <div class="hero-content">
 
+            <span class="hero-eyebrow">
+                <i data-lucide="sparkles"></i>
+                YOUR VOICE MATTERS
+            </span>
 
-			<!-- ERROR MESSAGE -->
+            <h1>
+                Have an idea?<br>
+                <span>Let's make it happen.</span>
+            </h1>
 
-			<%
-			if (error != null && !error.isBlank()) {
-			%>
+            <p>
+                Help us make Stories E-Library better.
+                Share your thoughts, suggest a feature, or tell us
+                what would make your reading experience more enjoyable.
+            </p>
 
-			<div class="message error-message">
-				<%=error%>
-			</div>
+            <div class="hero-note">
+                <i data-lucide="heart"></i>
+                Every suggestion helps us build a better reading community.
+            </div>
 
-			<%
-			}
-			%>
+        </div>
 
+        <div class="hero-art" aria-hidden="true">
 
-			<!-- SUGGESTION FORM -->
+            <div class="art-circle art-circle-one"></div>
+            <div class="art-circle art-circle-two"></div>
 
-			<form action="${pageContext.request.contextPath}/user/suggestion"
-				method="post">
+            <div class="idea-card">
+                <div class="idea-icon">
+                    <i data-lucide="lightbulb"></i>
+                </div>
+
+                <span class="idea-label">A LITTLE IDEA</span>
+
+                <div class="idea-lines">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <div class="idea-footer">
+                    <i data-lucide="sparkles"></i>
+                    <span>Big possibilities</span>
+                </div>
+            </div>
+
+            <div class="floating-icon floating-book">
+                <i data-lucide="book-open"></i>
+            </div>
 
+            <div class="floating-icon floating-message">
+                <i data-lucide="message-square"></i>
+            </div>
 
-				<!-- NAME -->
+        </div>
+
+    </section>
 
-				<div class="form-group">
+    <!-- ================= FORM SECTION ================= -->
 
-					<label for="name"> Name </label> <input type="text" id="name"
-						class="form-control readonly-field"
-						value="<%=loggedInUser != null ? loggedInUser.getName() : ""%>"
-						readonly>
+    <section class="suggestion-layout">
 
-				</div>
+        <!-- Left Information Panel -->
+        <aside class="suggestion-sidebar">
 
+            <div class="sidebar-heading">
+                <span class="sidebar-kicker">YOUR IDEAS</span>
+                <h2>Help us write the next chapter.</h2>
+                <p>
+                    Your feedback can inspire features that make
+                    reading easier, more enjoyable, and more personal.
+                </p>
+            </div>
 
-				<!-- EMAIL -->
+            <div class="benefit-list">
 
-				<div class="form-group">
+                <div class="benefit-item">
+                    <span class="benefit-icon">
+                        <i data-lucide="messages-square"></i>
+                    </span>
 
-					<label for="email"> Email </label> <input type="email" id="email"
-						class="form-control readonly-field"
-						value="<%=loggedInUser != null ? loggedInUser.getEmail() : ""%>"
-						readonly>
+                    <div>
+                        <h3>Share your thoughts</h3>
+                        <p>Tell us what you'd love to see in the app.</p>
+                    </div>
+                </div>
+
+                <div class="benefit-item">
+                    <span class="benefit-icon">
+                        <i data-lucide="wand-sparkles"></i>
+                    </span>
 
-				</div>
+                    <div>
+                        <h3>Suggest something new</h3>
+                        <p>Share ideas for features and improvements.</p>
+                    </div>
+                </div>
 
+                <div class="benefit-item">
+                    <span class="benefit-icon">
+                        <i data-lucide="book-heart"></i>
+                    </span>
+
+                    <div>
+                        <h3>Shape your reading experience</h3>
+                        <p>Help us make your library feel more personal.</p>
+                    </div>
+                </div>
 
-				<!-- SUGGESTION -->
+            </div>
+
+            <div class="sidebar-quote">
+                <i data-lucide="quote"></i>
+                <p>
+                    Great things begin with a simple idea.
+                </p>
+                <span>— Stories E-Library</span>
+            </div>
+
+        </aside>
 
-				<div class="form-group">
+        <!-- Suggestion Form -->
+        <div class="suggestion-card">
 
-					<label for="description"> Your Suggestion </label>
+            <div class="form-header">
 
-					<textarea id="description" name="description"
-						class="form-control suggestion-textarea" minlength="10"
-						maxlength="1000" required
-						placeholder="Describe the app or feature you would like to see..."></textarea>
+                <div class="form-header-icon">
+                    <i data-lucide="message-square-plus"></i>
+                </div>
 
-					<div class="character-info">
+                <div>
+                    <span class="form-kicker">WE'RE LISTENING</span>
+                    <h2>Suggest an App Feature</h2>
+                    <p>Tell us about your idea. We'd love to hear it.</p>
+                </div>
+
+            </div>
+
+            <!-- Success Message -->
+            <% if (success != null && !success.isBlank()) { %>
+
+                <div class="message success-message" role="status">
+                    <i data-lucide="check-circle-2"></i>
+                    <span><%= success %></span>
+                </div>
+
+            <% } %>
+
+            <!-- Error Message -->
+            <% if (error != null && !error.isBlank()) { %>
+
+                <div class="message error-message" role="alert">
+                    <i data-lucide="alert-circle"></i>
+                    <span><%= error %></span>
+                </div>
 
-						<span> Minimum 10 characters </span> <span> Maximum 1000
-							characters </span>
+            <% } %>
 
-					</div>
+            <form
+                action="${pageContext.request.contextPath}/user/suggestion"
+                method="post"
+                id="suggestionForm">
 
-					<div class="form-note">Please provide a clear description of
-						your idea.</div>
+                <!-- User Information -->
+                <div class="form-section-label">
+                    <i data-lucide="user-round"></i>
+                    YOUR INFORMATION
+                </div>
 
-				</div>
+                <div class="form-row">
 
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
 
-				<!-- BUTTONS -->
+                        <div class="input-wrapper readonly-wrapper">
+                            <i data-lucide="user-round"></i>
 
-				<div>
+                            <input
+                                type="text"
+                                id="name"
+                                class="form-control"
+                                value="<%= userName %>"
+                                readonly>
 
-					<button type="submit" class="submit-button">
+                            <i data-lucide="lock" class="field-lock"></i>
+                        </div>
+                    </div>
 
-						<i data-lucide="send"></i> Submit Suggestion
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
 
-					</button>
+                        <div class="input-wrapper readonly-wrapper">
+                            <i data-lucide="mail"></i>
 
+                            <input
+                                type="email"
+                                id="email"
+                                class="form-control"
+                                value="<%= userEmail %>"
+                                readonly>
 
-					<a href="${pageContext.request.contextPath}/user/dashboard"
-						class="back-button"> <i data-lucide="arrow-left"></i> Back to
-						Dashboard
+                            <i data-lucide="lock" class="field-lock"></i>
+                        </div>
+                    </div>
 
-					</a>
+                </div>
 
-				</div>
+                <div class="account-note">
+                    <i data-lucide="shield-check"></i>
+                    Your account information is securely linked to your suggestion.
+                </div>
 
-			</form>
+                <div class="form-divider"></div>
 
-		</div>
+                <!-- Suggestion -->
+                <div class="form-section-label">
+                    <i data-lucide="lightbulb"></i>
+                    YOUR IDEA
+                </div>
 
-	</div>
+                <div class="form-group">
 
+                    <label for="description">
+                        Your Suggestion
+                        <span class="required-mark">*</span>
+                    </label>
 
-	<!-- LUCIDE ICONS -->
+                    <div class="textarea-wrapper">
 
-	<script>
-		lucide.createIcons();
-	</script>
+                        <textarea
+                            id="description"
+                            name="description"
+                            class="form-control suggestion-textarea"
+                            minlength="10"
+                            maxlength="1000"
+                            required
+                            placeholder="I'd love to see a feature that...&#10;&#10;Tell us what you'd like to improve, why it would be helpful, and how you'd use it."
+                        ></textarea>
+
+                        <div class="textarea-footer">
+
+                            <span class="textarea-hint">
+                                <i data-lucide="pen-line"></i>
+                                Be as descriptive as you'd like.
+                            </span>
+
+                            <span class="character-counter" id="characterCounter">
+                                <strong id="characterCount">0</strong> / 1000
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-note">
+                        <i data-lucide="info"></i>
+                        Please enter at least 10 characters.
+                    </div>
+
+                    <p class="validation-message" id="validationMessage" hidden></p>
+
+                </div>
+
+                <!-- Footer -->
+                <div class="form-footer">
+
+                    <p class="privacy-note">
+                        <i data-lucide="shield-check"></i>
+                        Your suggestion will be shared with our admin team.
+                    </p>
+
+                    <div class="form-actions">
+
+                        <a href="${pageContext.request.contextPath}/user/dashboard"
+                           class="back-button">
+                            <i data-lucide="arrow-left"></i>
+                            Back
+                        </a>
+
+                        <button type="submit"
+                                class="submit-button"
+                                id="submitButton">
+
+                            <span class="submit-text">
+                                Submit Suggestion
+                            </span>
+
+                            <i data-lucide="send"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+    <!-- Bottom Note -->
+    <div class="bottom-note">
+        <i data-lucide="book-open"></i>
+        <span>Stories E-Library</span>
+        <span class="bottom-divider"></span>
+        <span>Read. Discover. Explore.</span>
+    </div>
+
+</main>
 
 </body>
-
 </html>
-
