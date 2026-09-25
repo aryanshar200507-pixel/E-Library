@@ -1,8 +1,7 @@
-
- // =====================================================
- // STORIES E-LIBRARY — APP SUGGESTIONS ADMIN
- // Search, status filters, custom confirmations, Lucide icons
- // =====================================================
+// =====================================================
+// STORIES E-LIBRARY — APP SUGGESTIONS ADMIN
+// Search, status filters, confirmations, Lucide icons
+// =====================================================
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -27,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("suggestionSearch");
     const filterButtons = document.querySelectorAll(".filter-btn");
     const suggestionCards = document.querySelectorAll(".suggestion-card");
+
     const visibleCount = document.getElementById("visibleCount");
     const noResults = document.getElementById("noResults");
     const suggestionsContainer = document.getElementById("suggestionsContainer");
@@ -49,9 +49,12 @@ document.addEventListener("DOMContentLoaded", function () {
         suggestionCards.forEach(function (card) {
 
             const status = card.dataset.status || "";
+
+            // Search the visible card text.
             const searchableText = card.textContent.toLowerCase();
 
             const matchesSearch = searchableText.includes(searchTerm);
+
             const matchesFilter =
                 activeFilter === "ALL" || status === activeFilter;
 
@@ -128,7 +131,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const isAll = button.dataset.filter === "ALL";
 
                 button.classList.toggle("active", isAll);
-
                 button.setAttribute(
                     "aria-pressed",
                     isAll ? "true" : "false"
@@ -143,124 +145,114 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // =================================================
-    // CUSTOM ACCEPT CONFIRMATION MODAL
-    // =================================================
+   
+	// =================================================
+	// CUSTOM ACCEPT CONFIRMATION MODAL
+	// =================================================
 
-    const acceptModal = document.getElementById("acceptSuggestionModal");
-    const cancelAcceptBtn = document.getElementById("cancelAcceptSuggestion");
-    const confirmAcceptBtn = document.getElementById("confirmAcceptSuggestion");
+	const acceptModal = document.getElementById("acceptSuggestionModal");
+	const cancelAcceptBtn = document.getElementById("cancelAcceptSuggestion");
+	const confirmAcceptBtn = document.getElementById("confirmAcceptSuggestion");
 
-    let pendingAcceptForm = null;
-    let previousFocusElement = null;
+	let pendingAcceptForm = null;
+	let previousFocusElement = null;
 
-    function openAcceptModal(form) {
+	function openAcceptModal(form) {
+	    if (!acceptModal) {
+	        console.error("Accept confirmation modal not found.");
+	        return;
+	    }
 
-        if (!acceptModal) {
-            console.error("Accept confirmation modal not found.");
-            return;
-        }
+	    pendingAcceptForm = form;
+	    previousFocusElement = document.activeElement;
 
-        pendingAcceptForm = form;
-        previousFocusElement = document.activeElement;
+	    acceptModal.classList.add("active");
+	    acceptModal.setAttribute("aria-hidden", "false");
 
-        acceptModal.classList.add("active");
-        acceptModal.setAttribute("aria-hidden", "false");
+	    document.body.style.overflow = "hidden";
 
-        document.body.style.overflow = "hidden";
+	    if (window.lucide) {
+	        window.lucide.createIcons();
+	    }
 
-        if (window.lucide) {
-            window.lucide.createIcons();
-        }
+	    cancelAcceptBtn?.focus();
+	}
 
-        if (cancelAcceptBtn) {
-            cancelAcceptBtn.focus();
-        }
-    }
+	function closeAcceptModal() {
+	    if (!acceptModal) return;
 
-    function closeAcceptModal() {
+	    acceptModal.classList.remove("active");
+	    acceptModal.setAttribute("aria-hidden", "true");
 
-        if (!acceptModal) return;
+	    document.body.style.overflow = "";
 
-        acceptModal.classList.remove("active");
-        acceptModal.setAttribute("aria-hidden", "true");
+	    pendingAcceptForm = null;
 
-        document.body.style.overflow = "";
+	    if (previousFocusElement) {
+	        previousFocusElement.focus();
+	    }
+	}
 
-        pendingAcceptForm = null;
+	// Intercept Accept form submissions.
+	document.querySelectorAll(
+	    '.action-form input[name="action"][value="accept"]'
+	).forEach(function (input) {
+	    const form = input.closest("form");
 
-        if (previousFocusElement) {
-            previousFocusElement.focus();
-        }
-    }
+	    if (!form) return;
 
-    // Intercept Accept form submissions.
-    document.querySelectorAll(
-        '.action-form input[name="action"][value="accept"]'
-    ).forEach(function (input) {
+	    form.addEventListener("submit", function (event) {
 
-        const form = input.closest("form");
+	        // Allow the form through after confirmation.
+	        if (form.dataset.acceptConfirmed === "true") {
+	            delete form.dataset.acceptConfirmed;
+	            return;
+	        }
 
-        if (!form) return;
+	        event.preventDefault();
+	        openAcceptModal(form);
+	    });
+	});
 
-        form.addEventListener("submit", function (event) {
+	// Cancel button.
+	if (cancelAcceptBtn) {
+	    cancelAcceptBtn.addEventListener("click", closeAcceptModal);
+	}
 
-            // Allow the form through after confirmation.
-            if (form.dataset.acceptConfirmed === "true") {
-                delete form.dataset.acceptConfirmed;
-                return;
-            }
+	// Confirm button.
+	if (confirmAcceptBtn) {
+	    confirmAcceptBtn.addEventListener("click", function () {
+	        if (!pendingAcceptForm) return;
 
-            event.preventDefault();
-            openAcceptModal(form);
-        });
-    });
+	        const formToSubmit = pendingAcceptForm;
 
-    // Cancel button.
-    if (cancelAcceptBtn) {
-        cancelAcceptBtn.addEventListener("click", closeAcceptModal);
-    }
+	        formToSubmit.dataset.acceptConfirmed = "true";
 
-    // Confirm button.
-    if (confirmAcceptBtn) {
+	        closeAcceptModal();
 
-        confirmAcceptBtn.addEventListener("click", function () {
+	        formToSubmit.requestSubmit();
+	    });
+	}
 
-            if (!pendingAcceptForm) return;
+	// Close when clicking outside the modal.
+	if (acceptModal) {
+	    acceptModal.addEventListener("click", function (event) {
+	        if (event.target === acceptModal) {
+	            closeAcceptModal();
+	        }
+	    });
+	}
 
-            const formToSubmit = pendingAcceptForm;
-
-            formToSubmit.dataset.acceptConfirmed = "true";
-
-            closeAcceptModal();
-
-            formToSubmit.requestSubmit();
-        });
-    }
-
-    // Close when clicking outside the modal.
-    if (acceptModal) {
-
-        acceptModal.addEventListener("click", function (event) {
-
-            if (event.target === acceptModal) {
-                closeAcceptModal();
-            }
-        });
-    }
-
-    // Close with Escape.
-    document.addEventListener("keydown", function (event) {
-
-        if (
-            event.key === "Escape" &&
-            acceptModal &&
-            acceptModal.classList.contains("active")
-        ) {
-            closeAcceptModal();
-        }
-    });
-
+	// Close with Escape.
+	document.addEventListener("keydown", function (event) {
+	    if (
+	        event.key === "Escape" &&
+	        acceptModal &&
+	        acceptModal.classList.contains("active")
+	    ) {
+	        closeAcceptModal();
+	    }
+	});
     // =================================================
     // INITIAL FILTER STATE
     // =================================================

@@ -1,600 +1,474 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.Map" %>
-<%@ page import="com.project.elibrary.bean.suggestions.AppSuggestions" %>
-<%@ page import="com.project.elibrary.bean.user.User" %>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="com.project.elibrary.bean.suggestions.AppSuggestions"%>
+<%@ page import="com.project.elibrary.bean.user.User"%>
 
 <%
-    List<AppSuggestions> suggestions =
-            (List<AppSuggestions>) request.getAttribute("suggestions");
+List<AppSuggestions> suggestions = (List<AppSuggestions>) request.getAttribute("suggestions");
 
-    Map<Long, User> suggestionUsers =
-            (Map<Long, User>) request.getAttribute("suggestionUsers");
+Map<Long, User> suggestionUsers = (Map<Long, User>) request.getAttribute("suggestionUsers");
 
-    String success = (String) request.getAttribute("success");
-    String error = (String) request.getAttribute("error");
+String success = (String) request.getAttribute("success");
+String error = (String) request.getAttribute("error");
+String contextPath = request.getContextPath();
 
-    String contextPath = request.getContextPath();
+int newCount = 0;
+int acceptedCount = 0;
+
+if (suggestions != null) {
+	for (AppSuggestions item : suggestions) {
+		if ("NEW".equals(item.getStatus())) {
+	newCount++;
+		} else if ("ACCEPTED".equals(item.getStatus())) {
+	acceptedCount++;
+		}
+	}
+}
+
+int totalCount = suggestions == null ? 0 : suggestions.size();
 %>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta charset="UTF-8">
+<title>Suggestions | Stories E-Library</title>
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/background.css">
 
-    <title>App Suggestions - Admin</title>
-    
-    <link rel="stylesheet"
-      href="${pageContext.request.contextPath}/css/background.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/app-suggestions.css">
 
-    <style>
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/confirm-modal.css">
 
-        * {
-            box-sizing: border-box;
-        }
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #f5f6fa;
-            color: #222;
-        }
-
-        .header {
-            background: #1f2937;
-            color: white;
-            padding: 18px 35px;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header h2 {
-            margin: 0;
-            font-size: 22px;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .header-actions a {
-            text-decoration: none;
-            color: white;
-            background: #374151;
-
-            padding: 9px 15px;
-            border-radius: 6px;
-
-            font-size: 14px;
-        }
-
-        .header-actions a:hover {
-            background: #4b5563;
-        }
-
-        .container {
-            width: 92%;
-            max-width: 1200px;
-
-            margin: 35px auto;
-        }
-
-        .page-title {
-            margin-bottom: 25px;
-        }
-
-        .page-title h1 {
-            margin: 0 0 8px;
-            font-size: 28px;
-        }
-
-        .page-title p {
-            margin: 0;
-            color: #6b7280;
-        }
-
-        .message {
-            padding: 13px 16px;
-            border-radius: 7px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
-        .success {
-            background: #dcfce7;
-            color: #166534;
-            border: 1px solid #bbf7d0;
-        }
-
-        .error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
-        }
-
-        .suggestions-container {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        .suggestion-card {
-            background: white;
-
-            border-radius: 10px;
-
-            padding: 22px;
-
-            box-shadow:
-                0 2px 8px rgba(0, 0, 0, 0.08);
-
-            border: 1px solid #e5e7eb;
-        }
-
-        .suggestion-top {
-            display: flex;
-
-            justify-content: space-between;
-            align-items: flex-start;
-
-            gap: 20px;
-
-            margin-bottom: 18px;
-        }
-
-        .user-info h3 {
-            margin: 0 0 7px;
-            font-size: 18px;
-        }
-
-        .user-info p {
-            margin: 4px 0;
-            color: #6b7280;
-            font-size: 14px;
-        }
-
-        .status {
-            padding: 6px 12px;
-
-            border-radius: 20px;
-
-            font-size: 12px;
-            font-weight: bold;
-
-            white-space: nowrap;
-        }
-
-        .status-new {
-            background: #dbeafe;
-            color: #1d4ed8;
-        }
-
-        .status-accepted {
-            background: #dcfce7;
-            color: #15803d;
-        }
-
-        .suggestion-description {
-            background: #f9fafb;
-
-            border: 1px solid #e5e7eb;
-
-            border-radius: 7px;
-
-            padding: 16px;
-
-            margin-bottom: 18px;
-
-            line-height: 1.6;
-
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
-        }
-
-        .suggestion-meta {
-            color: #6b7280;
-            font-size: 13px;
-
-            margin-bottom: 18px;
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .actions form {
-            margin: 0;
-        }
-
-        .btn {
-            border: none;
-
-            padding: 9px 16px;
-
-            border-radius: 6px;
-
-            cursor: pointer;
-
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .btn-accept {
-            background: #2563eb;
-            color: white;
-        }
-
-        .btn-accept:hover {
-            background: #1d4ed8;
-        }
-
-        .btn-delete {
-            background: #dc2626;
-            color: white;
-        }
-
-        .btn-delete:hover {
-            background: #b91c1c;
-        }
-
-        .btn-implemented {
-            background: #16a34a;
-            color: white;
-        }
-
-        .btn-implemented:hover {
-            background: #15803d;
-        }
-
-        .empty-state {
-            background: white;
-
-            border: 1px solid #e5e7eb;
-
-            border-radius: 10px;
-
-            padding: 50px 20px;
-
-            text-align: center;
-
-            color: #6b7280;
-        }
-
-        .empty-state h3 {
-            margin-top: 0;
-            color: #374151;
-        }
-
-        @media (max-width: 700px) {
-
-            .header {
-                padding: 15px 18px;
-            }
-
-            .container {
-                width: 94%;
-                margin: 25px auto;
-            }
-
-            .suggestion-top {
-                flex-direction: column;
-            }
-
-        }
-
-    </style>
-
+<!-- Page Script -->
+<script
+	src="${pageContext.request.contextPath}/javascript/app-suggestions.js"
+	defer>
+	
+</script>
 </head>
 
 <body>
 
+	<div class="dashboard-shell">
+
+		<!-- ================= HEADER ================= -->
+		<header class="header">
+
+			<a href="<%=contextPath%>/admin/dashboard" class="brand"> <span
+				class="brand-icon"> <i data-lucide="library"></i>
+			</span> <span class="brand-text"> <strong>Stories</strong> <small>E-LIBRARY
+						ADMIN</small>
+			</span>
+			</a>
+
+			<div class="header-right">
+				<span class="header-label"> <i data-lucide="shield-check"></i>
+					Admin Workspace
+				</span> <a href="<%=contextPath%>/admin/dashboard" class="header-btn">
+					<i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+				</a> <a href="<%=contextPath%>/logout" class="header-btn logout-btn">
+					<i data-lucide="log-out"></i> <span>Logout</span>
+				</a>
+			</div>
+
+		</header>
+
+		<!-- ================= MAIN ================= -->
+		<main class="main-content">
+
+			<!-- Page Heading -->
+			<section class="page-heading">
+
+				<div class="heading-content">
+
+					<div class="eyebrow">
+						<span class="eyebrow-line"></span> COMMUNITY FEEDBACK
+					</div>
+
+					<h1>
+						Suggestions<span>.</span>
+					</h1>
+
+					<p>Every great feature begins with an idea. Review, organize,
+						and manage suggestions shared by your readers.</p>
+
+				</div>
+
+				<div class="heading-decoration">
+					<div class="decoration-circle circle-one"></div>
+					<div class="decoration-circle circle-two"></div>
+
+					<i data-lucide="lightbulb"></i> <span>Ideas into<br>possibilities
+					</span>
+				</div>
+
+			</section>
+
+			<!-- ================= ALERTS ================= -->
+
+			<%
+			if (success != null) {
+			%>
+			<div class="alert alert-success" role="status">
+				<i data-lucide="check-circle-2"></i> <span><%=success%></span>
+			</div>
+			<%
+			}
+			%>
+
+			<%
+			if (error != null) {
+			%>
+			<div class="alert alert-error" role="alert">
+				<i data-lucide="alert-circle"></i> <span><%=error%></span>
+			</div>
+			<%
+			}
+			%>
+
+			<!-- ================= STATISTICS ================= -->
+
+			<section class="stats-grid">
+
+				<article class="stat-card">
+					<div class="stat-icon icon-total">
+						<i data-lucide="messages-square"></i>
+					</div>
+
+					<div class="stat-info">
+						<span class="stat-label">Total Suggestions</span>
+						<h2><%=totalCount%></h2>
+						<p>Currently in this list</p>
+					</div>
+				</article>
+
+				<article class="stat-card">
+					<div class="stat-icon icon-new">
+						<i data-lucide="inbox"></i>
+					</div>
+
+					<div class="stat-info">
+						<span class="stat-label">New Suggestions</span>
+						<h2><%=newCount%></h2>
+						<p>Waiting for review</p>
+					</div>
+				</article>
 
-<div class="header">
+				<article class="stat-card">
+					<div class="stat-icon icon-accepted">
+						<i data-lucide="check-check"></i>
+					</div>
 
-    <h2>E-Library Admin</h2>
+					<div class="stat-info">
+						<span class="stat-label">Accepted</span>
+						<h2><%=acceptedCount%></h2>
+						<p>Approved for implementation</p>
+					</div>
+				</article>
 
-    <div class="header-actions">
+			</section>
 
-        <a href="<%= contextPath %>/admin/dashboard">
-            Dashboard
-        </a>
+			<!-- ================= SUGGESTIONS SECTION ================= -->
 
-        <a href="<%= contextPath %>/logout">
-            Logout
-        </a>
+			<section class="suggestions-section">
 
-    </div>
+				<div class="section-heading">
 
-</div>
+					<div>
+						<span class="section-kicker">READER IDEAS</span>
+						<h2>Suggestion Board</h2>
+						<p>Explore and manage feedback from your community.</p>
+					</div>
 
+					<div class="result-count">
+						<i data-lucide="layers"></i> <span id="visibleCount"><%=totalCount%></span>
+						<span>suggestions</span>
+					</div>
 
-<div class="container">
+				</div>
 
+				<!-- Search and Filters -->
+				<div class="toolbar">
 
-    <div class="page-title">
+					<div class="search-box">
+						<i data-lucide="search"></i> <input type="search"
+							id="suggestionSearch"
+							placeholder="Search suggestions, users, or descriptions..."
+							aria-label="Search suggestions"> <span
+							class="search-shortcut">⌕</span>
+					</div>
 
-        <h1>App Suggestions</h1>
+					<div class="filter-group" role="group"
+						aria-label="Filter suggestions">
 
-        <p>
-            Review and manage suggestions submitted by users.
-        </p>
+						<button type="button" class="filter-btn active" data-filter="ALL">
+							All <span><%=totalCount%></span>
+						</button>
 
-    </div>
+						<button type="button" class="filter-btn" data-filter="NEW">
+							New <span><%=newCount%></span>
+						</button>
 
+						<button type="button" class="filter-btn" data-filter="ACCEPTED">
+							Accepted <span><%=acceptedCount%></span>
+						</button>
 
-    <% if (success != null) { %>
+					</div>
 
-        <div class="message success">
-            <%= success %>
-        </div>
+				</div>
 
-    <% } %>
+				<!-- ================= CARD LIST ================= -->
 
+				<%
+				if (suggestions == null || suggestions.isEmpty()) {
+				%>
 
-    <% if (error != null) { %>
+				<div class="empty-state">
+					<div class="empty-icon">
+						<i data-lucide="notebook-pen"></i>
+					</div>
 
-        <div class="message error">
-            <%= error %>
-        </div>
+					<h3>No Active Suggestions</h3>
 
-    <% } %>
+					<p>There are currently no new or accepted suggestions. When
+						readers share ideas, they will appear here.</p>
 
+					<a href="<%=contextPath%>/admin/dashboard" class="empty-btn">
+						<i data-lucide="arrow-left"></i> Back to Dashboard
+					</a>
+				</div>
 
-    <% if (suggestions == null || suggestions.isEmpty()) { %>
+				<%
+				} else {
+				%>
 
-        <div class="empty-state">
+				<div class="suggestions-container" id="suggestionsContainer">
 
-            <h3>No Active Suggestions</h3>
+					<%
+					for (AppSuggestions suggestion : suggestions) {
 
-            <p>
-                There are currently no new or accepted suggestions.
-            </p>
+						User suggestionUser = suggestionUsers == null ? null : suggestionUsers.get(suggestion.getUserId());
 
-        </div>
+						String status = suggestion.getStatus() == null ? "" : suggestion.getStatus();
 
-    <% } else { %>
+						String userName = suggestionUser != null ? suggestionUser.getName() : "User " + suggestion.getUserId();
 
+						String userEmail = suggestionUser != null ? suggestionUser.getEmail() : "User information unavailable";
 
-        <div class="suggestions-container">
+						String statusClass = "NEW".equals(status) ? "status-new" : "status-accepted";
 
+						String statusLabel = "NEW".equals(status) ? "New" : "Accepted";
+					%>
 
-            <% for (AppSuggestions suggestion : suggestions) {
+					<article class="suggestion-card" data-status="<%=status%>"
+						data-search="<%=(userName + " " + userEmail + " " + suggestion.getDescription() + " " + suggestion.getUserId()).toLowerCase()%>">
 
-                User suggestionUser =
-                        suggestionUsers.get(suggestion.getUserId());
+						<!-- Card Header -->
+						<div class="card-header">
 
-            %>
+							<div class="user-details">
 
+								<div class="user-avatar">
+									<i data-lucide="user-round"></i>
+								</div>
 
-                <div class="suggestion-card">
+								<div class="user-info">
+									<h3><%=userName%></h3>
 
+									<p class="user-email">
+										<i data-lucide="mail"></i>
+										<%=userEmail%>
+									</p>
 
-                    <div class="suggestion-top">
+									<p class="user-id">
+										<i data-lucide="fingerprint"></i> User ID:
+										<%=suggestion.getUserId()%>
+									</p>
+								</div>
 
+							</div>
 
-                        <div class="user-info">
+							<span class="status <%=statusClass%>"> <span
+								class="status-dot"></span> <%=statusLabel%>
+							</span>
 
-                            <% if (suggestionUser != null) { %>
+						</div>
 
-                                <h3>
-                                    <%= suggestionUser.getName() %>
-                                </h3>
+						<!-- Suggestion Content -->
+						<div class="suggestion-content">
 
-                                <p>
-                                    Email:
-                                    <%= suggestionUser.getEmail() %>
-                                </p>
+							<div class="content-label">
+								<i data-lucide="message-square-text"></i> SUGGESTION DETAILS
+							</div>
 
-                            <% } else { %>
+							<div class="suggestion-description"><%=suggestion.getDescription()%></div>
 
-                                <h3>
-                                    User ID:
-                                    <%= suggestion.getUserId() %>
-                                </h3>
+						</div>
 
-                                <p>
-                                    User information unavailable
-                                </p>
+						<!-- Card Footer -->
+						<div class="card-footer">
 
-                            <% } %>
+							<div class="submission-date">
+								<i data-lucide="calendar-days"></i> <span> Submitted: <strong><%=suggestion.getCreatedAt()%></strong>
+								</span>
+							</div>
 
+							<div class="actions">
 
-                            <p>
-                                User ID:
-                                <%= suggestion.getUserId() %>
-                            </p>
+								<%
+								if ("NEW".equals(status)) {
+								%>
 
-                        </div>
+								<!-- ACCEPT -->
+								<form action="<%=contextPath%>/admin/suggestions"
+									method="post" class="action-form">
 
+									<input type="hidden" name="suggestionId"
+										value="<%=suggestion.getSuggestionId()%>"> <input
+										type="hidden" name="action" value="accept">
 
-                        <% if ("NEW".equals(suggestion.getStatus())) { %>
+									<button type="submit" class="btn btn-accept">
+										<i data-lucide="check"></i> Accept Suggestion
+									</button>
 
-                            <span class="status status-new">
-                                NEW
-                            </span>
+								</form>
 
-                        <% } else if
-                            ("ACCEPTED".equals(suggestion.getStatus())) { %>
+								<!-- DELETE -->
+								<form action="<%=contextPath%>/admin/suggestions"
+									method="post" class="action-form delete-form"
+									data-confirm="Are you sure you want to delete this suggestion? This action cannot be undone.">
 
-                            <span class="status status-accepted">
-                                ACCEPTED
-                            </span>
+									<input type="hidden" name="suggestionId"
+										value="<%=suggestion.getSuggestionId()%>"> <input
+										type="hidden" name="action" value="delete">
 
-                        <% } %>
+									<button type="submit" class="btn btn-delete">
+										<i data-lucide="trash-2"></i> Delete
+									</button>
 
+								</form>
 
-                    </div>
+								<%
+								} else if ("ACCEPTED".equals(status)) {
+								%>
 
+								<!-- IMPLEMENTED -->
+								<form action="<%=contextPath%>/admin/suggestions"
+									method="post" class="action-form delete-form"
+									data-confirm-title="Mark as Implemented?"
+									data-confirm-label="Mark Implemented"
+									data-confirm="Are you sure this suggestion has been implemented? It will be permanently removed from the active suggestions list.">
 
-                    <div class="suggestion-description">
+									<input type="hidden" name="suggestionId"
+										value="<%=suggestion.getSuggestionId()%>"> <input
+										type="hidden" name="action" value="delete">
 
-                        <%= suggestion.getDescription() %>
+									<button type="submit" class="btn btn-implemented">
+										<i data-lucide="check-check"></i> Mark Implemented
+									</button>
+								</form>
 
-                    </div>
+								<!-- DELETE -->
+								<form action="<%=contextPath%>/admin/suggestions"
+									method="post" class="action-form delete-form"
+									data-confirm="Are you sure you want to delete this suggestion? This action cannot be undone.">
 
+									<input type="hidden" name="suggestionId"
+										value="<%=suggestion.getSuggestionId()%>"> <input
+										type="hidden" name="action" value="delete">
 
-                    <div class="suggestion-meta">
+									<button type="submit" class="btn btn-delete">
+										<i data-lucide="trash-2"></i> Delete
+									</button>
 
-                        Submitted:
-                        <%= suggestion.getCreatedAt() %>
+								</form>
 
-                    </div>
+								<%
+								}
+								%>
 
+							</div>
 
-                    <div class="actions">
+						</div>
 
+					</article>
 
-                        <% if ("NEW".equals(suggestion.getStatus())) { %>
+					<%
+					}
+					%>
 
+				</div>
 
-                            <!-- ACCEPT -->
+				<!-- No Search Results -->
+				<div class="no-results" id="noResults" hidden>
+					<div class="empty-icon">
+						<i data-lucide="search-x"></i>
+					</div>
 
-                            <form
-                                action="<%= contextPath %>/admin/suggestions"
-                                method="post">
+					<h3>No matching suggestions</h3>
+					<p>Try a different search term or change the status filter.</p>
 
-                                <input
-                                    type="hidden"
-                                    name="suggestionId"
-                                    value="<%= suggestion.getSuggestionId() %>">
+					<button type="button" class="empty-btn" id="clearFilters">
+						<i data-lucide="rotate-ccw"></i> Clear Filters
+					</button>
+				</div>
 
-                                <input
-                                    type="hidden"
-                                    name="action"
-                                    value="accept">
+				<%
+				}
+				%>
 
-                                <button
-                                    type="submit"
-                                    class="btn btn-accept">
+			</section>
 
-                                    Accept
+		</main>
 
-                                </button>
+		<!-- ================= FOOTER ================= -->
+		<footer class="page-footer">
+			<span> <i data-lucide="library"></i> Stories E-Library
+			</span> <span>Made for readers, inspired by ideas.</span>
+		</footer>
 
-                            </form>
+		<!-- Custom Accept Suggestion Modal -->
+		<div class="accept-modal-overlay" id="acceptSuggestionModal"
+			aria-hidden="true">
 
+			<div class="accept-modal" role="dialog" aria-modal="true"
+				aria-labelledby="acceptModalTitle"
+				aria-describedby="acceptModalDescription">
 
-                            <!-- DELETE -->
+				<div class="accept-modal-icon">
+					<i data-lucide="lightbulb"></i>
+				</div>
 
-                            <form
-                                action="<%= contextPath %>/admin/suggestions"
-                                method="post"
-                                onsubmit="return confirm('Are you sure you want to delete this suggestion? This action cannot be undone.');">
+				<h2 id="acceptModalTitle">Accept This Suggestion?</h2>
 
-                                <input
-                                    type="hidden"
-                                    name="suggestionId"
-                                    value="<%= suggestion.getSuggestionId() %>">
+				<p id="acceptModalDescription">This suggestion will be marked as
+					accepted. You can review it later in the Accepted section.</p>
 
-                                <input
-                                    type="hidden"
-                                    name="action"
-                                    value="delete">
+				<div class="accept-modal-actions">
+					<button type="button" class="accept-modal-cancel"
+						id="cancelAcceptSuggestion">Cancel</button>
 
-                                <button
-                                    type="submit"
-                                    class="btn btn-delete">
-
-                                    Delete
-
-                                </button>
-
-                            </form>
-
-
-                        <% } else if
-                            ("ACCEPTED".equals(suggestion.getStatus())) { %>
-
-
-                            <!-- IMPLEMENTED -->
-
-                            <form
-                                action="<%= contextPath %>/admin/suggestions"
-                                method="post"
-                                onsubmit="return confirm('Are you sure this suggestion has been implemented? It will be permanently removed from the active suggestions list.');">
-
-                                <input
-                                    type="hidden"
-                                    name="suggestionId"
-                                    value="<%= suggestion.getSuggestionId() %>">
-
-                                <input
-                                    type="hidden"
-                                    name="action"
-                                    value="delete">
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-implemented">
-
-                                    Implemented
-
-                                </button>
-
-                            </form>
-
-
-                            <!-- DELETE -->
-
-                            <form
-                                action="<%= contextPath %>/admin/suggestions"
-                                method="post"
-                                onsubmit="return confirm('Are you sure you want to delete this suggestion? This action cannot be undone.');">
-
-                                <input
-                                    type="hidden"
-                                    name="suggestionId"
-                                    value="<%= suggestion.getSuggestionId() %>">
-
-                                <input
-                                    type="hidden"
-                                    name="action"
-                                    value="delete">
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-delete">
-
-                                    Delete
-
-                                </button>
-
-                            </form>
-
-
-                        <% } %>
-
-
-                    </div>
-
-
-                </div>
-
-
-            <% } %>
-
-
-        </div>
-
-
-    <% } %>
-
-
-</div>
-
-
+					<button type="button" class="accept-modal-confirm"
+						id="confirmAcceptSuggestion">
+						<i data-lucide="check"></i> Accept Suggestion
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script
+		src="${pageContext.request.contextPath}/javascript/confirm-modal.js"></script>
 </body>
-
 </html>
