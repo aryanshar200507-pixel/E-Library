@@ -139,6 +139,676 @@ svg {
     stroke-width: 1.8;
 }
 
+
+
+
+
+/* ============================================================
+   STORIES E-LIBRARY — BOOK REQUEST NAVBAR MATCH
+   Exact navbar styling for User Suggestion page
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   HEADER
+   ------------------------------------------------------------ */
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    width: 100%;
+    height: auto;
+
+    background: rgba(247, 243, 236, 0.94);
+    border-bottom: 1px solid rgba(231, 222, 210, 0.9);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.site-header,
+.site-header * {
+    text-shadow: none;
+}
+
+
+/* ------------------------------------------------------------
+   HEADER INNER
+   ------------------------------------------------------------ */
+
+.site-header .header-inner {
+    width: min(1380px, calc(100% - 48px));
+    min-height: 76px;
+    height: auto;
+
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 25px;
+}
+
+
+/* ------------------------------------------------------------
+   BRAND
+   ------------------------------------------------------------ */
+
+.site-header .brand {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    text-decoration: none;
+    color: var(--dark-brown);
+
+    flex-shrink: 0;
+}
+
+
+/* ------------------------------------------------------------
+   BRAND ICON
+   ------------------------------------------------------------ */
+
+.site-header .brand-icon {
+    width: 56px;
+    height: 56px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--dark-brown);
+    color: var(--gold);
+
+    border: none;
+    border-radius: 15px;
+
+    box-shadow: 0 5px 14px rgba(44, 24, 16, 0.14);
+}
+
+.site-header .brand-icon i,
+.site-header .brand-icon svg {
+    width: 27px;
+    height: 27px;
+
+    stroke: var(--gold);
+    stroke-width: 1.7;
+}
+
+
+/* ------------------------------------------------------------
+   BRAND TEXT
+   ------------------------------------------------------------ */
+
+.site-header .brand-text {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+
+    font-size: inherit;
+    font-weight: normal;
+    letter-spacing: normal;
+}
+
+
+/* STORIES */
+
+.site-header .brand-name {
+    display: block;
+
+    margin: 0;
+
+    color: var(--dark-brown);
+
+    font-family:
+        "Playfair Display",
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 30px;
+    line-height: 0.95;
+
+    font-weight: 700;
+
+    letter-spacing: -0.8px;
+}
+
+
+/* E-LIBRARY */
+
+.site-header .brand-subtitle {
+    display: block;
+
+    margin: 0;
+
+    color: var(--warm-brown);
+
+    font-family:
+        "DM Sans",
+        Arial,
+        sans-serif;
+
+    font-size: 9px;
+    line-height: 1;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+}
+
+
+/* ------------------------------------------------------------
+   DESKTOP NAVIGATION
+   ------------------------------------------------------------ */
+
+.site-header .desktop-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 4px;
+
+    flex: 1;
+}
+
+
+/* NAV LINKS */
+
+.site-header .desktop-nav a {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 10px 12px;
+
+    color: var(--muted);
+
+    font-family:
+        "DM Sans",
+        Arial,
+        sans-serif;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    border-radius: 6px;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+/* NAV ICONS */
+
+.site-header .desktop-nav a i,
+.site-header .desktop-nav a svg {
+    width: 15px;
+    height: 15px;
+
+    stroke-width: 1.8;
+}
+
+
+/* HOVER */
+
+.site-header .desktop-nav a:hover {
+    color: var(--dark-brown);
+
+    background: rgba(200, 155, 92, 0.08);
+}
+
+
+/* ACTIVE */
+
+.site-header .desktop-nav a.active {
+    color: var(--dark-brown);
+
+    background: rgba(200, 155, 92, 0.12);
+}
+
+
+/* ACTIVE UNDERLINE */
+
+.site-header .desktop-nav a.active::after {
+    content: "";
+
+    position: absolute;
+
+    left: 12px;
+    right: 12px;
+    bottom: 3px;
+
+    height: 2px;
+
+    background: var(--gold);
+
+    border-radius: 10px;
+}
+
+
+/* ------------------------------------------------------------
+   HEADER ACTIONS
+   ------------------------------------------------------------ */
+
+.site-header .header-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    flex-shrink: 0;
+}
+
+
+/* ------------------------------------------------------------
+   LOGOUT
+   ------------------------------------------------------------ */
+
+.site-header .logout-link {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 7px;
+
+    color: var(--muted);
+
+    text-decoration: none;
+
+    font-family:
+        "DM Sans",
+        Arial,
+        sans-serif;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    padding: 9px 11px;
+
+    border-radius: 6px;
+
+    transition: 0.2s ease;
+}
+
+.site-header .logout-link i,
+.site-header .logout-link svg {
+    width: 16px;
+    height: 16px;
+}
+
+.site-header .logout-link:hover {
+    color: #A33A32;
+
+    background: rgba(163, 58, 50, 0.06);
+}
+
+
+/* ------------------------------------------------------------
+   MOBILE MENU BUTTON
+   ------------------------------------------------------------ */
+
+.site-header .mobile-menu-button {
+    display: none;
+
+    width: 42px;
+    height: 42px;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--border);
+
+    background: var(--white);
+
+    color: var(--dark-brown);
+
+    border-radius: 7px;
+
+    padding: 0;
+
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.site-header .mobile-menu-button i,
+.site-header .mobile-menu-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+
+/* ------------------------------------------------------------
+   MOBILE NAVIGATION
+   ------------------------------------------------------------ */
+
+.site-header .mobile-nav {
+    display: none;
+
+    width: min(1380px, calc(100% - 48px));
+
+    margin: 0 auto;
+
+    padding: 8px 0 16px;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+/* OPEN */
+
+.site-header .mobile-nav.open {
+    display: flex;
+}
+
+
+/* MOBILE LINKS */
+
+.site-header .mobile-nav a {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 13px 14px;
+
+    color: var(--muted);
+
+    text-decoration: none;
+
+    font-family:
+        "DM Sans",
+        Arial,
+        sans-serif;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    border-radius: 7px;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+/* MOBILE ICONS */
+
+.site-header .mobile-nav a i,
+.site-header .mobile-nav a svg {
+    width: 17px;
+    height: 17px;
+}
+
+
+/* MOBILE HOVER */
+
+.site-header .mobile-nav a:hover {
+    color: var(--dark-brown);
+
+    background: rgba(200, 155, 92, 0.08);
+}
+
+
+/* MOBILE ACTIVE */
+
+.site-header .mobile-nav a.active {
+    background: rgba(200, 155, 92, 0.12);
+
+    color: var(--dark-brown);
+}
+
+
+/* ------------------------------------------------------------
+   1100px — SAME AS BOOK REQUEST
+   ------------------------------------------------------------ */
+
+@media (max-width: 1100px) {
+
+    .site-header .desktop-nav a span {
+        display: none;
+    }
+
+    .site-header .desktop-nav a {
+        padding: 10px;
+    }
+
+    .site-header .desktop-nav a.active::after {
+        left: 10px;
+        right: 10px;
+    }
+
+}
+
+
+/* ------------------------------------------------------------
+   800px — MOBILE NAVIGATION
+   SAME AS BOOK REQUEST
+   ------------------------------------------------------------ */
+
+@media (max-width: 800px) {
+
+    .site-header {
+        z-index: 100;
+    }
+
+    .site-header .header-inner {
+        width: min(1380px, calc(100% - 48px));
+
+        min-height: 68px;
+        height: auto;
+
+        gap: 25px;
+    }
+
+    /* Hide desktop navigation */
+
+    .site-header .desktop-nav {
+        display: none;
+    }
+
+    /* Hide desktop logout */
+
+    .site-header .logout-link {
+        display: none;
+    }
+
+    /* Show hamburger */
+
+    .site-header .mobile-menu-button {
+        display: flex;
+    }
+
+}
+
+
+/* ------------------------------------------------------------
+   650px
+   SAME AS BOOK REQUEST
+   ------------------------------------------------------------ */
+
+@media (max-width: 650px) {
+
+    .site-header .header-inner,
+    .site-header .mobile-nav {
+        width: min(100% - 30px, 1180px);
+    }
+
+    .site-header .brand-icon {
+        width: 50px;
+        height: 50px;
+
+        border-radius: 14px;
+    }
+
+    .site-header .brand-icon i,
+    .site-header .brand-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .site-header .brand-name {
+        font-size: 26px;
+    }
+
+    .site-header .brand-subtitle {
+        font-size: 8px;
+        letter-spacing: 1.7px;
+    }
+
+}
+
+
+/* ------------------------------------------------------------
+   400px
+   SAME AS BOOK REQUEST
+   ------------------------------------------------------------ */
+
+@media (max-width: 400px) {
+
+    .site-header .header-inner,
+    .site-header .mobile-nav {
+        width: calc(100% - 22px);
+    }
+
+}
+
+
+/* ============================================================
+   IMPORTANT OVERRIDE
+   Prevent old suggestion navbar classes from affecting
+   the new Book Request-style navbar.
+   ============================================================ */
+
+@media (max-width: 1500px) {
+
+    .site-header .header-inner {
+        width: min(1380px, calc(100% - 48px));
+        gap: 25px;
+    }
+
+    .site-header .brand {
+        gap: 14px;
+    }
+
+    .site-header .brand-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 15px;
+    }
+
+    .site-header .brand-name {
+        font-size: 30px;
+    }
+
+    .site-header .desktop-nav {
+        gap: 4px;
+    }
+
+    .site-header .desktop-nav a {
+        gap: 7px;
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+
+}
+
+
+@media (max-width: 1100px) {
+
+    .site-header .header-inner {
+        width: min(1380px, calc(100% - 48px));
+        min-height: 76px;
+        gap: 25px;
+    }
+
+    .site-header .brand-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 15px;
+    }
+
+    .site-header .brand-icon i,
+    .site-header .brand-icon svg {
+        width: 27px;
+        height: 27px;
+    }
+
+    .site-header .brand-name {
+        font-size: 30px;
+    }
+
+    .site-header .brand-subtitle {
+        font-size: 9px;
+        letter-spacing: 2px;
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .site-header .header-inner {
+        width: min(1380px, calc(100% - 48px));
+        min-height: 68px;
+        gap: 25px;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .site-header .header-inner,
+    .site-header .mobile-nav {
+        width: min(100% - 30px, 1180px);
+    }
+
+    .site-header .brand-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+    }
+
+    .site-header .brand-icon i,
+    .site-header .brand-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .site-header .brand-name {
+        font-size: 26px;
+    }
+
+    .site-header .brand-subtitle {
+        font-size: 8px;
+        letter-spacing: 1.7px;
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .site-header .header-inner,
+    .site-header .mobile-nav {
+        width: calc(100% - 22px);
+    }
+
+}
+
 .brand-copy {
     display: flex;
     flex-direction: column;

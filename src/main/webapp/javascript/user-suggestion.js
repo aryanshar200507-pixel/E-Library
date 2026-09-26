@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // =================================================
 
     function refreshIcons() {
+
         if (
             window.lucide &&
             typeof window.lucide.createIcons === "function"
@@ -21,16 +22,21 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             console.error("Lucide library failed to load.");
         }
+
     }
 
     refreshIcons();
+
 
     // =================================================
     // 2. ELEMENTS
     // =================================================
 
-    const form = document.getElementById("suggestionForm");
-    const textarea = document.getElementById("description");
+    const form =
+        document.getElementById("suggestionForm");
+
+    const textarea =
+        document.getElementById("description");
 
     const characterCount =
         document.getElementById("characterCount");
@@ -44,238 +50,419 @@ document.addEventListener("DOMContentLoaded", function () {
     const submitButton =
         document.getElementById("submitButton");
 
-    // Header elements
 
-    const menuToggle =
-        document.getElementById("mobileMenuToggle");
+    // =================================================
+    // HEADER ELEMENTS
+    // IMPORTANT:
+    // These IDs match the Book Request navbar exactly.
+    // =================================================
 
-    const siteNav =
-        document.getElementById("siteNav");
+    const menuButton =
+        document.getElementById("mobileMenuButton");
+
+    const mobileNav =
+        document.getElementById("mobileNav");
+
 
     const MIN_LENGTH = 10;
     const MAX_LENGTH = 1000;
+
 
     // =================================================
     // 3. RESPONSIVE MOBILE NAVIGATION
     // =================================================
 
     function isMobileView() {
-        return window.matchMedia("(max-width: 800px)").matches;
+
+        return window.matchMedia(
+            "(max-width: 800px)"
+        ).matches;
+
     }
+
 
     function openMenu() {
-        if (!menuToggle || !siteNav) {
+
+        if (!menuButton || !mobileNav) {
             return;
         }
 
-        siteNav.classList.add("open");
+        mobileNav.classList.add("open");
 
-        menuToggle.setAttribute("aria-expanded", "true");
-        menuToggle.setAttribute(
-            "aria-label",
-            "Close navigation menu"
+        menuButton.setAttribute(
+            "aria-expanded",
+            "true"
         );
 
-        siteNav.setAttribute("aria-hidden", "false");
+        menuButton.setAttribute(
+            "aria-label",
+            "Close navigation"
+        );
 
-        menuToggle.innerHTML = '<i data-lucide="x"></i>';
+        /*
+         * Change menu icon to X.
+         */
+
+        menuButton.innerHTML =
+            '<i data-lucide="x"></i>';
 
         refreshIcons();
+
     }
+
 
     function closeMenu() {
-        if (!menuToggle || !siteNav) {
+
+        if (!menuButton || !mobileNav) {
             return;
         }
 
-        siteNav.classList.remove("open");
+        mobileNav.classList.remove("open");
 
-        menuToggle.setAttribute("aria-expanded", "false");
-        menuToggle.setAttribute(
-            "aria-label",
-            "Open navigation menu"
+        menuButton.setAttribute(
+            "aria-expanded",
+            "false"
         );
 
-        siteNav.setAttribute("aria-hidden", "true");
+        menuButton.setAttribute(
+            "aria-label",
+            "Open navigation"
+        );
 
-        menuToggle.innerHTML = '<i data-lucide="menu"></i>';
+        /*
+         * Change X icon back to menu.
+         */
+
+        menuButton.innerHTML =
+            '<i data-lucide="menu"></i>';
 
         refreshIcons();
+
     }
 
+
     function toggleMenu() {
-        if (!menuToggle || !siteNav) {
+
+        if (!menuButton || !mobileNav) {
             return;
         }
 
         const isOpen =
-            menuToggle.getAttribute("aria-expanded") === "true";
+            mobileNav.classList.contains("open");
 
         if (isOpen) {
             closeMenu();
         } else {
             openMenu();
         }
+
     }
 
-    if (menuToggle && siteNav) {
 
-        menuToggle.addEventListener("click", function (event) {
-            event.stopPropagation();
-            toggleMenu();
-        });
+    // =================================================
+    // MOBILE MENU EVENT HANDLERS
+    // =================================================
 
-        // Close menu after clicking a navigation link.
+    if (menuButton && mobileNav) {
 
-        siteNav.querySelectorAll("a").forEach(function (link) {
-            link.addEventListener("click", function () {
-                closeMenu();
-            });
-        });
+        /*
+         * Open / close menu.
+         */
 
-        // Close menu when clicking outside the header.
+        menuButton.addEventListener(
+            "click",
+            function (event) {
 
-        document.addEventListener("click", function (event) {
-            if (
-                isMobileView() &&
-                siteNav.classList.contains("open") &&
-                !event.target.closest(".header")
-            ) {
-                closeMenu();
+                event.preventDefault();
+                event.stopPropagation();
+
+                toggleMenu();
+
             }
+        );
+
+
+        /*
+         * Close menu after clicking a link.
+         */
+
+        const mobileLinks =
+            mobileNav.querySelectorAll("a");
+
+        mobileLinks.forEach(function (link) {
+
+            link.addEventListener(
+                "click",
+                function () {
+
+                    closeMenu();
+
+                }
+            );
+
         });
 
-        // Close menu with Escape.
 
-        document.addEventListener("keydown", function (event) {
-            if (
-                event.key === "Escape" &&
-                siteNav.classList.contains("open")
-            ) {
-                closeMenu();
-                menuToggle.focus();
+        /*
+         * Close menu when clicking outside.
+         */
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    isMobileView() &&
+                    mobileNav.classList.contains("open") &&
+                    !event.target.closest(".site-header")
+                ) {
+                    closeMenu();
+                }
+
             }
-        });
+        );
 
-        // Reset menu when moving to desktop view.
 
-        window.addEventListener("resize", function () {
-            if (!isMobileView()) {
-                closeMenu();
+        /*
+         * Close menu with Escape.
+         */
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Escape" &&
+                    mobileNav.classList.contains("open")
+                ) {
+
+                    closeMenu();
+
+                    menuButton.focus();
+
+                }
+
             }
-        });
+        );
 
-        // Initial state.
+
+        /*
+         * Close mobile menu when switching
+         * back to desktop size.
+         */
+
+        window.addEventListener(
+            "resize",
+            function () {
+
+                if (!isMobileView()) {
+                    closeMenu();
+                }
+
+            }
+        );
+
+
+        /*
+         * Initial state.
+         */
 
         closeMenu();
+
     }
+
 
     // =================================================
     // 4. CHARACTER COUNTER
     // =================================================
 
     function updateCharacterCount() {
-        if (!textarea || !characterCount || !characterCounter) {
+
+        if (
+            !textarea ||
+            !characterCount ||
+            !characterCounter
+        ) {
             return;
         }
 
-        const length = textarea.value.length;
+        const length =
+            textarea.value.length;
 
-        characterCount.textContent = length;
+        characterCount.textContent =
+            length;
+
 
         characterCounter.classList.remove(
             "near-limit",
             "limit-reached"
         );
 
+
         if (length >= MAX_LENGTH) {
-            characterCounter.classList.add("limit-reached");
-        } else if (length >= MAX_LENGTH * 0.9) {
-            characterCounter.classList.add("near-limit");
+
+            characterCounter.classList.add(
+                "limit-reached"
+            );
+
+        } else if (
+            length >= MAX_LENGTH * 0.9
+        ) {
+
+            characterCounter.classList.add(
+                "near-limit"
+            );
+
         }
+
     }
+
 
     if (textarea) {
-        textarea.addEventListener("input", function () {
 
-            updateCharacterCount();
+        textarea.addEventListener(
+            "input",
+            function () {
 
-            if (validationMessage) {
-                validationMessage.hidden = true;
-                validationMessage.textContent = "";
+                updateCharacterCount();
+
+
+                if (validationMessage) {
+
+                    validationMessage.hidden =
+                        true;
+
+                    validationMessage.textContent =
+                        "";
+
+                }
+
             }
-        });
+        );
+
     }
 
+
     updateCharacterCount();
+
 
     // =================================================
     // 5. FORM VALIDATION
     // =================================================
 
     function showValidationMessage(message) {
+
         if (!validationMessage) {
             return;
         }
 
-        validationMessage.textContent = message;
-        validationMessage.hidden = false;
+        validationMessage.textContent =
+            message;
+
+        validationMessage.hidden =
+            false;
+
     }
+
 
     if (form && textarea) {
 
-        form.addEventListener("submit", function (event) {
+        form.addEventListener(
+            "submit",
+            function (event) {
 
-            const description = textarea.value.trim();
+                const description =
+                    textarea.value.trim();
 
-            // Empty or too-short suggestion.
 
-            if (description.length < MIN_LENGTH) {
-                event.preventDefault();
+                // -----------------------------------------
+                // Empty / too-short suggestion
+                // -----------------------------------------
 
-                showValidationMessage(
-                    "Please enter at least 10 characters for your suggestion."
-                );
+                if (
+                    description.length <
+                    MIN_LENGTH
+                ) {
 
-                textarea.focus();
-                return;
-            }
+                    event.preventDefault();
 
-            // Maximum character limit.
+                    showValidationMessage(
+                        "Please enter at least 10 characters for your suggestion."
+                    );
 
-            if (description.length > MAX_LENGTH) {
-                event.preventDefault();
+                    textarea.focus();
 
-                showValidationMessage(
-                    "Your suggestion cannot exceed 1000 characters."
-                );
+                    return;
 
-                textarea.focus();
-                return;
-            }
-
-            // Prevent accidental double submission.
-
-            if (submitButton) {
-
-                submitButton.disabled = true;
-
-                const submitText =
-                    submitButton.querySelector(".submit-text");
-
-                if (submitText) {
-                    submitText.textContent = "Submitting...";
                 }
 
-                const icon =
-                    submitButton.querySelector("svg");
 
-                if (icon) {
-                    icon.style.display = "none";
+                // -----------------------------------------
+                // Maximum character limit
+                // -----------------------------------------
+
+                if (
+                    description.length >
+                    MAX_LENGTH
+                ) {
+
+                    event.preventDefault();
+
+                    showValidationMessage(
+                        "Your suggestion cannot exceed 1000 characters."
+                    );
+
+                    textarea.focus();
+
+                    return;
+
                 }
+
+
+                // -----------------------------------------
+                // Prevent accidental double submission
+                // -----------------------------------------
+
+                if (submitButton) {
+
+                    submitButton.disabled =
+                        true;
+
+
+                    const submitText =
+                        submitButton.querySelector(
+                            ".submit-text"
+                        );
+
+
+                    if (submitText) {
+
+                        submitText.textContent =
+                            "Submitting...";
+
+                    }
+
+
+                    const icon =
+                        submitButton.querySelector(
+                            "svg"
+                        );
+
+
+                    if (icon) {
+
+                        icon.style.display =
+                            "none";
+
+                    }
+
+                }
+
             }
-        });
+        );
+
     }
+
 
     // =================================================
     // 6. TEXTAREA KEYBOARD SHORTCUT
@@ -283,28 +470,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (textarea) {
 
-        textarea.addEventListener("keydown", function (event) {
+        textarea.addEventListener(
+            "keydown",
+            function (event) {
 
-            // Ctrl + Enter or Cmd + Enter submits the form.
-
-            if (
-                event.key === "Enter" &&
-                (event.ctrlKey || event.metaKey)
-            ) {
-                event.preventDefault();
+                /*
+                 * Ctrl + Enter
+                 * OR
+                 * Cmd + Enter
+                 *
+                 * submits the form.
+                 */
 
                 if (
-                    form &&
-                    typeof form.requestSubmit === "function"
+                    event.key === "Enter" &&
+                    (
+                        event.ctrlKey ||
+                        event.metaKey
+                    )
                 ) {
-                    form.requestSubmit();
+
+                    event.preventDefault();
+
+
+                    if (
+                        form &&
+                        typeof form.requestSubmit ===
+                            "function"
+                    ) {
+
+                        form.requestSubmit();
+
+                    }
+
                 }
+
             }
-        });
+        );
+
     }
 
+
     // =================================================
-    // 7. INITIALIZATION
+    // 7. FINAL INITIALIZATION
     // =================================================
 
     refreshIcons();

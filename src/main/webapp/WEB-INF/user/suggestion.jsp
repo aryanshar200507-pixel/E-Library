@@ -51,45 +51,28 @@
 
 <!-- ================= HEADER ================= -->
 
-<header class="header">
+<header class="site-header">
 
     <div class="header-inner">
 
         <!-- Brand -->
-
         <a href="${pageContext.request.contextPath}/user/dashboard"
-           class="app-brand">
+           class="brand">
 
             <span class="brand-icon">
                 <i data-lucide="library"></i>
             </span>
 
-            <span class="brand-copy">
-                <strong>Stories</strong>
-                <small class="app-subtitle">E-LIBRARY</small>
+            <span class="brand-text">
+                <span class="brand-name">Stories</span>
+                <span class="brand-subtitle">E-LIBRARY</span>
             </span>
 
         </a>
 
-        <!-- Mobile Menu Button -->
 
-        <button
-            type="button"
-            class="mobile-menu-toggle"
-            id="mobileMenuToggle"
-            aria-label="Open navigation menu"
-            aria-expanded="false"
-            aria-controls="siteNav">
-
-            <i data-lucide="menu"></i>
-
-        </button>
-
-        <!-- Navigation -->
-
-        <nav class="nav"
-             id="siteNav"
-             aria-hidden="true">
+        <!-- Desktop Navigation -->
+        <nav class="desktop-nav" aria-label="Main navigation">
 
             <a href="${pageContext.request.contextPath}/user/dashboard">
                 <i data-lucide="layout-dashboard"></i>
@@ -114,7 +97,6 @@
             <a href="${pageContext.request.contextPath}/user/suggestion"
                class="active"
                aria-current="page">
-
                 <i data-lucide="message-square-plus"></i>
                 <span>Suggestions</span>
             </a>
@@ -129,16 +111,82 @@
                 <span>Profile</span>
             </a>
 
+        </nav>
+
+
+        <!-- Header Actions -->
+        <div class="header-actions">
+
             <a href="${pageContext.request.contextPath}/logout"
                class="logout-link">
 
                 <i data-lucide="log-out"></i>
                 <span>Logout</span>
+
             </a>
 
-        </nav>
+
+            <!-- Mobile Menu Button -->
+            <button type="button"
+                    class="mobile-menu-button"
+                    id="mobileMenuButton"
+                    aria-label="Open navigation"
+                    aria-expanded="false">
+
+                <i data-lucide="menu"></i>
+
+            </button>
+
+        </div>
 
     </div>
+
+
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav" id="mobileNav">
+
+        <a href="${pageContext.request.contextPath}/user/dashboard">
+            <i data-lucide="layout-dashboard"></i>
+            Dashboard
+        </a>
+
+        <a href="${pageContext.request.contextPath}/books">
+            <i data-lucide="library"></i>
+            Categories
+        </a>
+
+        <a href="${pageContext.request.contextPath}/book-request">
+            <i data-lucide="book-plus"></i>
+            Book Requests
+        </a>
+
+        <a href="${pageContext.request.contextPath}/books/bookmark-book">
+            <i data-lucide="bookmark"></i>
+            Bookmarks
+        </a>
+
+        <a href="${pageContext.request.contextPath}/user/suggestion"
+           class="active">
+            <i data-lucide="message-square-plus"></i>
+            Suggestions
+        </a>
+
+        <a href="${pageContext.request.contextPath}/books/history">
+            <i data-lucide="history"></i>
+            History
+        </a>
+
+        <a href="${pageContext.request.contextPath}/profile">
+            <i data-lucide="user"></i>
+            Profile
+        </a>
+
+        <a href="${pageContext.request.contextPath}/logout">
+            <i data-lucide="log-out"></i>
+            Logout
+        </a>
+
+    </nav>
 
 </header>
 
