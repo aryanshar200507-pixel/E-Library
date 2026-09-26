@@ -598,7 +598,7 @@ a {
 
     max-width: 620px;
 
-    color: var(--surface);
+    color: var(--primary);
 
     font-size: 15px;
 
@@ -1832,7 +1832,7 @@ a {
 
     gap: 13px;
 
-    color: #A69B91;
+    color: var(--primary);
 
     font-size: 8px;
 
@@ -1849,6 +1849,7 @@ a {
     height: 1px;
 
     background: var(--border);
+    
 }
 
 
