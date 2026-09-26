@@ -1,45 +1,50 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java"
+    contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8" %>
 
 <%@ page import="com.project.elibrary.bean.user.User" %>
 
 <%
-    User loggedInUser = (User) request.getAttribute("loggedInUser");
+    User loggedInUser =
+        (User) request.getAttribute("loggedInUser");
 
     String error = (String) request.getAttribute("error");
     String success = (String) request.getAttribute("success");
 
-    String userName = loggedInUser != null && loggedInUser.getName() != null
-            ? loggedInUser.getName() : "";
+    String userName =
+        loggedInUser != null && loggedInUser.getName() != null
+        ? loggedInUser.getName() : "";
 
-    String userEmail = loggedInUser != null && loggedInUser.getEmail() != null
-            ? loggedInUser.getEmail() : "";
+    String userEmail =
+        loggedInUser != null && loggedInUser.getEmail() != null
+        ? loggedInUser.getEmail() : "";
 %>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <title>Suggest an App | Stories E-Library</title>
+    <title>Suggestions | Stories E-Library</title>
 
-    <!-- Existing Dashboard CSS -->
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/css/dashboard.css">
 
-    <!-- User Suggestion CSS -->
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/css/user-suggestion.css">
 
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- User Suggestion JS -->
     <script
         src="${pageContext.request.contextPath}/javascript/user-suggestion.js"
         defer>
     </script>
+    
+    <link rel="stylesheet"
+      href="${pageContext.request.contextPath}/css/background.css">
 </head>
 
 <body>
@@ -48,48 +53,92 @@
 
 <header class="header">
 
-    <a href="${pageContext.request.contextPath}/user/dashboard"
-       class="app-brand">
+    <div class="header-inner">
 
-        <span class="brand-icon">
-            <i data-lucide="book-open"></i>
-        </span>
+        <!-- Brand -->
 
-        <span class="brand-copy">
-            <strong>Stories E-Library</strong>
-            <small class="app-subtitle">Read. Discover. Explore.</small>
-        </span>
+        <a href="${pageContext.request.contextPath}/user/dashboard"
+           class="app-brand">
 
-    </a>
+            <span class="brand-icon">
+                <i data-lucide="library"></i>
+            </span>
 
-    <nav class="nav">
+            <span class="brand-copy">
+                <strong>Stories</strong>
+                <small class="app-subtitle">E-LIBRARY</small>
+            </span>
 
-        <a href="${pageContext.request.contextPath}/user/dashboard">
-            <i data-lucide="layout-dashboard"></i>
-            <span>Dashboard</span>
         </a>
 
-        <a href="${pageContext.request.contextPath}/books">
-            <i data-lucide="library"></i>
-            <span>Categories</span>
-        </a>
+        <!-- Mobile Menu Button -->
 
-        <a href="${pageContext.request.contextPath}/books/bookmark-book">
-            <i data-lucide="bookmark"></i>
-            <span>Bookmarks</span>
-        </a>
+        <button
+            type="button"
+            class="mobile-menu-toggle"
+            id="mobileMenuToggle"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+            aria-controls="siteNav">
 
-        <a href="${pageContext.request.contextPath}/books/history">
-            <i data-lucide="history"></i>
-            <span>History</span>
-        </a>
+            <i data-lucide="menu"></i>
 
-        <a href="${pageContext.request.contextPath}/logout">
-            <i data-lucide="log-out"></i>
-            <span>Logout</span>
-        </a>
+        </button>
 
-    </nav>
+        <!-- Navigation -->
+
+        <nav class="nav"
+             id="siteNav"
+             aria-hidden="true">
+
+            <a href="${pageContext.request.contextPath}/user/dashboard">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="${pageContext.request.contextPath}/books">
+                <i data-lucide="library"></i>
+                <span>Categories</span>
+            </a>
+
+            <a href="${pageContext.request.contextPath}/book-request">
+                <i data-lucide="book-plus"></i>
+                <span>Book Requests</span>
+            </a>
+
+            <a href="${pageContext.request.contextPath}/books/bookmark-book">
+                <i data-lucide="bookmark"></i>
+                <span>Bookmarks</span>
+            </a>
+
+            <a href="${pageContext.request.contextPath}/user/suggestion"
+               class="active"
+               aria-current="page">
+
+                <i data-lucide="message-square-plus"></i>
+                <span>Suggestions</span>
+            </a>
+
+            <a href="${pageContext.request.contextPath}/books/history">
+                <i data-lucide="history"></i>
+                <span>History</span>
+            </a>
+
+            <a href="${pageContext.request.contextPath}/profile">
+                <i data-lucide="user"></i>
+                <span>Profile</span>
+            </a>
+
+            <a href="${pageContext.request.contextPath}/logout"
+               class="logout-link">
+
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
+            </a>
+
+        </nav>
+
+    </div>
 
 </header>
 
@@ -106,7 +155,7 @@
 
         <i data-lucide="chevron-right" class="breadcrumb-arrow"></i>
 
-        <span>Suggest an App</span>
+        <span>Suggestion</span>
     </div>
 
     <!-- Hero Section -->

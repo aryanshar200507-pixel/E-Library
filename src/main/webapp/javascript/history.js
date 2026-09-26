@@ -1,190 +1,99 @@
+
 document.addEventListener("DOMContentLoaded", function () {
 
-    /* =====================================================
+    /* =========================================
        LUCIDE ICONS
-       ===================================================== */
+       ========================================= */
 
-    function refreshIcons() {
-        if (typeof lucide !== "undefined") {
-            lucide.createIcons();
+    function renderIcons() {
+        if (window.lucide) {
+            window.lucide.createIcons();
         }
     }
 
-    refreshIcons();
+    renderIcons();
 
-
-    /* =====================================================
+    /* =========================================
        MOBILE NAVIGATION
-       ===================================================== */
+       ========================================= */
 
-    const menuButton = document.getElementById("mobileMenuButton");
-    const mobileNav = document.getElementById("mobileNav");
+    var menuButton = document.getElementById("mobileMenuButton");
+    var mobileNav = document.getElementById("mobileNav");
 
     if (!menuButton || !mobileNav) {
         return;
     }
 
+    var menuOpen = false;
 
-    function openMobileMenu() {
+    function updateMenu(open) {
+        menuOpen = open;
 
-        mobileNav.classList.add("open");
+        mobileNav.classList.toggle("open", menuOpen);
 
         menuButton.setAttribute(
             "aria-expanded",
-            "true"
+            String(menuOpen)
         );
 
         menuButton.setAttribute(
             "aria-label",
-            "Close navigation"
+            menuOpen ? "Close navigation" : "Open navigation"
         );
 
-        menuButton.innerHTML =
-            '<i data-lucide="x"></i>';
+        var icon = menuButton.querySelector("i");
 
-        refreshIcons();
-    }
+        if (icon) {
+            icon.setAttribute(
+                "data-lucide",
+                menuOpen ? "x" : "menu"
+            );
 
-
-    function closeMobileMenu() {
-
-        mobileNav.classList.remove("open");
-
-        menuButton.setAttribute(
-            "aria-expanded",
-            "false"
-        );
-
-        menuButton.setAttribute(
-            "aria-label",
-            "Open navigation"
-        );
-
-        menuButton.innerHTML =
-            '<i data-lucide="menu"></i>';
-
-        refreshIcons();
-    }
-
-
-    function toggleMobileMenu() {
-
-        const isOpen =
-            mobileNav.classList.contains("open");
-
-        if (isOpen) {
-            closeMobileMenu();
-        } else {
-            openMobileMenu();
+            renderIcons();
         }
     }
 
+    /* Toggle mobile navigation */
 
-    /* =====================================================
-       MENU BUTTON
-       ===================================================== */
-
-    menuButton.addEventListener("click", function (event) {
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        toggleMobileMenu();
-
+    menuButton.addEventListener("click", function () {
+        updateMenu(!menuOpen);
     });
 
+    /* Close after selecting a navigation link */
 
-    /* =====================================================
-       CLOSE WHEN MOBILE LINK IS CLICKED
-       ===================================================== */
-
-    const mobileLinks =
-        mobileNav.querySelectorAll("a");
-
-    mobileLinks.forEach(function (link) {
-
+    mobileNav.querySelectorAll("a").forEach(function (link) {
         link.addEventListener("click", function () {
-
-            closeMobileMenu();
-
+            updateMenu(false);
         });
-
     });
 
-
-    /* =====================================================
-       CLOSE WHEN CLICKING OUTSIDE
-       ===================================================== */
+    /* Close when clicking outside */
 
     document.addEventListener("click", function (event) {
-
-        if (!mobileNav.classList.contains("open")) {
-            return;
+        if (
+            menuOpen &&
+            !mobileNav.contains(event.target) &&
+            !menuButton.contains(event.target)
+        ) {
+            updateMenu(false);
         }
-
-        const clickedInsideNav =
-            mobileNav.contains(event.target);
-
-        const clickedMenuButton =
-            menuButton.contains(event.target);
-
-        if (!clickedInsideNav && !clickedMenuButton) {
-            closeMobileMenu();
-        }
-
     });
 
-
-    /* =====================================================
-       ESCAPE KEY
-       ===================================================== */
+    /* Close with Escape key */
 
     document.addEventListener("keydown", function (event) {
-
-        if (event.key === "Escape") {
-
-            if (mobileNav.classList.contains("open")) {
-                closeMobileMenu();
-            }
-
+        if (event.key === "Escape" && menuOpen) {
+            updateMenu(false);
+            menuButton.focus();
         }
-
     });
 
-
-    /* =====================================================
-       RESET MOBILE MENU ON DESKTOP RESIZE
-       ===================================================== */
-
-    let resizeTimer;
+    /* Close mobile menu when switching to desktop */
 
     window.addEventListener("resize", function () {
-
-        clearTimeout(resizeTimer);
-
-        resizeTimer = setTimeout(function () {
-
-            if (window.innerWidth > 800) {
-                closeMobileMenu();
-            }
-
-        }, 100);
-
+        if (window.innerWidth > 1050 && menuOpen) {
+            updateMenu(false);
+        }
     });
-
-
-    /* =====================================================
-       INITIAL ARIA STATE
-       ===================================================== */
-
-    menuButton.setAttribute(
-        "aria-expanded",
-        "false"
-    );
-
-    menuButton.setAttribute(
-        "aria-label",
-        "Open navigation"
-    );
 
 });

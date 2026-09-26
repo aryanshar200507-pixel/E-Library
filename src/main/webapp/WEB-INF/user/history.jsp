@@ -1,397 +1,410 @@
-<%@ page import="java.util.List"%>
-<%@ page import="java.util.Map"%>
-<%@ page import="com.project.elibrary.bean.book.Book"%>
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8" %>
+
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="com.project.elibrary.bean.book.Book" %>
 
 <%
-List<Book> historyList = (List<Book>) request.getAttribute("books");
+List<Book> historyList =
+    (List<Book>) request.getAttribute("books");
 
-Map<Long, String> coverUrlMap = (Map<Long, String>) request.getAttribute("coverUrlMap");
+Map<Long, String> coverUrlMap =
+    (Map<Long, String>) request.getAttribute("coverUrlMap");
 
-Integer totalBooks = (Integer) request.getAttribute("totalBooks");
+Integer totalBooks =
+    (Integer) request.getAttribute("totalBooks");
 
 if (historyList == null) {
-	historyList = java.util.Collections.emptyList();
+    historyList = java.util.Collections.emptyList();
 }
 
 if (coverUrlMap == null) {
-	coverUrlMap = java.util.Collections.emptyMap();
+    coverUrlMap = java.util.Collections.emptyMap();
 }
 
 if (totalBooks == null) {
-	totalBooks = 0;
+    totalBooks = 0;
 }
 %>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#F7F3EC">
 
-<meta charset="UTF-8">
+    <title>History | Stories E-LIBRARY</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<meta name="theme-color" content="#2C1810">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
+          rel="stylesheet">
 
-<title>History | Stories E-LIBRARY</title>
+    <!-- LUCIDE ICONS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-<!-- Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- CSS -->
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/css/background.css">
 
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link
-	href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
-	rel="stylesheet">
-
-<!-- Lucide -->
-<script src="https://unpkg.com/lucide@latest"></script>
-
-<!-- CSS -->
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/background.css">
-
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/css/history.css?v=2">
-
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/css/history.css?v=4">
 </head>
-
 
 <body>
 
+<div class="page-shell">
 
-	<div class="page-shell">
-
-
-		<!-- =====================================================
+    <!-- =========================================
          HEADER
-         ===================================================== -->
+         ========================================= -->
 
-		<header class="site-header">
+    <header class="site-header">
 
-			<div class="header-inner">
+        <div class="header-inner">
 
+            <!-- BRAND -->
+            <a href="${pageContext.request.contextPath}/user/dashboard"
+               class="brand">
 
-				<!-- BRAND -->
+                <span class="brand-icon">
+                    <i data-lucide="library"></i>
+                </span>
 
-				<a href="${pageContext.request.contextPath}/user/dashboard"
-					class="brand"> <span class="brand-icon"> <i
-						data-lucide="library"></i>
-				</span> <span class="brand-text"> <span class="brand-name">
-							Stories </span> <span class="brand-subtitle"> E-LIBRARY </span>
+                <span class="brand-text">
+                    <span class="brand-name">Stories</span>
+                    <span class="brand-subtitle">E-LIBRARY</span>
+                </span>
 
-				</span>
+            </a>
 
-				</a>
+            <!-- DESKTOP NAVIGATION -->
+            <nav class="desktop-nav" aria-label="Main navigation">
 
+                <a href="${pageContext.request.contextPath}/user/dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
 
-				<!-- DESKTOP NAV -->
+                <a href="${pageContext.request.contextPath}/books">
+                    <i data-lucide="library"></i>
+                    <span>Categories</span>
+                </a>
 
-				<nav class="desktop-nav">
+                <a href="${pageContext.request.contextPath}/book-request">
+                    <i data-lucide="book-plus"></i>
+                    <span>Book Requests</span>
+                </a>
 
-					<a href="${pageContext.request.contextPath}/user/dashboard"> <i
-						data-lucide="layout-dashboard"></i> <span>Dashboard</span>
-					</a> <a href="${pageContext.request.contextPath}/books"> <i
-						data-lucide="library"></i> <span>Categories</span>
-					</a> <a href="${pageContext.request.contextPath}/book-request"> <i
-						data-lucide="book-plus"></i> <span>Book Requests</span>
-					</a> <a href="${pageContext.request.contextPath}/books/bookmark-book">
-						<i data-lucide="bookmark"></i> <span>Bookmarks</span>
-					</a> <a href="${pageContext.request.contextPath}/user/suggestion">
-						<i data-lucide="message-square-plus"></i> <span>Suggestions</span>
-					</a> <a href="${pageContext.request.contextPath}/books/history"
-						class="active"> <i data-lucide="history"></i> <span>History</span>
+                <a href="${pageContext.request.contextPath}/books/bookmark-book">
+                    <i data-lucide="bookmark"></i>
+                    <span>Bookmarks</span>
+                </a>
 
-					</a> <a href="${pageContext.request.contextPath}/profile"> <i
-						data-lucide="user-round"></i> <span>Profile</span>
-					</a>
+                <a href="${pageContext.request.contextPath}/user/suggestion">
+                    <i data-lucide="message-square-plus"></i>
+                    <span>Suggestions</span>
+                </a>
 
-				</nav>
+                <a href="${pageContext.request.contextPath}/books/history"
+                   class="active" aria-current="page">
+                    <i data-lucide="history"></i>
+                    <span>History</span>
+                </a>
 
+                <a href="${pageContext.request.contextPath}/profile">
+                    <i data-lucide="user-round"></i>
+                    <span>Profile</span>
+                </a>
 
-				<!-- HEADER ACTIONS -->
+            </nav>
 
-				<div class="header-actions">
+            <!-- HEADER ACTIONS -->
+            <div class="header-actions">
 
-					<a href="${pageContext.request.contextPath}/logout"
-						class="logout-link"> <i data-lucide="log-out"></i> <span>Logout</span>
+                <a href="${pageContext.request.contextPath}/logout"
+                   class="logout-link">
 
-					</a>
+                    <i data-lucide="log-out"></i>
+                    <span>Logout</span>
 
+                </a>
 
-					<!-- MOBILE MENU -->
+                <!-- MOBILE MENU BUTTON -->
+                <button type="button"
+                        id="mobileMenuButton"
+                        class="mobile-menu-button"
+                        aria-label="Open navigation"
+                        aria-expanded="false"
+                        aria-controls="mobileNav">
 
-					<button type="button" id="mobileMenuButton"
-						class="mobile-menu-button" aria-label="Open navigation"
-						aria-expanded="false">
+                    <i data-lucide="menu"></i>
 
-						<i data-lucide="menu"></i>
+                </button>
 
-					</button>
+            </div>
 
-				</div>
+        </div>
 
-			</div>
+        <!-- MOBILE NAVIGATION -->
+        <nav id="mobileNav"
+             class="mobile-nav"
+             aria-label="Mobile navigation">
 
+            <a href="${pageContext.request.contextPath}/user/dashboard">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
 
-			<!-- MOBILE NAV -->
+            <a href="${pageContext.request.contextPath}/books">
+                <i data-lucide="library"></i>
+                <span>Categories</span>
+            </a>
 
-			<nav id="mobileNav" class="mobile-nav">
+            <a href="${pageContext.request.contextPath}/book-request">
+                <i data-lucide="book-plus"></i>
+                <span>Book Requests</span>
+            </a>
 
-				<a href="${pageContext.request.contextPath}/user/dashboard"> <i
-					data-lucide="layout-dashboard"></i> <span>Dashboard</span>
-				</a> <a href="${pageContext.request.contextPath}/books"> <i
-					data-lucide="library"></i> <span>Categories</span>
-				</a> <a href="${pageContext.request.contextPath}/book-request"> <i
-					data-lucide="book-plus"></i> <span>Book Requests</span>
-				</a> <a href="${pageContext.request.contextPath}/books/bookmark-book">
-					<i data-lucide="bookmark"></i> <span>Bookmarks</span>
-				</a> <a href="${pageContext.request.contextPath}/user/suggestion"> <i
-					data-lucide="message-square-plus"></i> <span>Suggestions</span>
-				</a> <a href="${pageContext.request.contextPath}/books/history"
-					class="active"> <i data-lucide="history"></i> <span>History</span>
+            <a href="${pageContext.request.contextPath}/books/bookmark-book">
+                <i data-lucide="bookmark"></i>
+                <span>Bookmarks</span>
+            </a>
 
-				</a> <a href="${pageContext.request.contextPath}/profile"> <i
-					data-lucide="user-round"></i> <span>Profile</span>
-				</a> <a href="${pageContext.request.contextPath}/logout"> <i
-					data-lucide="log-out"></i> <span>Logout</span>
+            <a href="${pageContext.request.contextPath}/user/suggestion">
+                <i data-lucide="message-square-plus"></i>
+                <span>Suggestions</span>
+            </a>
 
-				</a>
+            <a href="${pageContext.request.contextPath}/books/history"
+               class="active" aria-current="page">
+                <i data-lucide="history"></i>
+                <span>History</span>
+            </a>
 
-			</nav>
+            <a href="${pageContext.request.contextPath}/profile">
+                <i data-lucide="user-round"></i>
+                <span>Profile</span>
+            </a>
 
-		</header>
+            <a href="${pageContext.request.contextPath}/logout">
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
+            </a>
 
+        </nav>
 
+    </header>
 
-		<!-- =====================================================
-         MAIN
-         ===================================================== -->
+    <!-- =========================================
+         MAIN CONTENT
+         ========================================= -->
 
-		<main class="main-content">
+    <main class="main-content">
 
+        <!-- PAGE INTRO -->
+        <section class="page-intro">
 
-			<!-- PAGE INTRO -->
+            <div class="intro-copy">
 
-			<section class="page-intro">
+                <span class="eyebrow">YOUR READING JOURNEY</span>
 
-				<div class="intro-copy">
+                <h1>
+                    Reading <em>history.</em>
+                </h1>
 
-					<span class="eyebrow"> YOUR READING JOURNEY </span>
+                <p>
+                    A quiet record of the books you've explored,
+                    discovered, and returned to along the way.
+                </p>
 
-					<h1>
-						Reading <em>history.</em>
-					</h1>
+            </div>
 
-					<p>A quiet record of the books you've explored, discovered, and
-						returned to along the way.</p>
+            <!-- HISTORY SUMMARY -->
+            <div class="history-summary">
 
-				</div>
+                <div class="summary-icon">
+                    <i data-lucide="book-open"></i>
+                </div>
 
+                <div class="summary-content">
 
-				<!-- HISTORY SUMMARY -->
+                    <span class="summary-label">BOOKS EXPLORED</span>
 
-				<div class="history-summary">
+                    <div class="summary-number">
+                        <strong><%= historyList.size() %></strong>
+                        <span>books</span>
+                    </div>
 
-					<div class="summary-icon">
-						<i data-lucide="book-open"></i>
-					</div>
+                    <span class="summary-note">Your reading trail</span>
 
-					<div class="summary-content">
+                </div>
 
-						<span class="summary-label"> BOOKS EXPLORED </span>
+            </div>
 
-						<div class="summary-number">
+        </section>
 
-							<strong> <%=historyList != null ? historyList.size() : 0%>
-							</strong> <span>books</span>
-
-						</div>
-
-						<span class="summary-note"> Your reading trail </span>
-
-					</div>
-
-				</div>
-
-			</section>
-
-
-
-			<!-- =================================================
+        <!-- =========================================
              HISTORY SECTION
-             ================================================= -->
+             ========================================= -->
 
-			<section class="history-section">
+        <section class="history-section">
 
+            <div class="section-heading">
 
-				<div class="section-heading">
+                <div>
+                    <span class="section-label">RECENTLY EXPLORED</span>
+                    <h2>Your history</h2>
+                </div>
 
-					<div>
+                <div class="history-count">
+                    <i data-lucide="clock-3"></i>
+                    <span><%= historyList.size() %> entries</span>
+                </div>
 
-						<span class="section-label"> RECENTLY EXPLORED </span>
+            </div>
 
-						<h2>Your history</h2>
+            <!-- HISTORY LIST -->
+            <%
+            if (!historyList.isEmpty()) {
+            %>
 
-					</div>
+            <div class="history-list">
 
+                <%
+                int historyNumber = 1;
 
-					<div class="history-count">
+                for (Book book : historyList) {
 
-						<i data-lucide="clock-3"></i> <span> <%=historyList != null ? historyList.size() : 0%>
-							entries
-						</span>
+                    String coverUrl = coverUrlMap.get(book.getBookId());
+                %>
 
-					</div>
+                <article class="history-card">
 
-				</div>
+                    <!-- NUMBER -->
+                    <div class="history-number">
+                        <span><%= String.format("%02d", historyNumber++) %></span>
+                    </div>
 
+                    <!-- BOOK COVER -->
+                    <div class="history-book-icon">
 
+                        <%
+                        if (coverUrl != null && !coverUrl.isBlank()) {
+                        %>
 
-				<!-- =================================================
-                 HISTORY LIST
-                 ================================================= -->
-				<%
-				if (!historyList.isEmpty()) {
-				%>
+                        <img src="<%= coverUrl %>"
+                             alt="<%= book.getTitle() %>"
+                             class="history-cover">
 
-				<div class="history-list">
+                        <%
+                        } else {
+                        %>
 
-					<%
-					int historyNumber = 1;
+                        <i data-lucide="book-open"></i>
 
-					for (Book book : historyList) {
+                        <%
+                        }
+                        %>
 
-						String coverUrl = coverUrlMap.get(book.getBookId());
-					%>
+                    </div>
 
-					<article class="history-card">
+                    <!-- BOOK INFORMATION -->
+                    <div class="history-info">
 
-						<!-- NUMBER -->
-						<div class="history-number">
-							<span> <%=String.format("%02d", historyNumber++)%>
-							</span>
-						</div>
+                        <h3><%= book.getTitle() %></h3>
 
-						<!-- BOOK COVER -->
-						<div class="history-book-icon">
+                        <div class="history-author">
 
-							<%
-							if (coverUrl != null && !coverUrl.isBlank()) {
-							%>
+                            <i data-lucide="pen-line"></i>
 
-							<img src="<%=coverUrl%>" alt="<%=book.getTitle()%>"
-								class="history-cover">
+                            <span>
+                                <%= book.getAuthor() != null
+                                    ? book.getAuthor()
+                                    : "Unknown author" %>
+                            </span>
 
-							<%
-							} else {
-							%>
+                        </div>
 
-							<i data-lucide="book-open"></i>
+                    </div>
 
-							<%
-							}
-							%>
+                    <!-- READ MORE -->
+                    <a href="${pageContext.request.contextPath}/books/details?id=<%= book.getBookId() %>"
+                       class="history-action"
+                       aria-label="Read more about <%= book.getTitle() %>">
 
-						</div>
+                        <span>Read More</span>
+                        <i data-lucide="arrow-up-right"></i>
 
-						<!-- BOOK INFORMATION -->
-						<div class="history-info">
+                    </a>
 
-							<h3>
-								<%=book.getTitle()%>
-							</h3>
+                </article>
 
-							<div class="history-author">
-								<i data-lucide="pen-line"></i> <span> <%=book.getAuthor() != null ? book.getAuthor() : "Unknown author"%>
-								</span>
-							</div>
+                <%
+                }
+                %>
 
-						</div>
+            </div>
 
-						<!-- READ MORE ACTION -->
-						<a
-							href="${pageContext.request.contextPath}/books/details?id=<%= book.getBookId() %>"
-							class="history-action"
-							aria-label="Read more about <%= book.getTitle() %>"> <span>Read
-								More</span> <i data-lucide="arrow-up-right"></i>
+            <%
+            } else {
+            %>
 
-						</a>
+            <!-- EMPTY STATE -->
+            <div class="empty-history">
 
-					</article>
+                <div class="empty-history-icon">
+                    <i data-lucide="history"></i>
+                </div>
 
-					<%
-					}
-					%>
+                <span class="section-label">A QUIET SHELF</span>
 
-				</div>
+                <h2>Nothing here yet.</h2>
 
-				<%
-				} else {
-				%>
+                <p>
+                    Books you explore will appear here, creating
+                    a personal record of your reading journey.
+                </p>
 
+                <a href="${pageContext.request.contextPath}/books"
+                   class="browse-button">
 
-				<!-- =================================================
-                 EMPTY STATE
-                 ================================================= -->
+                    <i data-lucide="library"></i>
+                    <span>Explore books</span>
 
-				<div class="empty-history">
+                </a>
 
-					<div class="empty-history-icon">
+            </div>
 
-						<i data-lucide="history"></i>
+            <%
+            }
+            %>
 
-					</div>
+        </section>
 
-					<span class="section-label"> A QUIET SHELF </span>
+    </main>
 
-					<h2>Nothing here yet.</h2>
-
-					<p>Books you explore will appear here, creating a personal
-						record of your reading journey.</p>
-
-					<a href="${pageContext.request.contextPath}/books"
-						class="browse-button"> <i data-lucide="library"></i> <span>
-							Explore books </span>
-
-					</a>
-
-				</div>
-
-
-				<%
-				}
-				%>
-
-
-			</section>
-
-		</main>
-
-
-
-		<!-- =====================================================
+    <!-- =========================================
          FOOTER
-         ===================================================== -->
+         ========================================= -->
 
-		<footer class="site-footer">
+    <footer class="site-footer">
 
-			<span> STORIES E-LIBRARY </span> <span class="footer-line"></span> <span>
-				READ · DISCOVER · SHARE </span>
+        <span>STORIES E-LIBRARY</span>
+        <span class="footer-line"></span>
+        <span>READ Â· DISCOVER Â· SHARE</span>
 
-		</footer>
+    </footer>
 
+</div>
 
-	</div>
-
-
-	<!-- =====================================================
-     JAVASCRIPT
-     ===================================================== -->
-
-	<script
-		src="${pageContext.request.contextPath}/javascript/history.js?v=2"></script>
+<!-- JAVASCRIPT -->
+<script src="${pageContext.request.contextPath}/javascript/history.js?v=4"></script>
 
 </body>
-
 </html>
