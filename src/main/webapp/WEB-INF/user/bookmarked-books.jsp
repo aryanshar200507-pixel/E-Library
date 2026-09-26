@@ -11,19 +11,27 @@
 <%
 List<Book> books = (List<Book>) request.getAttribute("books");
 
-Map<Long, String> coverUrlMap = (Map<Long, String>) request.getAttribute("coverUrlMap");
+Map<Long, String> coverUrlMap =
+		(Map<Long, String>) request.getAttribute("coverUrlMap");
 
-Integer currentPageObj = (Integer) request.getAttribute("currentPage");
+Integer currentPageObj =
+		(Integer) request.getAttribute("currentPage");
 
-Integer totalPagesObj = (Integer) request.getAttribute("totalPages");
+Integer totalPagesObj =
+		(Integer) request.getAttribute("totalPages");
 
-int currentPage = currentPageObj != null ? currentPageObj : 1;
+int currentPage =
+		currentPageObj != null ? currentPageObj : 1;
 
-int totalPages = totalPagesObj != null ? totalPagesObj : 1;
+int totalPages =
+		totalPagesObj != null ? totalPagesObj : 1;
 
-User loggedInUser = (User) session.getAttribute("loggedInUser");
+User loggedInUser =
+		(User) session.getAttribute("loggedInUser");
 
-boolean isUser = loggedInUser != null && loggedInUser.getRole() == Role.USER;
+boolean isUser =
+		loggedInUser != null
+		&& loggedInUser.getRole() == Role.USER;
 %>
 
 <!DOCTYPE html>
@@ -33,280 +41,489 @@ boolean isUser = loggedInUser != null && loggedInUser.getRole() == Role.USER;
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0">
 
-<title>Bookmarked Books - E-Library</title>
+<meta name="theme-color" content="#2C1810">
+
+<title>Bookmarks | Stories E-LIBRARY</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+	href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+	rel="stylesheet">
 
 <!-- Lucide Icons -->
 <script src="https://unpkg.com/lucide@latest"></script>
 
+<!-- Background -->
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/background.css">
+
 <!-- Page CSS -->
 <link rel="stylesheet"
-	href="<%=request.getContextPath()%>/css/bookmarked-books.css">
+	href="<%=request.getContextPath()%>/css/bookmarked-books.css?v=3">
 
 </head>
 
 <body>
 
-	<!-- ================= HEADER ================= -->
+<div class="page-shell">
 
-	<header class="page-header">
+	<!-- =====================================================
+	     HEADER
+	====================================================== -->
 
-		<div class="header-left">
+	<header class="site-header">
 
-			<a href="<%=request.getContextPath()%>/user/dashboard"
-				class="back-button"> <i data-lucide="arrow-left"></i> <span>Dashboard</span>
+    <div class="header-inner">
 
-			</a>
+        <!-- BRAND -->
+        <a href="<%=request.getContextPath()%>/user/dashboard" class="brand">
 
-		</div>
+            <span class="brand-icon">
+                <i data-lucide="library"></i>
+            </span>
 
-		<div class="header-title">
+            <span class="brand-text">
 
-			<i data-lucide="bookmark"></i>
+                <span class="brand-name">
+                    Stories
+                </span>
 
-			<h1>Bookmarked Books</h1>
+                <span class="brand-subtitle">
+                    E-LIBRARY
+                </span>
 
-		</div>
+            </span>
 
-		<div class="header-right">
-
-			<a href="<%=request.getContextPath()%>/books" class="browse-button">
-
-				<i data-lucide="library"></i> <span>Browse Books</span>
-
-			</a>
-
-		</div>
-
-	</header>
+        </a>
 
 
-	<!-- ================= MAIN CONTENT ================= -->
+        <!-- DESKTOP NAV -->
+        <nav class="desktop-nav" aria-label="Main navigation">
 
-	<main class="bookmark-container">
+            <a href="<%=request.getContextPath()%>/user/dashboard">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
 
-		<div class="page-introduction">
+            <a href="<%=request.getContextPath()%>/books">
+                <i data-lucide="library"></i>
+                <span>Categories</span>
+            </a>
 
-			<h2>Your Bookmarks</h2>
+            <a href="<%=request.getContextPath()%>/book-request">
+                <i data-lucide="book-plus"></i>
+                <span>Book Requests</span>
+            </a>
 
-			<p>Books you have saved for later reading.</p>
+            <a href="<%=request.getContextPath()%>/books/bookmark-book"
+               class="active">
+                <i data-lucide="bookmark"></i>
+                <span>Bookmarks</span>
+            </a>
 
-		</div>
+            <a href="<%=request.getContextPath()%>/user/suggestion">
+                <i data-lucide="message-square-plus"></i>
+                <span>Suggestions</span>
+            </a>
+
+            <a href="<%=request.getContextPath()%>/books/history">
+                <i data-lucide="history"></i>
+                <span>History</span>
+            </a>
+
+            <a href="<%=request.getContextPath()%>/profile">
+                <i data-lucide="user"></i>
+                <span>Profile</span>
+            </a>
+
+        </nav>
 
 
-		<%
-		if (books == null || books.isEmpty()) {
-		%>
+        <!-- HEADER ACTIONS -->
+        <div class="header-actions">
 
-		<!-- ================= EMPTY STATE ================= -->
+            <a href="<%=request.getContextPath()%>/logout"
+               class="logout-link">
 
-		<section class="empty-state">
+                <i data-lucide="log-out"></i>
+                <span>Logout</span>
 
-			<div class="empty-icon">
+            </a>
 
-				<i data-lucide="bookmark-x"></i>
+            <button
+                type="button"
+                class="mobile-menu-button"
+                id="mobileMenuButton"
+                aria-label="Open navigation"
+                aria-expanded="false">
+
+                <i data-lucide="menu"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- MOBILE NAV -->
+    <nav
+        class="mobile-nav"
+        id="mobileNav"
+        aria-label="Mobile navigation">
+
+        <a href="<%=request.getContextPath()%>/user/dashboard">
+            <i data-lucide="layout-dashboard"></i>
+            Dashboard
+        </a>
+
+        <a href="<%=request.getContextPath()%>/books">
+            <i data-lucide="library"></i>
+            Categories
+        </a>
+
+        <a href="<%=request.getContextPath()%>/book-request">
+            <i data-lucide="book-plus"></i>
+            Book Requests
+        </a>
+
+        <a href="<%=request.getContextPath()%>/books/bookmark-book"
+           class="active">
+            <i data-lucide="bookmark"></i>
+            Bookmarks
+        </a>
+
+        <a href="<%=request.getContextPath()%>/user/suggestion">
+            <i data-lucide="message-square-plus"></i>
+            Suggestions
+        </a>
+
+        <a href="<%=request.getContextPath()%>/books/history">
+            <i data-lucide="history"></i>
+            History
+        </a>
+
+        <a href="<%=request.getContextPath()%>/profile">
+            <i data-lucide="user"></i>
+            Profile
+        </a>
+
+        <a href="<%=request.getContextPath()%>/logout">
+            <i data-lucide="log-out"></i>
+            Logout
+        </a>
+
+    </nav>
+
+</header>
+
+	<!-- =====================================================
+	     MAIN
+	====================================================== -->
+
+	<main class="main-content">
+
+
+		<!-- PAGE INTRO -->
+
+		<section class="page-intro">
+
+			<div class="intro-copy">
+
+				<div class="eyebrow">
+					YOUR SAVED COLLECTION
+				</div>
+
+				<h1>
+					Your <em>bookmarks.</em>
+				</h1>
+
+				<p>
+					Keep the stories that caught your attention
+					close at hand, ready whenever you are.
+				</p>
 
 			</div>
 
-			<h2>No Bookmarked Books</h2>
 
-			<p>You haven't bookmarked any books yet.</p>
+			<!-- SUMMARY -->
 
-			<a href="<%=request.getContextPath()%>/books"
-				class="browse-books-button"> <i data-lucide="library"></i> <span>Browse
-					Books</span>
+			<div class="bookmark-summary">
 
-			</a>
+				<div class="summary-icon">
+					<i data-lucide="bookmark"></i>
+				</div>
+
+				<div class="summary-content">
+
+					<span class="summary-label">
+						SAVED BOOKS
+					</span>
+
+					<strong class="summary-number">
+						<%=request.getAttribute("totalBooks") != null
+							? request.getAttribute("totalBooks")
+							: (books != null ? books.size() : 0)%>
+					</strong>
+
+					<span class="summary-note">
+						in your collection
+					</span>
+
+				</div>
+
+			</div>
 
 		</section>
 
-		<%
-		} else {
-		%>
+
+		<!-- =================================================
+		     BOOKMARK SECTION
+		================================================== -->
+
+		<section class="bookmark-section">
 
 
-		<!-- ================= BOOK GRID ================= -->
+			<div class="section-heading">
 
-		<section class="book-grid">
+				<div>
 
-			<%
-			for (Book book : books) {
+					<span class="section-label">
+						SAVED FOR LATER
+					</span>
 
-				String coverUrl = null;
-
-				if (coverUrlMap != null) {
-					coverUrl = coverUrlMap.get(book.getBookId());
-				}
-			%>
-
-			<article class="book-card" data-book-id="<%=book.getBookId()%>">
-
-
-				<!-- BOOK COVER -->
-
-				<div class="book-cover">
-
-					<%
-					if (coverUrl != null && !coverUrl.isBlank()) {
-					%>
-
-					<img src="<%=coverUrl%>" alt="Cover of <%=book.getTitle()%>"
-						loading="lazy">
-
-					<%
-					} else {
-					%>
-
-					<div class="no-cover">
-
-						<i data-lucide="book-open"></i> <span>No Cover</span>
-
-					</div>
-
-					<%
-					}
-					%>
+					<h2>
+						Your bookmarks
+					</h2>
 
 				</div>
 
 
-				<!-- BOOK INFORMATION -->
+				<%
+				if (books != null && !books.isEmpty()) {
+				%>
 
-				<div class="book-information">
+				<div class="bookmark-count">
 
-					<h3 class="book-title" title="<%=book.getTitle()%>">
+					<i data-lucide="bookmark"></i>
 
-						<%=book.getTitle()%>
+					<span>
+						<%=books.size()%>
+						<%=books.size() == 1 ? "book" : "books"%>
+					</span>
 
-					</h3>
+				</div>
+
+				<%
+				}
+				%>
+
+			</div>
 
 
-					<p class="book-author">
-
-						<i data-lucide="user"></i> <span> <%=book.getAuthor()%>
-						</span>
-
-					</p>
+			<%
+			if (books == null || books.isEmpty()) {
+			%>
 
 
-					<%
-					if (book.getDescription() != null && !book.getDescription().isBlank()) {
-					%>
+			<!-- =================================================
+			     EMPTY STATE
+			================================================== -->
 
-					<p class="book-description">
+			<div class="empty-bookmarks">
 
-						<%=book.getDescription()%>
+				<div class="empty-bookmarks-icon">
+					<i data-lucide="bookmark-x"></i>
+				</div>
 
-					</p>
+				<span class="section-label">
+					A QUIET SHELF
+				</span>
 
-					<%
+				<h2>
+					Nothing saved yet.
+				</h2>
+
+				<p>
+					When you find a book you want to come back to,
+					bookmark it and it will appear here.
+				</p>
+
+				<a
+					href="<%=request.getContextPath()%>/books"
+					class="browse-button">
+
+					<i data-lucide="library"></i>
+
+					<span>
+						Explore books
+					</span>
+
+				</a>
+
+			</div>
+
+
+			<%
+			} else {
+			%>
+
+
+			<!-- =================================================
+			     BOOK GRID
+			================================================== -->
+
+			<div class="book-grid">
+
+				<%
+				for (Book book : books) {
+
+					String coverUrl = null;
+
+					if (coverUrlMap != null) {
+						coverUrl =
+								coverUrlMap.get(book.getBookId());
 					}
-					%>
+				%>
 
 
-					<!-- ACTIONS -->
+				<article
+					class="book-card"
+					data-book-id="<%=book.getBookId()%>">
 
-					<div class="book-actions">
 
-						<a
-							href="<%=request.getContextPath()%>/books/details?id=<%=book.getBookId()%>"
-							class="read-button"> <i data-lucide="book-open"></i> <span>Read
-								More</span>
+					<!-- COVER -->
 
-						</a>
-
+					<div class="book-cover">
 
 						<%
-						if (isUser) {
+						if (coverUrl != null && !coverUrl.isBlank()) {
 						%>
 
-						<button type="button" class="remove-bookmark-button"
-							onclick="removeBookBookmark(this, <%=book.getBookId()%>)">
+						<img
+							src="<%=coverUrl%>"
+							alt="Cover of <%=book.getTitle()%>"
+							loading="lazy">
 
-							<i data-lucide="bookmark-minus"></i> <span>Remove</span>
+						<%
+						} else {
+						%>
 
-						</button>
+						<div class="no-cover">
+
+							<i data-lucide="book-open"></i>
+
+							<span>
+								No Cover
+							</span>
+
+						</div>
 
 						<%
 						}
 						%>
 
+
+						<!-- BOOKMARK BADGE -->
+
+						<div class="bookmark-badge">
+							<i data-lucide="bookmark"></i>
+						</div>
+
 					</div>
 
-				</div>
 
-			</article>
+					<!-- INFORMATION -->
 
-			<%
-			}
-			%>
+					<div class="book-information">
 
-		</section>
+						<h3
+							class="book-title"
+							title="<%=book.getTitle()%>">
 
+							<%=book.getTitle()%>
 
-		<!-- ================= PAGINATION ================= -->
-
-		<%
-		if (totalPages > 1) {
-		%>
-
-		<nav class="pagination" aria-label="Bookmarked books pagination">
-
-			<!-- PREVIOUS -->
-
-			<%
-			if (currentPage > 1) {
-			%>
-
-			<a
-				href="<%=request.getContextPath()%>/books/bookmark-book?page=<%=currentPage - 1%>"
-				class="pagination-button"> <i data-lucide="chevron-left"></i> <span>Previous</span>
-
-			</a>
-
-			<%
-			} else {
-			%>
-
-			<span class="pagination-button disabled"> <i
-				data-lucide="chevron-left"></i> <span>Previous</span>
-
-			</span>
-
-			<%
-			}
-			%>
+						</h3>
 
 
-			<!-- PAGE NUMBERS -->
+						<p class="book-author">
 
-			<div class="page-numbers">
+							<i data-lucide="pen-line"></i>
 
-				<%
-				for (int pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
-				%>
+							<span>
+								<%=book.getAuthor() != null
+									&& !book.getAuthor().isBlank()
+									? book.getAuthor()
+									: "Unknown author"%>
+							</span>
 
-				<%
-				if (pageNumber == currentPage) {
-				%>
+						</p>
 
-				<span class="page-number active"> <%=pageNumber%>
-				</span>
 
-				<%
-				} else {
-				%>
+						<%
+						if (book.getDescription() != null
+								&& !book.getDescription().isBlank()) {
+						%>
 
-				<a
-					href="<%=request.getContextPath()%>/books/bookmark-book?page=<%=pageNumber%>"
-					class="page-number"> <%=pageNumber%>
+						<p class="book-description">
+							<%=book.getDescription()%>
+						</p>
 
-				</a>
+						<%
+						}
+						%>
 
-				<%
-				}
-				%>
+
+						<!-- ACTIONS -->
+
+						<div class="book-actions">
+
+							<a
+								href="<%=request.getContextPath()%>/books/details?id=<%=book.getBookId()%>"
+								class="read-button">
+
+								<span>
+									Read More
+								</span>
+
+								<i data-lucide="arrow-up-right"></i>
+
+							</a>
+
+
+							<%
+							if (isUser) {
+							%>
+
+							<button
+								type="button"
+								class="remove-bookmark-button"
+								onclick="removeBookBookmark(this, <%=book.getBookId()%>)">
+
+								<i data-lucide="bookmark-minus"></i>
+
+								<span>
+									Remove
+								</span>
+
+							</button>
+
+							<%
+							}
+							%>
+
+						</div>
+
+					</div>
+
+				</article>
+
 
 				<%
 				}
@@ -315,47 +532,181 @@ boolean isUser = loggedInUser != null && loggedInUser.getRole() == Role.USER;
 			</div>
 
 
-			<!-- NEXT -->
+			<!-- =================================================
+			     PAGINATION
+			================================================== -->
 
 			<%
-			if (currentPage < totalPages) {
+			if (totalPages > 1) {
 			%>
 
-			<a
-				href="<%=request.getContextPath()%>/books/bookmark-book?page=<%=currentPage + 1%>"
-				class="pagination-button"> <span>Next</span> <i
-				data-lucide="chevron-right"></i>
+			<nav
+				class="pagination"
+				aria-label="Bookmarked books pagination">
 
-			</a>
 
-			<%
-			} else {
-			%>
+				<!-- PREVIOUS -->
 
-			<span class="pagination-button disabled"> <span>Next</span> <i
-				data-lucide="chevron-right"></i>
+				<%
+				if (currentPage > 1) {
+				%>
 
-			</span>
+				<a
+					href="<%=request.getContextPath()%>/books/bookmark-book?page=<%=currentPage - 1%>"
+					class="pagination-button">
+
+					<i data-lucide="chevron-left"></i>
+
+					<span>
+						Previous
+					</span>
+
+				</a>
+
+				<%
+				} else {
+				%>
+
+				<span class="pagination-button disabled">
+
+					<i data-lucide="chevron-left"></i>
+
+					<span>
+						Previous
+					</span>
+
+				</span>
+
+				<%
+				}
+				%>
+
+
+				<!-- PAGE NUMBERS -->
+
+				<div class="page-numbers">
+
+					<%
+					for (
+						int pageNumber = 1;
+						pageNumber <= totalPages;
+						pageNumber++
+					) {
+					%>
+
+					<%
+					if (pageNumber == currentPage) {
+					%>
+
+					<span class="page-number active">
+						<%=pageNumber%>
+					</span>
+
+					<%
+					} else {
+					%>
+
+					<a
+						href="<%=request.getContextPath()%>/books/bookmark-book?page=<%=pageNumber%>"
+						class="page-number">
+
+						<%=pageNumber%>
+
+					</a>
+
+					<%
+					}
+					%>
+
+					<%
+					}
+					%>
+
+				</div>
+
+
+				<!-- NEXT -->
+
+				<%
+				if (currentPage < totalPages) {
+				%>
+
+				<a
+					href="<%=request.getContextPath()%>/books/bookmark-book?page=<%=currentPage + 1%>"
+					class="pagination-button">
+
+					<span>
+						Next
+					</span>
+
+					<i data-lucide="chevron-right"></i>
+
+				</a>
+
+				<%
+				} else {
+				%>
+
+				<span class="pagination-button disabled">
+
+					<span>
+						Next
+					</span>
+
+					<i data-lucide="chevron-right"></i>
+
+				</span>
+
+				<%
+				}
+				%>
+
+			</nav>
 
 			<%
 			}
 			%>
 
-		</nav>
 
-		<%
-		}
-		%>
-		<%
-		}
-		%>
+			<%
+			}
+			%>
+
+		</section>
 
 	</main>
 
 
-	<!-- Page JavaScript -->
-	<script
-		src="<%=request.getContextPath()%>/javascript/bookmarked-books.js"></script>
+	<!-- =====================================================
+	     FOOTER
+	====================================================== -->
+
+	<footer class="site-footer">
+
+		<span>
+			STORIES E-LIBRARY
+		</span>
+
+		<span class="footer-separator">
+			·
+		</span>
+
+		<span>
+			READ · DISCOVER · SHARE
+		</span>
+
+	</footer>
+
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script
+	src="<%=request.getContextPath()%>/javascript/bookmarked-books.js?v=3">
+</script>
 
 </body>
 
