@@ -62,6 +62,9 @@ boolean isUser =
 <!-- Background -->
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/background.css">
+	
+	<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/confirm-modal.css">
 
 <!-- Page CSS -->
 <link rel="stylesheet"
@@ -703,6 +706,10 @@ boolean isUser =
 <!-- =====================================================
      JAVASCRIPT
 ====================================================== -->
+
+<script
+	src="${pageContext.request.contextPath}/javascript/confirm-modal.js"
+	defer></script>
 
 <script
 	src="<%=request.getContextPath()%>/javascript/bookmarked-books.js?v=3">

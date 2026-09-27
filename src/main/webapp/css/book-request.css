@@ -52,6 +52,7 @@
 
 
 html {
+	min-height: 100%;
     scroll-behavior: smooth;
 }
 
@@ -81,7 +82,10 @@ body {
         sans-serif;
 
     -webkit-font-smoothing: antialiased;
-
+ background-color: var(--background);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
 
     /* WHITE HALO GLOW — lifts dark text off a bright background image */
 

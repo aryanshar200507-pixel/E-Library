@@ -31,6 +31,7 @@
 }
 
 html {
+	min-height: 100%;
     scroll-behavior: smooth;
 }
 
@@ -51,6 +52,11 @@ body {
             transparent 30%
         ),
         var(--paper);
+        
+         background-color: var(--background);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 button,

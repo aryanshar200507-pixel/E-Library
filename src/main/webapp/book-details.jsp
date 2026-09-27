@@ -927,25 +927,20 @@
 							%>
 
 							<form action="${pageContext.request.contextPath}/comment"
-								method="post" class="delete-comment-form">
-
+								method="post" class="delete-comment-form"
+								data-confirm="Are you sure you want to delete this comment? This action cannot be undone."
+								data-confirm-title="Delete Comment" data-confirm-label="Delete">
 
 								<input type="hidden" name="action" value="delete"> <input
 									type="hidden" name="commentId"
 									value="<%=comment.getCommentId()%>"> <input
 									type="hidden" name="bookId" value="<%=book.getBookId()%>">
 
-
-								<button type="submit"
-									onclick="return confirm('Delete this comment?');">
-
-									<i data-lucide="trash-2"></i> <span> Delete </span>
-
+								<button type="submit">
+									<i data-lucide="trash-2"></i> <span>Delete</span>
 								</button>
 
-
 							</form>
-
 							<%
 							}
 							%>
