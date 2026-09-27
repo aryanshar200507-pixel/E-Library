@@ -1,45 +1,46 @@
-// =====================================================
-// STORIES E-LIBRARY — APP SUGGESTIONS ADMIN
-// Search, status filters, confirmations, Lucide icons
-// =====================================================
+
+/* =====================================================
+   STORIES E-LIBRARY — APP SUGGESTIONS ADMIN
+   Search, status filters, reusable confirmation modal
+   ===================================================== */
 
 document.addEventListener("DOMContentLoaded", function () {
+    "use strict";
 
-    // =================================================
-    // LUCIDE ICONS
-    // =================================================
+    /* =================================================
+       1. LUCIDE ICONS
+       ================================================= */
 
     function refreshIcons() {
-        if (window.lucide) {
+        if (
+            window.lucide &&
+            typeof window.lucide.createIcons === "function"
+        ) {
             window.lucide.createIcons();
-        } else {
-            console.error("Lucide library failed to load.");
         }
     }
 
     refreshIcons();
 
-    // =================================================
-    // ELEMENTS
-    // =================================================
+    /* =================================================
+       2. ELEMENTS
+       ================================================= */
 
     const searchInput = document.getElementById("suggestionSearch");
     const filterButtons = document.querySelectorAll(".filter-btn");
     const suggestionCards = document.querySelectorAll(".suggestion-card");
-
     const visibleCount = document.getElementById("visibleCount");
     const noResults = document.getElementById("noResults");
     const suggestionsContainer = document.getElementById("suggestionsContainer");
     const clearFiltersBtn = document.getElementById("clearFilters");
 
-    // =================================================
-    // SEARCH AND FILTER
-    // =================================================
+    /* =================================================
+       3. SEARCH AND FILTER
+       ================================================= */
 
     let activeFilter = "ALL";
 
     function filterSuggestions() {
-
         const searchTerm = searchInput
             ? searchInput.value.trim().toLowerCase()
             : "";
@@ -47,14 +48,10 @@ document.addEventListener("DOMContentLoaded", function () {
         let visible = 0;
 
         suggestionCards.forEach(function (card) {
-
-            const status = card.dataset.status || "";
-
-            // Search the visible card text.
+            const status = (card.dataset.status || "").toUpperCase();
             const searchableText = card.textContent.toLowerCase();
 
             const matchesSearch = searchableText.includes(searchTerm);
-
             const matchesFilter =
                 activeFilter === "ALL" || status === activeFilter;
 
@@ -67,32 +64,25 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // Update visible count.
         if (visibleCount) {
             visibleCount.textContent = visible;
         }
 
-        // Show the empty search state.
         if (noResults) {
             noResults.hidden = visible !== 0;
         }
 
-        // Hide the card container when nothing matches.
         if (suggestionsContainer) {
             suggestionsContainer.hidden = visible === 0;
         }
     }
 
-    // Search input.
     if (searchInput) {
         searchInput.addEventListener("input", filterSuggestions);
     }
 
-    // Filter buttons.
     filterButtons.forEach(function (button) {
-
         button.addEventListener("click", function () {
-
             activeFilter = button.dataset.filter || "ALL";
 
             filterButtons.forEach(function (item) {
@@ -112,14 +102,12 @@ document.addEventListener("DOMContentLoaded", function () {
         );
     });
 
-    // =================================================
-    // CLEAR FILTERS
-    // =================================================
+    /* =================================================
+       4. CLEAR FILTERS
+       ================================================= */
 
     if (clearFiltersBtn) {
-
         clearFiltersBtn.addEventListener("click", function () {
-
             if (searchInput) {
                 searchInput.value = "";
             }
@@ -127,7 +115,6 @@ document.addEventListener("DOMContentLoaded", function () {
             activeFilter = "ALL";
 
             filterButtons.forEach(function (button) {
-
                 const isAll = button.dataset.filter === "ALL";
 
                 button.classList.toggle("active", isAll);
@@ -145,118 +132,49 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-   
-	// =================================================
-	// CUSTOM ACCEPT CONFIRMATION MODAL
-	// =================================================
+    /* =================================================
+       5. FORM SAFETY CHECKS
+       Confirmation itself is handled by confirm-modal.js.
+       ================================================= */
 
-	const acceptModal = document.getElementById("acceptSuggestionModal");
-	const cancelAcceptBtn = document.getElementById("cancelAcceptSuggestion");
-	const confirmAcceptBtn = document.getElementById("confirmAcceptSuggestion");
+    document.addEventListener("submit", function (event) {
+        const form = event.target;
 
-	let pendingAcceptForm = null;
-	let previousFocusElement = null;
+        if (!(form instanceof HTMLFormElement)) {
+            return;
+        }
 
-	function openAcceptModal(form) {
-	    if (!acceptModal) {
-	        console.error("Accept confirmation modal not found.");
-	        return;
-	    }
+        if (!form.classList.contains("action-form")) {
+            return;
+        }
 
-	    pendingAcceptForm = form;
-	    previousFocusElement = document.activeElement;
+        const actionInput = form.querySelector('input[name="action"]');
+        const suggestionIdInput =
+            form.querySelector('input[name="suggestionId"]');
 
-	    acceptModal.classList.add("active");
-	    acceptModal.setAttribute("aria-hidden", "false");
+        if (!actionInput || !suggestionIdInput) {
+            event.preventDefault();
+            console.error("Suggestion form is missing required fields.");
+            return;
+        }
 
-	    document.body.style.overflow = "hidden";
+        if (!suggestionIdInput.value.trim()) {
+            event.preventDefault();
+            console.error("Suggestion ID is missing.");
+            return;
+        }
 
-	    if (window.lucide) {
-	        window.lucide.createIcons();
-	    }
+        const validActions = ["accept", "delete"];
 
-	    cancelAcceptBtn?.focus();
-	}
+        if (!validActions.includes(actionInput.value)) {
+            event.preventDefault();
+            console.error("Invalid suggestion action:", actionInput.value);
+        }
+    }, true);
 
-	function closeAcceptModal() {
-	    if (!acceptModal) return;
-
-	    acceptModal.classList.remove("active");
-	    acceptModal.setAttribute("aria-hidden", "true");
-
-	    document.body.style.overflow = "";
-
-	    pendingAcceptForm = null;
-
-	    if (previousFocusElement) {
-	        previousFocusElement.focus();
-	    }
-	}
-
-	// Intercept Accept form submissions.
-	document.querySelectorAll(
-	    '.action-form input[name="action"][value="accept"]'
-	).forEach(function (input) {
-	    const form = input.closest("form");
-
-	    if (!form) return;
-
-	    form.addEventListener("submit", function (event) {
-
-	        // Allow the form through after confirmation.
-	        if (form.dataset.acceptConfirmed === "true") {
-	            delete form.dataset.acceptConfirmed;
-	            return;
-	        }
-
-	        event.preventDefault();
-	        openAcceptModal(form);
-	    });
-	});
-
-	// Cancel button.
-	if (cancelAcceptBtn) {
-	    cancelAcceptBtn.addEventListener("click", closeAcceptModal);
-	}
-
-	// Confirm button.
-	if (confirmAcceptBtn) {
-	    confirmAcceptBtn.addEventListener("click", function () {
-	        if (!pendingAcceptForm) return;
-
-	        const formToSubmit = pendingAcceptForm;
-
-	        formToSubmit.dataset.acceptConfirmed = "true";
-
-	        closeAcceptModal();
-
-	        formToSubmit.requestSubmit();
-	    });
-	}
-
-	// Close when clicking outside the modal.
-	if (acceptModal) {
-	    acceptModal.addEventListener("click", function (event) {
-	        if (event.target === acceptModal) {
-	            closeAcceptModal();
-	        }
-	    });
-	}
-
-	// Close with Escape.
-	document.addEventListener("keydown", function (event) {
-	    if (
-	        event.key === "Escape" &&
-	        acceptModal &&
-	        acceptModal.classList.contains("active")
-	    ) {
-	        closeAcceptModal();
-	    }
-	});
-    // =================================================
-    // INITIAL FILTER STATE
-    // =================================================
+    /* =================================================
+       6. INITIAL FILTER STATE
+       ================================================= */
 
     filterSuggestions();
-
 });

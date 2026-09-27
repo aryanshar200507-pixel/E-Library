@@ -1376,7 +1376,7 @@ svg {
 }
 
 .sidebar-heading p {
-    color: var(--muted);
+    color: var(--white);
 
     font-size: 14px;
     line-height: 1.9;
@@ -1432,7 +1432,7 @@ svg {
 }
 
 .benefit-item p {
-    color: var(--muted);
+    color: var(--white);
 
     font-size: 12px;
     line-height: 1.8;

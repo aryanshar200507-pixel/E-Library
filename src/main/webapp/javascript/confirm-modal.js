@@ -1,270 +1,186 @@
+// =====================================================
+// GENERIC CONFIRM MODAL
+// Reusable on any page. Two ways to use it:
+//
+// 1) Automatic — just add these attributes to any <form>:
+//      data-confirm="Message shown in the dialog"
+//      data-confirm-title="Optional title"      (defaults to "Are you sure?")
+//      data-confirm-label="Optional OK label"    (defaults to "Confirm")
+//    The form's normal submit is intercepted, the dialog is
+//    shown, and the form only actually submits if the user
+//    clicks the confirm button. No extra JS needed per page.
+//
+// 2) Manual — call the API directly from your own code:
+//      ConfirmModal.confirm({
+//          title: "Delete this item?",
+//          message: "This action cannot be undone.",
+//          confirmLabel: "Delete"
+//      }).then(function (confirmed) {
+//          if (confirmed) { /* do the thing */ }
+//      });
+// =====================================================
 
- // =====================================================
- // STORIES E-LIBRARY — APP SUGGESTIONS ADMIN
- // Search, status filters, custom confirmations, Lucide icons
- // =====================================================
+(function () {
+    "use strict";
 
-document.addEventListener("DOMContentLoaded", function () {
+    let overlay = null;
+    let titleEl = null;
+    let messageEl = null;
+    let cancelBtn = null;
+    let okBtn = null;
 
-    // =================================================
-    // LUCIDE ICONS
-    // =================================================
-
-    function refreshIcons() {
-        if (window.lucide) {
-            window.lucide.createIcons();
-        } else {
-            console.error("Lucide library failed to load.");
-        }
-    }
-
-    refreshIcons();
-
-    // =================================================
-    // ELEMENTS
-    // =================================================
-
-    const searchInput = document.getElementById("suggestionSearch");
-    const filterButtons = document.querySelectorAll(".filter-btn");
-    const suggestionCards = document.querySelectorAll(".suggestion-card");
-    const visibleCount = document.getElementById("visibleCount");
-    const noResults = document.getElementById("noResults");
-    const suggestionsContainer = document.getElementById("suggestionsContainer");
-    const clearFiltersBtn = document.getElementById("clearFilters");
-
-    // =================================================
-    // SEARCH AND FILTER
-    // =================================================
-
-    let activeFilter = "ALL";
-
-    function filterSuggestions() {
-
-        const searchTerm = searchInput
-            ? searchInput.value.trim().toLowerCase()
-            : "";
-
-        let visible = 0;
-
-        suggestionCards.forEach(function (card) {
-
-            const status = card.dataset.status || "";
-            const searchableText = card.textContent.toLowerCase();
-
-            const matchesSearch = searchableText.includes(searchTerm);
-            const matchesFilter =
-                activeFilter === "ALL" || status === activeFilter;
-
-            const shouldShow = matchesSearch && matchesFilter;
-
-            card.hidden = !shouldShow;
-
-            if (shouldShow) {
-                visible++;
-            }
-        });
-
-        // Update visible count.
-        if (visibleCount) {
-            visibleCount.textContent = visible;
-        }
-
-        // Show the empty search state.
-        if (noResults) {
-            noResults.hidden = visible !== 0;
-        }
-
-        // Hide the card container when nothing matches.
-        if (suggestionsContainer) {
-            suggestionsContainer.hidden = visible === 0;
-        }
-    }
-
-    // Search input.
-    if (searchInput) {
-        searchInput.addEventListener("input", filterSuggestions);
-    }
-
-    // Filter buttons.
-    filterButtons.forEach(function (button) {
-
-        button.addEventListener("click", function () {
-
-            activeFilter = button.dataset.filter || "ALL";
-
-            filterButtons.forEach(function (item) {
-                item.classList.remove("active");
-                item.setAttribute("aria-pressed", "false");
-            });
-
-            button.classList.add("active");
-            button.setAttribute("aria-pressed", "true");
-
-            filterSuggestions();
-        });
-
-        button.setAttribute(
-            "aria-pressed",
-            button.classList.contains("active") ? "true" : "false"
-        );
-    });
-
-    // =================================================
-    // CLEAR FILTERS
-    // =================================================
-
-    if (clearFiltersBtn) {
-
-        clearFiltersBtn.addEventListener("click", function () {
-
-            if (searchInput) {
-                searchInput.value = "";
-            }
-
-            activeFilter = "ALL";
-
-            filterButtons.forEach(function (button) {
-
-                const isAll = button.dataset.filter === "ALL";
-
-                button.classList.toggle("active", isAll);
-
-                button.setAttribute(
-                    "aria-pressed",
-                    isAll ? "true" : "false"
-                );
-            });
-
-            filterSuggestions();
-
-            if (searchInput) {
-                searchInput.focus();
-            }
-        });
-    }
-
-    // =================================================
-    // CUSTOM ACCEPT CONFIRMATION MODAL
-    // =================================================
-
-    const acceptModal = document.getElementById("acceptSuggestionModal");
-    const cancelAcceptBtn = document.getElementById("cancelAcceptSuggestion");
-    const confirmAcceptBtn = document.getElementById("confirmAcceptSuggestion");
-
-    let pendingAcceptForm = null;
+    let activeResolve = null;
     let previousFocusElement = null;
 
-    function openAcceptModal(form) {
+    // =================================================
+    // BUILD (once — reused for every confirmation)
+    // =================================================
 
-        if (!acceptModal) {
-            console.error("Accept confirmation modal not found.");
-            return;
-        }
+    function buildModal() {
 
-        pendingAcceptForm = form;
-        previousFocusElement = document.activeElement;
+        overlay = document.createElement("div");
+        overlay.className = "confirm-overlay";
+        overlay.setAttribute("aria-hidden", "true");
 
-        acceptModal.classList.add("active");
-        acceptModal.setAttribute("aria-hidden", "false");
+        overlay.innerHTML =
+            '<div class="confirm-dialog" role="dialog" aria-modal="true" ' +
+            'aria-labelledby="confirmModalTitle" aria-describedby="confirmModalMessage">' +
+                '<div class="confirm-icon" aria-hidden="true">' +
+                    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" ' +
+                    'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                        '<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"></path>' +
+                        '<path d="M12 9v4"></path>' +
+                        '<path d="M12 17h.01"></path>' +
+                    '</svg>' +
+                '</div>' +
+                '<h2 class="confirm-title" id="confirmModalTitle">Are you sure?</h2>' +
+                '<p class="confirm-message" id="confirmModalMessage"></p>' +
+                '<div class="confirm-actions">' +
+                    '<button type="button" class="confirm-btn confirm-cancel">Cancel</button>' +
+                    '<button type="button" class="confirm-btn confirm-ok">Confirm</button>' +
+                '</div>' +
+            '</div>';
 
-        document.body.style.overflow = "hidden";
+        document.body.appendChild(overlay);
 
-        if (window.lucide) {
-            window.lucide.createIcons();
-        }
+        titleEl = overlay.querySelector(".confirm-title");
+        messageEl = overlay.querySelector(".confirm-message");
+        cancelBtn = overlay.querySelector(".confirm-cancel");
+        okBtn = overlay.querySelector(".confirm-ok");
 
-        if (cancelAcceptBtn) {
-            cancelAcceptBtn.focus();
-        }
+        cancelBtn.addEventListener("click", function () {
+            settle(false);
+        });
+
+        okBtn.addEventListener("click", function () {
+            settle(true);
+        });
+
+        // Click outside the dialog closes it (treated as cancel).
+        overlay.addEventListener("click", function (event) {
+            if (event.target === overlay) {
+                settle(false);
+            }
+        });
+
+        // Escape closes it (treated as cancel).
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape" && overlay.classList.contains("open")) {
+                settle(false);
+            }
+        });
     }
 
-    function closeAcceptModal() {
+    function openModal(options) {
 
-        if (!acceptModal) return;
+        if (!overlay) {
+            buildModal();
+        }
 
-        acceptModal.classList.remove("active");
-        acceptModal.setAttribute("aria-hidden", "true");
+        titleEl.textContent = options.title || "Are you sure?";
+        messageEl.textContent = options.message || "This action cannot be undone.";
+        okBtn.textContent = options.confirmLabel || "Confirm";
+        okBtn.disabled = false;
 
-        document.body.style.overflow = "";
+        previousFocusElement = document.activeElement;
 
-        pendingAcceptForm = null;
+        overlay.classList.add("open");
+        overlay.setAttribute("aria-hidden", "false");
+        document.body.classList.add("confirm-lock");
+
+        okBtn.focus();
+    }
+
+    function closeModal() {
+
+        if (!overlay) return;
+
+        overlay.classList.remove("open");
+        overlay.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("confirm-lock");
 
         if (previousFocusElement) {
             previousFocusElement.focus();
         }
     }
 
-    // Intercept Accept form submissions.
-    document.querySelectorAll(
-        '.action-form input[name="action"][value="accept"]'
-    ).forEach(function (input) {
+    function settle(result) {
 
-        const form = input.closest("form");
+        closeModal();
 
-        if (!form) return;
+        const resolve = activeResolve;
+        activeResolve = null;
 
-        form.addEventListener("submit", function (event) {
-
-            // Allow the form through after confirmation.
-            if (form.dataset.acceptConfirmed === "true") {
-                delete form.dataset.acceptConfirmed;
-                return;
-            }
-
-            event.preventDefault();
-            openAcceptModal(form);
-        });
-    });
-
-    // Cancel button.
-    if (cancelAcceptBtn) {
-        cancelAcceptBtn.addEventListener("click", closeAcceptModal);
-    }
-
-    // Confirm button.
-    if (confirmAcceptBtn) {
-
-        confirmAcceptBtn.addEventListener("click", function () {
-
-            if (!pendingAcceptForm) return;
-
-            const formToSubmit = pendingAcceptForm;
-
-            formToSubmit.dataset.acceptConfirmed = "true";
-
-            closeAcceptModal();
-
-            formToSubmit.requestSubmit();
-        });
-    }
-
-    // Close when clicking outside the modal.
-    if (acceptModal) {
-
-        acceptModal.addEventListener("click", function (event) {
-
-            if (event.target === acceptModal) {
-                closeAcceptModal();
-            }
-        });
-    }
-
-    // Close with Escape.
-    document.addEventListener("keydown", function (event) {
-
-        if (
-            event.key === "Escape" &&
-            acceptModal &&
-            acceptModal.classList.contains("active")
-        ) {
-            closeAcceptModal();
+        if (resolve) {
+            resolve(result);
         }
+    }
+
+    // =================================================
+    // PUBLIC API
+    // =================================================
+
+    window.ConfirmModal = {
+        confirm: function (options) {
+
+            options = options || {};
+
+            return new Promise(function (resolve) {
+                activeResolve = resolve;
+                openModal(options);
+            });
+        }
+    };
+
+    // =================================================
+    // AUTO-WIRE: any form with [data-confirm], on any page.
+    // Listening on document (not on individual forms found at
+    // load time) means this also catches forms added to the
+    // page later, e.g. after an AJAX refresh.
+    // =================================================
+
+    document.addEventListener("submit", function (event) {
+
+        const form = event.target;
+
+        if (!(form instanceof HTMLFormElement)) return;
+        if (!form.hasAttribute("data-confirm")) return;
+
+        event.preventDefault();
+
+        window.ConfirmModal.confirm({
+            title: form.dataset.confirmTitle,
+            message: form.dataset.confirm,
+            confirmLabel: form.dataset.confirmLabel
+        }).then(function (confirmed) {
+
+            if (!confirmed) return;
+
+            // Native submit — bypasses the 'submit' event entirely,
+            // so this won't re-trigger this same listener and won't
+            // be blocked by anything else on the page.
+            form.submit();
+        });
     });
 
-    // =================================================
-    // INITIAL FILTER STATE
-    // =================================================
-
-    filterSuggestions();
-
-});
+})();

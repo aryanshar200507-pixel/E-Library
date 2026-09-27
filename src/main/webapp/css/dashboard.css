@@ -28,6 +28,7 @@ body {
 	font-family: "DM Sans", "Segoe UI", Roboto, Arial, sans-serif;
 	background: var(--cream);
 	color: var(--dark-text);
+	background-attachment: fixed;
 }
 
 button,

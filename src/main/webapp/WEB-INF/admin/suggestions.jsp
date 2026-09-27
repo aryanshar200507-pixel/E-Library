@@ -51,11 +51,14 @@ int totalCount = suggestions == null ? 0 : suggestions.size();
 <!-- Lucide Icons -->
 <script src="https://unpkg.com/lucide@latest"></script>
 
-<!-- Page Script -->
+<script
+	src="${pageContext.request.contextPath}/javascript/confirm-modal.js"
+	defer></script>
+
 <script
 	src="${pageContext.request.contextPath}/javascript/app-suggestions.js"
-	defer>
-	
+	defer></script>
+
 </script>
 </head>
 
@@ -245,8 +248,8 @@ int totalCount = suggestions == null ? 0 : suggestions.size();
 					<p>There are currently no new or accepted suggestions. When
 						readers share ideas, they will appear here.</p>
 
-					<a href="<%=contextPath%>/admin/dashboard" class="empty-btn">
-						<i data-lucide="arrow-left"></i> Back to Dashboard
+					<a href="<%=contextPath%>/admin/dashboard" class="empty-btn"> <i
+						data-lucide="arrow-left"></i> Back to Dashboard
 					</a>
 				</div>
 
@@ -332,8 +335,11 @@ int totalCount = suggestions == null ? 0 : suggestions.size();
 								%>
 
 								<!-- ACCEPT -->
-								<form action="<%=contextPath%>/admin/suggestions"
-									method="post" class="action-form">
+								<form action="<%=contextPath%>/admin/suggestions" method="post"
+									class="action-form"
+									data-confirm-title="Accept This Suggestion?"
+									data-confirm-label="Accept Suggestion"
+									data-confirm="This suggestion will be marked as accepted. You can review it later in the Accepted section.">
 
 									<input type="hidden" name="suggestionId"
 										value="<%=suggestion.getSuggestionId()%>"> <input
@@ -342,12 +348,10 @@ int totalCount = suggestions == null ? 0 : suggestions.size();
 									<button type="submit" class="btn btn-accept">
 										<i data-lucide="check"></i> Accept Suggestion
 									</button>
-
 								</form>
-
 								<!-- DELETE -->
-								<form action="<%=contextPath%>/admin/suggestions"
-									method="post" class="action-form delete-form"
+								<form action="<%=contextPath%>/admin/suggestions" method="post"
+									class="action-form delete-form"
 									data-confirm="Are you sure you want to delete this suggestion? This action cannot be undone.">
 
 									<input type="hidden" name="suggestionId"
@@ -365,8 +369,8 @@ int totalCount = suggestions == null ? 0 : suggestions.size();
 								%>
 
 								<!-- IMPLEMENTED -->
-								<form action="<%=contextPath%>/admin/suggestions"
-									method="post" class="action-form delete-form"
+								<form action="<%=contextPath%>/admin/suggestions" method="post"
+									class="action-form delete-form"
 									data-confirm-title="Mark as Implemented?"
 									data-confirm-label="Mark Implemented"
 									data-confirm="Are you sure this suggestion has been implemented? It will be permanently removed from the active suggestions list.">
@@ -381,8 +385,8 @@ int totalCount = suggestions == null ? 0 : suggestions.size();
 								</form>
 
 								<!-- DELETE -->
-								<form action="<%=contextPath%>/admin/suggestions"
-									method="post" class="action-form delete-form"
+								<form action="<%=contextPath%>/admin/suggestions" method="post"
+									class="action-form delete-form"
 									data-confirm="Are you sure you want to delete this suggestion? This action cannot be undone.">
 
 									<input type="hidden" name="suggestionId"
@@ -439,36 +443,8 @@ int totalCount = suggestions == null ? 0 : suggestions.size();
 			</span> <span>Made for readers, inspired by ideas.</span>
 		</footer>
 
-		<!-- Custom Accept Suggestion Modal -->
-		<div class="accept-modal-overlay" id="acceptSuggestionModal"
-			aria-hidden="true">
-
-			<div class="accept-modal" role="dialog" aria-modal="true"
-				aria-labelledby="acceptModalTitle"
-				aria-describedby="acceptModalDescription">
-
-				<div class="accept-modal-icon">
-					<i data-lucide="lightbulb"></i>
-				</div>
-
-				<h2 id="acceptModalTitle">Accept This Suggestion?</h2>
-
-				<p id="acceptModalDescription">This suggestion will be marked as
-					accepted. You can review it later in the Accepted section.</p>
-
-				<div class="accept-modal-actions">
-					<button type="button" class="accept-modal-cancel"
-						id="cancelAcceptSuggestion">Cancel</button>
-
-					<button type="button" class="accept-modal-confirm"
-						id="confirmAcceptSuggestion">
-						<i data-lucide="check"></i> Accept Suggestion
-					</button>
-				</div>
-			</div>
+		
 		</div>
-	</div>
-	<script
-		src="${pageContext.request.contextPath}/javascript/confirm-modal.js"></script>
+	
 </body>
 </html>
