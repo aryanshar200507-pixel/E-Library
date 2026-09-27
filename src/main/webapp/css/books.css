@@ -508,6 +508,11 @@ button, a { font-family: inherit; }
 .admin-actions a:last-child { color: #8D3027; }
 
 .admin-actions svg { width: 14px; height: 14px; }
+.admin-disabled {
+    pointer-events: none;
+    opacity: 0.45;
+    cursor: not-allowed;
+}
 
 /* EMPTY STATE */
 

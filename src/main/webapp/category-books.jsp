@@ -27,11 +27,11 @@
 
 <!-- Category Books CSS -->
 <link rel="stylesheet"
-      href="${pageContext.request.contextPath}/css/category-books.css">
+	href="${pageContext.request.contextPath}/css/category-books.css">
 
 <!-- Library Background -->
 <link rel="stylesheet"
-      href="${pageContext.request.contextPath}/css/background.css">
+	href="${pageContext.request.contextPath}/css/background.css">
 
 <!-- =================================================
 	     LUCIDE ICONS
@@ -152,16 +152,44 @@
 			<!-- ================= BACK ================= -->
 
 			<a class="back-link" href="${pageContext.request.contextPath}/books">
-
 				<i data-lucide="arrow-left"></i> <span>Categories</span>
-
-			</a> <a href="${pageContext.request.contextPath}/user/dashboard"> <i
-				data-lucide="layout-dashboard"></i> Dashboard
-			</a> <a href="${pageContext.request.contextPath}/books/bookmark-book">
-				<i data-lucide="bookmark"></i> Bookmarks
-			</a> <a href="${pageContext.request.contextPath}/books/history"
-				class="nav-link"> <i data-lucide="history"></i> <span>History</span>
 			</a>
+
+			<!-- Dashboard: Role-based redirect -->
+			<%
+			if (loggedInUser != null) {
+				String dashboardUrl = isUser ? "/user/dashboard" : "/admin/dashboard";
+			%>
+
+			<a class="nav-link"
+				href="${pageContext.request.contextPath}<%=dashboardUrl%>"> <i
+				data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+			</a>
+
+			<%
+			}
+			%>
+
+			<!-- USER-ONLY LINKS -->
+			<%
+			if (isUser) {
+			%>
+
+			<!-- Bookmarks -->
+			<a class="nav-link"
+				href="${pageContext.request.contextPath}/books/bookmark-book"> <i
+				data-lucide="bookmark"></i> <span>Bookmarks</span>
+			</a>
+
+			<!-- History -->
+			<a class="nav-link"
+				href="${pageContext.request.contextPath}/books/history"> <i
+				data-lucide="history"></i> <span>History</span>
+			</a>
+
+			<%
+			}
+			%>
 
 
 		</div>
@@ -220,8 +248,7 @@
 
 			<!-- Category -->
 
-			<input type="hidden" name="id"
-				value="<%=category.getCategoryId()%>">
+			<input type="hidden" name="id" value="<%=category.getCategoryId()%>">
 
 
 
@@ -231,8 +258,8 @@
 
 
 				<i data-lucide="search"></i> <input type="text" name="keyword"
-					value="<%=keyword%>"
-					placeholder="Search books in this category..." autocomplete="off">
+					value="<%=keyword%>" placeholder="Search books in this category..."
+					autocomplete="off">
 
 
 			</div>

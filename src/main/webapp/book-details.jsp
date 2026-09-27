@@ -20,8 +20,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title><%=request.getAttribute("categoryName") != null
-		? request.getAttribute("categoryName") + " - Stories"
+<title><%=request.getAttribute("categoryName") != null ? request.getAttribute("categoryName") + " - Stories"
 		: "Book Details - Stories"%></title>
 
 
@@ -45,13 +44,20 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 
 <link rel="stylesheet"
-      href="${pageContext.request.contextPath}/css/confirm-modal.css">
+	href="${pageContext.request.contextPath}/css/confirm-modal.css">
 <!-- =====================================================
          BOOK DETAILS CSS
          ===================================================== -->
 
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/css/book-details.css">
+
+<script
+	src="${pageContext.request.contextPath}/javascript/confirm-modal.js"
+	defer></script>
+<script
+	src="${pageContext.request.contextPath}/javascript/book-details.js"
+	defer></script>
 
 </head>
 
@@ -186,16 +192,16 @@
 					%>
 
 
-					<!-- Dashboard -->
 
+
+					<!-- Dashboard -->
 					<%
 					if (loggedInUser != null) {
+						String dashboardUrl = isAdmin ? "/admin/dashboard" : "/user/dashboard";
 					%>
 
-					<a href="${pageContext.request.contextPath}/user/dashboard"
-						class="nav-link"> <i data-lucide="layout-dashboard"></i> <span>
-							Dashboard </span>
-
+					<a href="${pageContext.request.contextPath}<%=dashboardUrl%>"
+						class="nav-link"> <i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
 					</a>
 
 					<%
@@ -519,23 +525,19 @@
 							</a>
 
 
+
 							<form
 								action="${pageContext.request.contextPath}/admin/books/delete"
-								method="post">
+								method="post" data-confirm data-confirm-title="Delete Book"
+								data-confirm-message="Are you sure you want to delete this book? This action cannot be undone."
+								data-confirm-label="Delete">
 
-								<input type="hidden" name="bookId" value="<%=book.getBookId()%>">
+								<input type="hidden" name="bookId" value="${book.bookId}">
 
-
-								<button type="submit" class="admin-button delete-button"
-									onclick="return confirm('Are you sure you want to delete this book?');">
-
-									<i data-lucide="trash-2"></i> <span> Delete Book </span>
-
+								<button type="submit" class="admin-button delete-button">
+									<i data-lucide="trash-2"></i> Delete Book
 								</button>
-
 							</form>
-
-
 						</div>
 
 					</div>
@@ -972,8 +974,8 @@
 
 
 		</main>
-		
-		
+
+
 
 
 		<!-- =====================================================
@@ -990,15 +992,6 @@
 	</div>
 
 
-	<!-- =====================================================
-     JAVASCRIPT
-     ===================================================== -->
-
-	<script
-		src="${pageContext.request.contextPath}/javascript/book-details.js">
-</script>
-
-<script src="${pageContext.request.contextPath}/javascript/confirm-modal.js"></script>
 
 </body>
 
