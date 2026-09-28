@@ -26,36 +26,44 @@
         
         <link rel="stylesheet"
       href="${pageContext.request.contextPath}/css/background.css">
+      
+      <!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet">
 </head>
 
 <body>
 
     <!-- =====================================================
-         ADMIN HEADER
-         ===================================================== -->
+     ADMIN HEADER
+     ===================================================== -->
 
-    <header class="admin-header">
+<header class="admin-header">
 
-        <div class="header-brand">
+    <div class="admin-header-inner">
 
-            <a href="${pageContext.request.contextPath}/admin/dashboard"
-               class="brand-link">
+        <!-- BRAND -->
+        <a href="${pageContext.request.contextPath}/admin/dashboard"
+           class="brand-link">
 
-                <div class="brand-icon">
-                    <i data-lucide="library"></i>
-                </div>
+            <span class="brand-icon">
+                <i data-lucide="library"></i>
+            </span>
 
-                <div class="brand-text">
-                    <span class="brand-name">Stories</span>
-                    <span class="brand-subtitle">E-Library</span>
-                </div>
+            <span class="brand-text">
+                <span class="brand-name">Stories</span>
+                <span class="brand-subtitle">E-LIBRARY</span>
+            </span>
 
-            </a>
-
-        </div>
+        </a>
 
 
-        <nav class="admin-nav">
+        <!-- DESKTOP ADMIN NAV -->
+        <nav class="admin-nav" aria-label="Admin navigation">
 
             <a href="${pageContext.request.contextPath}/admin/dashboard"
                class="nav-link active">
@@ -103,7 +111,69 @@
 
         </nav>
 
-    </header>
+
+        <!-- MOBILE MENU BUTTON -->
+        <button type="button"
+                class="mobile-menu-button"
+                id="adminMobileMenuButton"
+                aria-label="Open admin navigation"
+                aria-expanded="false">
+
+            <i data-lucide="menu"></i>
+
+        </button>
+
+    </div>
+
+
+    <!-- MOBILE ADMIN NAV -->
+    <nav class="admin-mobile-nav"
+         id="adminMobileNav"
+         aria-label="Mobile admin navigation">
+
+        <a href="${pageContext.request.contextPath}/admin/dashboard"
+           class="active">
+
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+
+        </a>
+
+
+        <a href="${pageContext.request.contextPath}/admin/books/add">
+
+            <i data-lucide="book-plus"></i>
+            <span>Add Book</span>
+
+        </a>
+
+
+        <a href="${pageContext.request.contextPath}/books">
+
+            <i data-lucide="library-big"></i>
+            <span>Books</span>
+
+        </a>
+
+
+        <a href="${pageContext.request.contextPath}/admin/suggestions">
+
+            <i data-lucide="message-square-plus"></i>
+            <span>Suggestions</span>
+
+        </a>
+
+
+        <a href="${pageContext.request.contextPath}/logout">
+
+            <i data-lucide="log-out"></i>
+            <span>Logout</span>
+
+        </a>
+
+    </nav>
+
+</header>
 
 
     <!-- =====================================================

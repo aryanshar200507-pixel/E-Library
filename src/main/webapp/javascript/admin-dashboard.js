@@ -2,15 +2,17 @@
    STORIES — ADMIN DASHBOARD
    ========================================================= */
 
-document.addEventListener("DOMContentLoaded", function () {
+   document.addEventListener("DOMContentLoaded", function () {
 
-    initializeLucide();
+       initializeLucide();
 
-    initializeCategoryEditing();
+       initializeAdminMobileNavigation();
 
-    initializeDeleteModal();
+       initializeCategoryEditing();
 
-});
+       initializeDeleteModal();
+
+   });
 
 
 /* =========================================================
@@ -333,5 +335,119 @@ function initializeDeleteModal() {
 
         }
     );
+
+}
+
+/* =========================================================
+   ADMIN MOBILE NAVIGATION
+   ========================================================= */
+
+function initializeAdminMobileNavigation() {
+
+    const menuButton =
+        document.getElementById("adminMobileMenuButton");
+
+    const mobileNav =
+        document.getElementById("adminMobileNav");
+
+
+    if (!menuButton || !mobileNav) {
+        return;
+    }
+
+
+    menuButton.addEventListener("click", function () {
+
+        const isOpen =
+            mobileNav.classList.toggle("open");
+
+
+        menuButton.setAttribute(
+            "aria-expanded",
+            isOpen ? "true" : "false"
+        );
+
+
+        menuButton.setAttribute(
+            "aria-label",
+            isOpen
+                ? "Close admin navigation"
+                : "Open admin navigation"
+        );
+
+
+        menuButton.innerHTML = isOpen
+            ? '<i data-lucide="x"></i>'
+            : '<i data-lucide="menu"></i>';
+
+
+        initializeLucide();
+
+    });
+
+
+    /*
+     * Close after selecting an admin navigation item.
+     */
+
+    mobileNav
+        .querySelectorAll("a")
+        .forEach(function (link) {
+
+            link.addEventListener("click", function () {
+
+                mobileNav.classList.remove("open");
+
+                menuButton.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+                menuButton.setAttribute(
+                    "aria-label",
+                    "Open admin navigation"
+                );
+
+                menuButton.innerHTML =
+                    '<i data-lucide="menu"></i>';
+
+
+                initializeLucide();
+
+            });
+
+        });
+
+
+    /*
+     * Close mobile navigation when returning
+     * to desktop width.
+     */
+
+    window.addEventListener("resize", function () {
+
+        if (window.innerWidth > 800) {
+
+            mobileNav.classList.remove("open");
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            menuButton.setAttribute(
+                "aria-label",
+                "Open admin navigation"
+            );
+
+            menuButton.innerHTML =
+                '<i data-lucide="menu"></i>';
+
+
+            initializeLucide();
+
+        }
+
+    });
 
 }
