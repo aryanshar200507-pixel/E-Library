@@ -7,15 +7,15 @@
    INITIALIZE PAGE
    ===================================================== */
 
-document.addEventListener("DOMContentLoaded", function() {
+   document.addEventListener("DOMContentLoaded", function() {
 
-    initializeBookmarkButtons();
-    initializeStackedCards();
-    initializeLucideIcons();
-	initializeInfiniteScroll();				
+       initializeBookmarkButtons();
+       initializeStackedCards();
+       initializeLucideIcons();
+       initializeMobileNavbar();
+       initializeInfiniteScroll();
 
-});
-
+   });
 
 /* =====================================================
    INITIALIZE BOOKMARK BUTTONS
@@ -329,6 +329,138 @@ function initializeLucideIcons() {
 
 }
 
+/* =====================================================
+   MOBILE NAVBAR
+   DASHBOARD-STYLE HAMBURGER
+   ===================================================== */
+
+function initializeMobileNavbar() {
+
+    var mobileMenuButton =
+        document.getElementById("mobileMenuButton");
+
+    var mobileNav =
+        document.getElementById("mobileNav");
+
+
+    if (!mobileMenuButton || !mobileNav) {
+        return;
+    }
+
+
+    mobileMenuButton.addEventListener("click", function() {
+
+        var isOpen =
+            mobileNav.classList.toggle("open");
+
+
+        mobileMenuButton.setAttribute(
+            "aria-expanded",
+            isOpen ? "true" : "false"
+        );
+
+
+        mobileMenuButton.setAttribute(
+            "aria-label",
+            isOpen
+                ? "Close menu"
+                : "Open menu"
+        );
+
+
+        mobileMenuButton.innerHTML =
+            isOpen
+                ? '<i data-lucide="x"></i>'
+                : '<i data-lucide="menu"></i>';
+
+
+        if (
+            typeof lucide !== "undefined" &&
+            lucide.createIcons
+        ) {
+
+            lucide.createIcons();
+
+        }
+
+    });
+
+
+    /* Close menu after navigation */
+
+    mobileNav
+        .querySelectorAll("a")
+        .forEach(function(link) {
+
+            link.addEventListener("click", function() {
+
+                mobileNav.classList.remove("open");
+
+                mobileMenuButton.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+                mobileMenuButton.setAttribute(
+                    "aria-label",
+                    "Open menu"
+                );
+
+
+                mobileMenuButton.innerHTML =
+                    '<i data-lucide="menu"></i>';
+
+
+                if (
+                    typeof lucide !== "undefined" &&
+                    lucide.createIcons
+                ) {
+
+                    lucide.createIcons();
+
+                }
+
+            });
+
+        });
+
+
+    /* Close mobile menu when returning to desktop */
+
+    window.addEventListener("resize", function() {
+
+        if (window.innerWidth > 800) {
+
+            mobileNav.classList.remove("open");
+
+            mobileMenuButton.setAttribute(
+                "aria-expanded",
+                "false"
+            );
+
+            mobileMenuButton.setAttribute(
+                "aria-label",
+                "Open menu"
+            );
+
+            mobileMenuButton.innerHTML =
+                '<i data-lucide="menu"></i>';
+
+
+            if (
+                typeof lucide !== "undefined" &&
+                lucide.createIcons
+            ) {
+
+                lucide.createIcons();
+
+            }
+
+        }
+
+    });
+
+}
 /* =====================================================
    STACKED CARDS (scroll stacking effect)
    ===================================================== */

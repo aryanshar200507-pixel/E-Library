@@ -118,85 +118,168 @@
      HEADER
      ===================================================== -->
 
-	<header class="site-header">
+<header class="site-header">
+
+    <div class="header-inner">
+
+        <!-- ================= BRAND ================= -->
+        <div class="brand">
+
+            <div class="brand-icon">
+                <i data-lucide="library"></i>
+            </div>
+
+            <div class="brand-text">
+                <span class="brand-name">Stories</span>
+                <span class="brand-subtitle">E-LIBRARY</span>
+            </div>
+
+        </div>
 
 
-		<div class="header-inner">
+        <!-- ================= DESKTOP NAV ================= -->
+        <nav class="desktop-nav">
+
+            <!-- Categories -->
+            <a href="${pageContext.request.contextPath}/books"
+               class="nav-link active">
+
+                <i data-lucide="library"></i>
+                <span>Categories</span>
+
+            </a>
 
 
-			<!-- ================= BRAND ================= -->
+            <!-- Dashboard - ROLE BASED -->
+            <%
+    String dashboardUrl = "";
 
-			<div class="brand">
+    if (loggedInUser != null) {
+        dashboardUrl = isUser
+                ? "/user/dashboard"
+                : "/admin/dashboard";
+%>
+                <a href="${pageContext.request.contextPath}<%=dashboardUrl%>"
+                   class="nav-link">
 
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
 
-				<div class="brand-icon">
+                </a>
 
-					<i data-lucide="library"></i>
-
-				</div>
-
-
-				<div class="brand-text">
-
-					<h1>Stories</h1>
-
-					<span>E-Library</span>
-
-				</div>
-
-
-			</div>
+            <%
+                }
+            %>
 
 
+            <!-- ================= USER ONLY ================= -->
+            <%
+                if (isUser) {
+            %>
 
-			<!-- ================= BACK ================= -->
+                <!-- Bookmarks -->
+                <a href="${pageContext.request.contextPath}/books/bookmark-book"
+                   class="nav-link">
 
-			<a class="back-link" href="${pageContext.request.contextPath}/books">
-				<i data-lucide="arrow-left"></i> <span>Categories</span>
-			</a>
+                    <i data-lucide="bookmark"></i>
+                    <span>Bookmarks</span>
 
-			<!-- Dashboard: Role-based redirect -->
-			<%
-			if (loggedInUser != null) {
-				String dashboardUrl = isUser ? "/user/dashboard" : "/admin/dashboard";
-			%>
-
-			<a class="nav-link"
-				href="${pageContext.request.contextPath}<%=dashboardUrl%>"> <i
-				data-lucide="layout-dashboard"></i> <span>Dashboard</span>
-			</a>
-
-			<%
-			}
-			%>
-
-			<!-- USER-ONLY LINKS -->
-			<%
-			if (isUser) {
-			%>
-
-			<!-- Bookmarks -->
-			<a class="nav-link"
-				href="${pageContext.request.contextPath}/books/bookmark-book"> <i
-				data-lucide="bookmark"></i> <span>Bookmarks</span>
-			</a>
-
-			<!-- History -->
-			<a class="nav-link"
-				href="${pageContext.request.contextPath}/books/history"> <i
-				data-lucide="history"></i> <span>History</span>
-			</a>
-
-			<%
-			}
-			%>
+                </a>
 
 
-		</div>
+                <!-- History -->
+                <a href="${pageContext.request.contextPath}/books/history"
+                   class="nav-link">
 
-	</header>
+                    <i data-lucide="history"></i>
+                    <span>History</span>
+
+                </a>
+
+            <%
+                }
+            %>
+
+        </nav>
 
 
+        <!-- ================= MOBILE ACTION ================= -->
+        <div class="header-actions">
+
+            <button
+                class="mobile-menu-button"
+                id="mobileMenuButton"
+                type="button"
+                aria-label="Open menu"
+                aria-expanded="false">
+
+                <i data-lucide="menu"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= MOBILE NAV ================= -->
+
+    <nav class="mobile-nav" id="mobileNav">
+
+        <!-- Categories -->
+        <a href="${pageContext.request.contextPath}/books"
+           class="active">
+
+            <i data-lucide="library"></i>
+            <span>Categories</span>
+
+        </a>
+
+
+        <!-- Dashboard - ROLE BASED -->
+        <%
+            if (loggedInUser != null) {
+        %>
+
+            <a href="${pageContext.request.contextPath}<%=dashboardUrl%>">
+
+                <i data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
+
+            </a>
+
+        <%
+            }
+        %>
+
+
+        <!-- ================= USER ONLY ================= -->
+        <%
+            if (isUser) {
+        %>
+
+            <a href="${pageContext.request.contextPath}/books/bookmark-book">
+
+                <i data-lucide="bookmark"></i>
+                <span>Bookmarks</span>
+
+            </a>
+
+
+            <a href="${pageContext.request.contextPath}/books/history">
+
+                <i data-lucide="history"></i>
+                <span>History</span>
+
+            </a>
+
+        <%
+            }
+        %>
+
+    </nav>
+
+</header>
 
 	<!-- =====================================================
      MAIN CONTENT
