@@ -1,153 +1,158 @@
+<div align="center">
+
 # 📚 Stories E-Library
 
-A web-based digital library built with **Java 21, Jakarta Servlet/JSP, JDBC, MySQL, Apache Tomcat, and Amazon S3**.
+### A digital library where you discover, read, and remember — all in the browser.
 
-Stories E-Library lets users discover books, read PDFs online through a custom PDF.js reader, save reading progress, bookmark books and pages, highlight passages, rate and comment on books, request missing books, submit application suggestions, and receive recommendations. Administrators can manage books, categories, users, and suggestions through a dedicated admin dashboard.
+Read PDFs online with a custom **PDF.js** reader, save your progress, highlight passages, rate books, and get recommendations. Admins manage everything from a dedicated dashboard.
 
-> **Project type:** Eclipse Dynamic Web Project (not Maven/Gradle)  
-> **Java:** 21  
-> **Web platform:** Jakarta Servlet 6.0  
-> **Server:** Apache Tomcat 10.1  
-> **Database:** MySQL  
-> **File storage:** Amazon S3  
-> **Frontend:** JSP + HTML + CSS + JavaScript
+<br>
+
+![Java](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Jakarta](https://img.shields.io/badge/Jakarta_Servlet-6.0-0A7BBB?style=for-the-badge&logo=eclipseide&logoColor=white)
+![Tomcat](https://img.shields.io/badge/Tomcat-10.1-F8DC75?style=for-the-badge&logo=apachetomcat&logoColor=black)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![AWS S3](https://img.shields.io/badge/Amazon_S3-569A31?style=for-the-badge&logo=amazons3&logoColor=white)
+![JSP](https://img.shields.io/badge/JSP-HTML%20%7C%20CSS%20%7C%20JS-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+
+<br>
+
+[✨ Features](#-features) · [🏗️ Architecture](#️-architecture) · [🔐 Security](#-authorization--security) · [🚀 Getting Started](#-getting-started) · [🐛 Troubleshooting](#-troubleshooting)
+
+</div>
+
+---
+
+> [!NOTE]
+> **Project type:** Eclipse Dynamic Web Project (no Maven/Gradle) &nbsp;•&nbsp; **Java 21** &nbsp;•&nbsp; **Jakarta Servlet 6.0** &nbsp;•&nbsp; **Tomcat 10.1**
+
+## 📑 Table of Contents
+
+- [✨ Features](#-features)
+- [🏗️ Architecture](#️-architecture)
+- [🔐 Authorization & Security](#-authorization--security)
+- [☁️ File Storage](#️-file-storage)
+- [🗄️ Database](#️-database)
+- [🧠 Recommendation System](#-recommendation-system)
+- [📁 Project Structure](#-project-structure)
+- [🌐 Endpoints](#-endpoints)
+- [🚀 Getting Started](#-getting-started)
+- [🔄 Flows](#-flows)
+- [⚠️ Implementation Notes](#️-implementation-notes)
+- [🐛 Troubleshooting](#-troubleshooting)
+- [🤝 Contributing](#-contributing)
 
 ---
 
 ## ✨ Features
 
-### 👤 Authentication & Account Management
+<details open>
+<summary><b>👤 Authentication & Account Management</b></summary>
+<br>
 
-- User registration with email uniqueness validation.
-- Login using email and password.
-- Passwords are hashed with **BCrypt** before storage.
-- Session-based authentication using `HttpSession`.
-- Role-based access for **USER** and **ADMIN** accounts.
-- Account states are represented by `ACTIVE`, `INACTIVE`, and `BLOCKED`.
-- Secure **Remember Me** functionality:
-  - Generates a cryptographically random 256-bit token.
-  - Stores only the **SHA-256 hash** of the token in MySQL.
-  - Stores the raw token in an HttpOnly browser cookie.
-  - Token lifetime is 7 days.
-- Logout removes the remember-me token, clears the cookie, and invalidates the session.
-- Forgot-password flow uses a **6-digit OTP** delivered through email.
-- OTP validity is **5 minutes**.
-- Password reset requires successful OTP verification before the new password is saved.
-- Logged-in users can change their password after verifying the current password.
-- Users can update their name and email from the profile page.
+- Registration with **email uniqueness** validation
+- Login with email + password, hashed using **BCrypt**
+- Session-based authentication via `HttpSession`
+- Roles: `USER` and `ADMIN` &nbsp;|&nbsp; Account states: `ACTIVE`, `INACTIVE`, `BLOCKED`
+- **Remember Me** (7-day lifetime):
+  - Cryptographically random **256-bit** token
+  - Only the **SHA-256 hash** is stored in MySQL
+  - Raw token lives in an **HttpOnly** cookie
+- Logout removes the token, clears the cookie, and invalidates the session
+- **Forgot password:** 6-digit OTP by email, valid for **5 minutes**, verified before any reset
+- Change password (after verifying the current one) and update name/email from the profile page
 
-### 📖 Book Discovery & Catalogue
+</details>
 
-- Browse the complete book catalogue.
-- Browse books by category.
-- Search books by keyword.
-- Pagination for book lists and category results.
-- View individual book details.
-- Display book cover, author, description, category, views, ratings, and comments.
-- Highest-rated book information is available through the book service layer.
-- Book covers are generated as temporary S3 URLs for the frontend.
+<details open>
+<summary><b>📖 Book Discovery & Catalogue</b></summary>
+<br>
 
-### 🧑‍💻 Online PDF Reader
+- Browse the full catalogue, by category, or by keyword search
+- Pagination for book lists and category results
+- Book details: cover, author, description, category, views, ratings, and comments
+- Highest-rated book info available through the service layer
+- Covers served as temporary **S3 presigned URLs**
 
-The project includes a custom **PDF.js-based reading interface** rather than relying only on the browser's native PDF viewer.
+</details>
 
-Reader functionality includes:
+<details open>
+<summary><b>🧑‍💻 Online PDF Reader</b></summary>
+<br>
 
-- PDF rendering with PDF.js.
-- Page navigation.
-- Page thumbnails.
-- Search/find inside the PDF.
-- Zoom controls.
-- Fit-to-width support.
-- Scroll mode.
-- Single-page and two-page reading layouts.
-- Fullscreen mode.
-- Rotation controls.
-- Keyboard shortcuts.
-- Mobile-friendly reader controls.
-- Touch/swipe navigation.
-- Persistent reading progress.
-- Page-level bookmarks.
-- Text highlighting with stored selection information.
-- Multiple highlight colors.
+A custom **PDF.js-based** reading interface — not just the browser's native viewer.
 
-When the reader is opened, the application increments the book's view counter and loads the user's saved page for that book.
+| Navigation | Display | Experience |
+|---|---|---|
+| Page navigation | Zoom & fit-to-width | Persistent reading progress |
+| Page thumbnails | Scroll mode | Page-level bookmarks |
+| Search inside PDF | Single & two-page layouts | Text highlights (multiple colors) |
+| Keyboard shortcuts | Fullscreen & rotation | Mobile controls + swipe navigation |
 
-### 🔖 Bookmarks, Highlights & History
+When the reader opens, the book's **view counter is incremented** and the user's **saved page is restored**.
 
-- Save a complete book to the user's bookmarks.
-- Create page-specific bookmarks inside the reader.
-- Prevent duplicate bookmarks at the database/service level.
-- Store and restore text highlights.
-- Highlight colors supported by the service:
-  - Yellow
-  - Green
-  - Blue
-  - Pink
-- Delete highlights for the current user.
-- Change highlight color.
-- Save reading progress separately for each user and book.
-- Recently-read books are shown on the user dashboard.
-- Full reading history is available with pagination.
-- Dedicated bookmarked-books page.
+</details>
 
-### ⭐ Ratings & 💬 Comments
+<details>
+<summary><b>🔖 Bookmarks, Highlights & History</b></summary>
+<br>
 
-- Users can rate books from **1 to 5 stars**.
-- A user can have only one rating per book; later submissions update the existing rating.
-- Average rating and rating count are calculated for books.
-- Users can add comments.
-- Users can edit only their own comments.
-- Users can delete only their own comments.
-- Administrators can delete any comment.
+- Bookmark a whole book, or bookmark specific pages in the reader
+- Duplicate bookmarks are prevented at the database/service level
+- Store, restore, recolor, and delete highlights — colors: 🟡 Yellow · 🟢 Green · 🔵 Blue · 🩷 Pink
+- Reading progress saved **per user, per book**
+- Recently-read books on the dashboard, plus full paginated history
+- Dedicated bookmarked-books page
 
-### 🤝 Book Requests
+</details>
 
-Users can request books that are not currently available.
+<details>
+<summary><b>⭐ Ratings & 💬 Comments</b></summary>
+<br>
 
-- Submit a book title and optional author.
-- Requests are associated with the requesting user.
-- Requests are limited to the project's weekly rules.
-- The application prevents duplicate/current-week request conflicts.
-- Users can vote for requested books.
-- A user can vote only once per request.
-- Votes are restricted to active/current-week requests.
-- Administrators are not allowed to submit or vote on user book requests.
+- Rate books **1–5 stars** — one rating per user per book (resubmitting updates it)
+- Average rating and rating count are calculated per book
+- Users can add comments, and edit/delete **only their own**
+- Admins can delete **any** comment
 
-### 💡 Application Suggestions
+</details>
 
-Users can submit suggestions for improving the application.
+<details>
+<summary><b>🤝 Book Requests & 💡 Suggestions</b></summary>
+<br>
 
-- Suggestion length is validated between **10 and 1000 characters**.
-- Suggestions are stored with a status.
-- Administrators can review active suggestions.
-- Administrators can accept or delete suggestions.
+**Book requests**
+- Request a missing book (title + optional author), tied to the requesting user
+- Weekly limits apply, and duplicate/current-week conflicts are blocked
+- Vote for requests — **once per request**, on active/current-week requests only
+- Admins cannot submit or vote on user requests
 
-### 🛠️ Admin Dashboard
+**Application suggestions**
+- Users submit suggestions (validated **10–1000 characters**)
+- Admins review active suggestions and **accept** or **delete** them
 
-Administrators have a dedicated dashboard for application management.
+</details>
 
-- Dashboard statistics:
-  - Total users
-  - Total categories
-  - Total books
-- Search users.
-- Manage user accounts.
-- Recover/deactivate user accounts.
-- Add categories.
-- Edit categories.
-- Delete categories.
-- Add books.
-- Edit books.
-- Delete books.
-- Manage application suggestions.
-- Remove inappropriate comments.
+<details>
+<summary><b>🛠️ Admin Dashboard</b></summary>
+<br>
+
+| Area | Capabilities |
+|---|---|
+| 📊 Stats | Total users, categories, and books |
+| 👥 Users | Search, manage, recover/deactivate accounts |
+| 🗂️ Categories | Add, edit, delete |
+| 📕 Books | Add, edit, delete (with S3 cleanup) |
+| 💡 Suggestions | Review, accept, delete |
+| 💬 Moderation | Remove inappropriate comments |
+
+</details>
 
 ---
 
 ## 🏗️ Architecture
 
-The application follows a layered Java web-application structure:
+A clean, layered Java web-application structure:
 
 ```text
 ┌───────────────────────────────────────────────┐
@@ -158,7 +163,7 @@ The application follows a layered Java web-application structure:
                         ▼
 ┌───────────────────────────────────────────────┐
 │             Controllers / Servlets            │
-│ Login • Books • Reader • Profile • Admin ... │
+│ Login • Books • Reader • Profile • Admin ...  │
 └───────────────────────┬───────────────────────┘
                         ▼
 ┌───────────────────────────────────────────────┐
@@ -168,153 +173,128 @@ The application follows a layered Java web-application structure:
                         ▼
 ┌───────────────────────────────────────────────┐
 │                    DAO Layer                  │
-│             JDBC + Prepared Statements       │
+│            JDBC + Prepared Statements         │
 └───────────────────┬───────────────┬───────────┘
                     │               │
                     ▼               ▼
               ┌──────────┐    ┌──────────────┐
-              │  MySQL   │    │ Amazon S3    │
+              │  MySQL   │    │  Amazon S3   │
               │ Database │    │ PDFs/Covers  │
               └──────────┘    └──────────────┘
 
-                         ┌────────────────────┐
-                         │ SMTP / Jakarta Mail│
-                         │ Password-reset OTP │
-                         └────────────────────┘
+                    ┌────────────────────┐
+                    │ SMTP / Jakarta Mail│
+                    │ Password-reset OTP │
+                    └────────────────────┘
 ```
 
-### Request flow
+**Request flow**
 
-1. A browser requests a JSP page or servlet endpoint.
-2. Authorization filters validate access where required.
-3. A servlet/controller receives the request and validates input.
-4. The service layer applies business rules.
-5. DAO classes perform MySQL operations through JDBC.
-6. S3 services upload, delete, or generate temporary URLs for files.
-7. The servlet forwards data to the appropriate JSP.
+1. Browser requests a JSP page or servlet endpoint
+2. Authorization filters validate access where required
+3. Servlet receives the request and validates input
+4. Service layer applies business rules
+5. DAO classes talk to MySQL via JDBC
+6. S3 services upload, delete, or generate temporary URLs
+7. Servlet forwards data to the right JSP
 
 ---
 
-## 🔐 Authorization Model
+## 🔐 Authorization & Security
 
-The project uses servlet filters to keep authorization logic centralized.
+Authorization is centralized in servlet filters.
 
-### Admin protection
+| Filter | Mapped to | What it does |
+|---|---|---|
+| `AuthorizationFilter` | `/admin/*` | Confirms a valid session, `loggedInUser` present, and `ADMIN` role. Otherwise redirects to login or returns **HTTP 403**. |
+| `RememberMeAuthenticationFilter` | `/*` | With no active session, reads the `rememberMe` cookie, validates hash + expiry, checks the account is still active, and recreates the session. |
 
-`AuthorizationFilter` is mapped to:
+### 🛡️ Security practices
 
-```text
-/admin/*
-```
-
-It verifies:
-
-1. A valid session exists.
-2. `loggedInUser` exists in the session.
-3. The authenticated user has the `ADMIN` role.
-
-Unauthorized users are redirected to the login page or receive HTTP 403.
-
-### Remember Me restoration
-
-`RememberMeAuthenticationFilter` is mapped to all requests:
-
-```text
-/*
-```
-
-When no active session exists, it looks for the `rememberMe` cookie, validates the token hash and expiry, verifies that the account is still active, and recreates the authenticated session.
+- ✅ **BCrypt** password hashing
+- ✅ `SecureRandom` for OTPs and Remember-Me tokens
+- ✅ **SHA-256** hashed Remember-Me tokens in MySQL
+- ✅ **HttpOnly** Remember-Me cookie
+- ✅ Centralized admin authorization filter
+- ✅ Role checks on user-only actions (ratings, comments, voting)
+- ✅ Ownership checks before editing/deleting comments and highlights
+- ✅ Short-lived S3 presigned URLs (30 min)
+- ✅ **Prepared statements** throughout the DAO layer
+- ✅ File extension and size validation on uploads
+- ✅ S3 cleanup if a DB save fails after a successful upload
 
 ---
 
 ## ☁️ File Storage
 
-Book PDFs and cover images are stored in **Amazon S3**.
-
-The application does **not** store the binary files directly in MySQL. Instead, the database stores S3 storage keys such as:
+Book PDFs and covers live in **Amazon S3** — never as binaries in MySQL. The database stores only keys:
 
 ```text
 books/<uuid>-<file-name>.pdf
 covers/<uuid>-<file-name>.jpg
 ```
 
-When a file needs to be displayed, the storage service generates a **presigned GET URL**.
+| Setting | Value |
+|---|---|
+| Region | `us-east-1` |
+| Object keys | Unique, UUID-based |
+| Presigned GET URL validity | **30 minutes** |
+| Upload limit | **50 MB** per file |
+| On book delete | Files removed from S3 |
 
-### Current storage behavior
-
-- S3 region: `us-east-1`
-- Bucket configured in `S3Config`
-- PDF and cover uploads use unique UUID-based object keys.
-- Uploaded files are deleted from S3 when corresponding book records are deleted.
-- Presigned GET URLs are valid for **30 minutes**.
-- Add/edit book upload handling limits each uploaded file to **50 MB**.
-
-> The bucket name is currently configured in source code. Change `S3Config.java` when using a different bucket or environment.
+> [!TIP]
+> The bucket name is set in `S3Config.java`. Change it there when using a different bucket or environment.
 
 ---
 
 ## 🗄️ Database
 
-The application initializes the MySQL database automatically when the web application starts.
+The schema is created automatically at startup — no manual SQL script needed.
 
-`ApplicationStartup` calls:
+`ApplicationStartup` calls `DatabaseIniti.initialize()`, which:
 
-```java
-DatabaseIniti.initialize();
-```
+1. Creates the database if missing
+2. Runs migrations
+3. Creates required tables
+4. Creates the configured default admin (if absent)
 
-The initialization process:
-
-1. Creates the database if it does not exist.
-2. Runs database migrations.
-3. Creates required tables.
-4. Creates the configured default admin account if it does not already exist.
-
-### Main tables
+<details>
+<summary><b>📋 Main tables</b></summary>
+<br>
 
 | Table | Purpose |
 |---|---|
-| `users` | User accounts, roles, account status |
+| `users` | Accounts, roles, account status |
 | `category` | Book categories |
 | `books` | Book metadata and S3 storage keys |
 | `ratings` | User ratings for books |
 | `comments` | User comments on books |
-| `reading_progress` | Current reading page for each user/book |
-| `bookmark` | Page-level and book-level bookmark data |
-| `highlight` | Saved text selections and highlight metadata |
-| `remember_me` | Hashed remember-me authentication tokens |
-| `app_suggestion` | User suggestions and their status |
+| `reading_progress` | Current page per user/book |
+| `bookmark` | Page-level and book-level bookmarks |
+| `highlight` | Saved text selections and metadata |
+| `remember_me` | Hashed remember-me tokens |
+| `app_suggestion` | Suggestions and their status |
 | `book_request` | User-submitted book requests |
-| `book_request_vote` | Per-user votes on book requests |
+| `book_request_vote` | Per-user votes on requests |
 | `database_migrations` | Applied schema migration versions |
 
-### Important constraints
+</details>
 
-- User email is unique.
-- Rating is constrained to 1–5.
-- One rating per user/book.
-- One reading-progress record per user/book.
-- Duplicate page bookmarks are prevented.
-- Remember-me token hashes are unique.
-- A user can vote only once per book request.
+**Key constraints:** unique user email · rating limited to 1–5 · one rating and one progress record per user/book · no duplicate page bookmarks · unique remember-me hashes · one vote per user per request.
 
 ---
 
 ## 🧠 Recommendation System
 
-The user dashboard includes a lightweight recommendation service.
+A lightweight, **rule-based** recommender written in Java (not machine learning). It scores books using:
 
-The current implementation uses:
+- 📖 Recently read books
+- 🗂️ Categories of those books
+- ⭐ Average rating
+- 📊 Rating-count confidence
+- 🔥 View count / popularity
 
-- Recently read books.
-- Categories from recently read books.
-- Average book rating.
-- Rating count confidence.
-- Book view count/popularity.
-
-For users with no reading history, the service falls back to existing books and ranks them using rating and popularity signals.
-
-This is a rule-based recommendation system implemented in Java rather than a machine-learning model.
+New users with no history get existing books ranked by rating and popularity.
 
 ---
 
@@ -325,29 +305,24 @@ E-Library/
 ├── .classpath
 ├── .project
 ├── .settings/
-│
 └── src/
     └── main/
-        ├── java/
-        │   └── com/project/elibrary/
-        │       ├── bean/
-        │       ├── config/
-        │       ├── controller/
-        │       ├── dao/
-        │       ├── filter/
-        │       ├── service/
-        │       └── util/
-        │
+        ├── java/com/project/elibrary/
+        │   ├── bean/
+        │   ├── config/
+        │   ├── controller/
+        │   ├── dao/
+        │   ├── filter/
+        │   ├── service/
+        │   └── util/
         └── webapp/
             ├── WEB-INF/
             │   ├── admin/
             │   ├── user/
             │   └── web.xml
-            │
             ├── css/
             ├── images/
             ├── javascript/
-            │
             ├── home.jsp
             ├── login.jsp
             ├── register.jsp
@@ -362,12 +337,10 @@ E-Library/
             └── changePassword.jsp
 ```
 
-### Java package responsibilities
-
 | Package | Responsibility |
 |---|---|
 | `bean` | Domain/data objects |
-| `config` | DB, S3 and application initialization |
+| `config` | DB, S3, and application initialization |
 | `controller` | HTTP request handling |
 | `dao` | Database access via JDBC |
 | `filter` | Authentication/authorization interception |
@@ -376,7 +349,11 @@ E-Library/
 
 ---
 
-## 🌐 Important Endpoints
+## 🌐 Endpoints
+
+<details>
+<summary><b>🔓 Public & Account</b></summary>
+<br>
 
 | Endpoint | Purpose |
 |---|---|
@@ -388,6 +365,16 @@ E-Library/
 | `/verify-otp` | Verify recovery OTP |
 | `/reset-password` | Reset password |
 | `/change-password` | Change password while authenticated |
+| `/profile` | User profile |
+
+</details>
+
+<details>
+<summary><b>📚 Books & Reader</b></summary>
+<br>
+
+| Endpoint | Purpose |
+|---|---|
 | `/books` | Book catalogue |
 | `/books/category` | Category-specific books |
 | `/books/details` | Book details |
@@ -398,39 +385,70 @@ E-Library/
 | `/books/highlight` | Highlight actions |
 | `/rating` | Book rating |
 | `/comment` | Comment add/update/delete |
+
+</details>
+
+<details>
+<summary><b>🤝 Community</b></summary>
+<br>
+
+| Endpoint | Purpose |
+|---|---|
 | `/book-request` | Book request page and submission |
 | `/book-request/vote` | Vote for a requested book |
 | `/book-request/delete` | Delete a book request |
-| `/profile` | User profile |
 | `/user/dashboard` | User dashboard |
 | `/user/suggestion` | Submit application suggestion |
+
+</details>
+
+<details>
+<summary><b>🛠️ Admin</b></summary>
+<br>
+
+| Endpoint | Purpose |
+|---|---|
 | `/admin/dashboard` | Admin dashboard |
 | `/admin/books/add` | Add a book |
 | `/admin/books/delete` | Delete a book |
 | `/admin/suggestions` | Manage suggestions |
 
----
-
-## 💻 Requirements
-
-Install the following before running the project:
-
-- **JDK 21**
-- **Eclipse IDE for Enterprise Java and Web Developers**
-- **Apache Tomcat 10.1**
-- **MySQL Server**
-- An **AWS account** with an S3 bucket configured for the application
-- An SMTP account/provider for password-reset emails
-
-The Eclipse project is configured for **Java 21** and **Tomcat 10.1**.
+</details>
 
 ---
 
-## ⚙️ Configuration
+## 🚀 Getting Started
 
-The application expects an `application.properties` file on the application classpath.
+### 💻 Requirements
 
-The source currently reads these keys:
+| Requirement | Notes |
+|---|---|
+| **JDK 21** | Project JRE: `JavaSE-21` |
+| **Eclipse IDE for Enterprise Java and Web Developers** | Dynamic Web Project support |
+| **Apache Tomcat 10.1** | Jakarta namespace (`jakarta.servlet.*`) |
+| **MySQL Server** | User must be able to create DB and tables |
+| **AWS account + S3 bucket** | Credentials via default provider chain |
+| **SMTP provider** | For password-reset OTP emails |
+
+### 1️⃣ Clone
+
+```bash
+git clone https://github.com/aryanshar200507-pixel/E-Library.git
+```
+
+### 2️⃣ Import into Eclipse
+
+```text
+File → Import → Existing Projects into Workspace → Select the cloned repository → Finish
+```
+
+### 3️⃣ Configure JDK & Tomcat
+
+Confirm the project JRE is `JavaSE-21`, then add **Apache Tomcat 10.1** in Eclipse and associate it with the project.
+
+### 4️⃣ Add local configuration
+
+Create `src/main/resources/application.properties`:
 
 ```properties
 db.server.url=jdbc:mysql://localhost:3306/
@@ -447,105 +465,34 @@ mail.smtp.host=YOUR_SMTP_HOST
 mail.smtp.port=YOUR_SMTP_PORT
 ```
 
-Place the file under:
+> [!CAUTION]
+> **Never commit secrets.** Keep real database, admin, SMTP, and AWS credentials out of Git. The repository intentionally ships without them.
+
+### 5️⃣ Set up MySQL
+
+Start the server and make sure the configured user has privileges to create the database and tables. The schema is created on startup.
+
+### 6️⃣ Set up AWS S3
+
+1. Create a bucket in the region the app expects
+2. Ensure the runtime AWS identity can **put**, **read**, and **delete** objects
+3. Update `S3Config.java` if you use a different bucket
+4. Supply credentials through a supported AWS mechanism (the app uses `DefaultCredentialsProvider`) — never hard-code them
+
+### 7️⃣ Run
 
 ```text
-src/main/resources/application.properties
+Right-click project → Run As → Run on Server → Apache Tomcat 10.1
 ```
 
-### Do not commit secrets
-
-Keep real database, administrator, SMTP, or AWS credentials out of Git.
-
-A local configuration file is required because the repository does not provide application secrets.
+Then open the app at the context path Eclipse assigns.
 
 ---
 
-## 🪣 AWS S3 Setup
+## 🔄 Flows
 
-1. Create an S3 bucket in the region expected by the application.
-2. Ensure the runtime AWS identity can:
-   - Put objects.
-   - Read objects needed for presigned URLs.
-   - Delete objects.
-3. Update `S3Config.java` when using a bucket other than the configured one.
-4. Configure AWS credentials using the AWS SDK's default credential provider chain.
-
-The application uses the AWS SDK's `DefaultCredentialsProvider`, so credentials should be supplied through a supported AWS credential mechanism rather than hard-coded into the project.
-
----
-
-## 🚀 Running the Project in Eclipse
-
-Because this is an **Eclipse Dynamic Web Project**, there is no Maven or Gradle build file in the repository.
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/aryanshar200507-pixel/E-Library.git
-```
-
-### 2. Import into Eclipse
-
-In Eclipse:
-
-```text
-File
-→ Import
-→ Existing Projects into Workspace
-→ Select the cloned repository
-→ Finish
-```
-
-### 3. Configure JDK
-
-Use **JDK 21** for the project.
-
-Confirm the project JRE is:
-
-```text
-JavaSE-21
-```
-
-### 4. Configure Tomcat
-
-Add **Apache Tomcat 10.1** in Eclipse and associate the project with that runtime.
-
-### 5. Add local configuration
-
-Create:
-
-```text
-src/main/resources/application.properties
-```
-
-using the configuration template shown above.
-
-### 6. Configure MySQL
-
-Start the MySQL server and make sure the configured database user has enough privileges for the application to create the database and tables.
-
-The application creates the database and schema during startup, so a separate manual schema script is normally not required.
-
-### 7. Configure AWS
-
-Set up AWS credentials and make sure the configured S3 bucket is available.
-
-### 8. Run on Tomcat
-
-Right-click the project:
-
-```text
-Run As
-→ Run on Server
-→ Apache Tomcat 10.1
-```
-
-Open the application at the Tomcat context path assigned by Eclipse.
-
----
-
-## 🔄 Application Startup Flow
+<details>
+<summary><b>⚡ Application startup</b></summary>
 
 ```text
 Tomcat starts
@@ -555,7 +502,6 @@ ApplicationStartup
      │
      ▼
 DatabaseIniti.initialize()
-     │
      ├── Create database
      ├── Run migrations
      ├── Create tables
@@ -565,180 +511,146 @@ DatabaseIniti.initialize()
 Application ready
 ```
 
----
+</details>
 
-## 🔑 Authentication Flow
-
-```text
-Login form
-   │
-   ▼
-LoginServlet
-   │
-   ▼
-AuthService
-   │
-   ├── Find user by email
-   ├── Verify BCrypt password
-   └── Check ACTIVE status
-   │
-   ▼
-HttpSession
-   │
-   ├── USER  ──> /user/dashboard
-   └── ADMIN ──> /admin/dashboard
-```
-
-When Remember Me is selected:
+<details>
+<summary><b>🔑 Authentication</b></summary>
 
 ```text
-Login
-  │
-  ▼
-Generate 256-bit random token
-  │
-  ├── Raw token → HttpOnly cookie
-  └── SHA-256 hash → remember_me table
+Login form → LoginServlet → AuthService
+                               ├── Find user by email
+                               ├── Verify BCrypt password
+                               └── Check ACTIVE status
+                                        │
+                                        ▼
+                                   HttpSession
+                                   ├── USER  ──> /user/dashboard
+                                   └── ADMIN ──> /admin/dashboard
 ```
 
----
+With **Remember Me**:
 
-## 📚 Reader Flow
+```text
+Login → Generate 256-bit random token
+          ├── Raw token → HttpOnly cookie
+          └── SHA-256 hash → remember_me table
+```
+
+</details>
+
+<details>
+<summary><b>📚 Reader</b></summary>
 
 ```text
 /books/read?id=<bookId>
           │
           ▼
-Check authenticated session
+Check authenticated session → Load book from MySQL
           │
           ▼
-Load book from MySQL
-          │
-          ▼
-Read PDF storage key
-          │
-          ▼
-Generate 30-minute S3 presigned URL
-          │
+Read PDF storage key → Generate 30-minute S3 presigned URL
           ├── Load saved reading page
           └── Increment book views
           │
           ▼
-read-book.jsp
-          │
-          ▼
-PDF.js + read-book.js
-          │
-          ├── Search
-          ├── Zoom
-          ├── Navigation
-          ├── Bookmarks
-          ├── Highlights
-          └── Save progress
+read-book.jsp → PDF.js + read-book.js
+          ├── Search        ├── Bookmarks
+          ├── Zoom          ├── Highlights
+          └── Navigation    └── Save progress
 ```
 
----
-
-## 🛡️ Security Practices Used
-
-The project includes several security-focused implementation choices:
-
-- BCrypt password hashing.
-- SecureRandom for OTP generation.
-- SecureRandom for Remember-Me token generation.
-- SHA-256 hashing for Remember-Me tokens stored in MySQL.
-- HttpOnly Remember-Me cookie.
-- Session-based authentication.
-- Centralized admin authorization filter.
-- Role checks for user-only actions such as ratings, comments, and voting.
-- User ownership checks before editing/deleting personal comments and highlights.
-- Short-lived S3 presigned URLs.
-- Prepared statements in the DAO layer.
-- File extension and size validation for uploaded book files.
-- S3 cleanup when a database save fails after successful file upload.
+</details>
 
 ---
 
 ## ⚠️ Implementation Notes
 
-- The repository is an **Eclipse Dynamic Web Project**, not a Maven/Gradle project.
-- The project expects an `application.properties` file but does not expose application secrets in the repository.
-- AWS S3 bucket configuration is currently defined in `S3Config.java`.
-- PDF and cover uploads are limited to 50 MB per file by the upload servlet configuration.
-- Reader file access uses presigned S3 URLs rather than storing PDFs in MySQL.
-- OTPs are stored temporarily in the HTTP session and expire after 5 minutes.
-- Remember-Me tokens expire after 7 days.
-- The recommendation engine is rule-based and uses reading history, category overlap, ratings, rating confidence, and popularity.
-- The database migration mechanism currently tracks migration versions in the `database_migrations` table.
+- Eclipse Dynamic Web Project — **not** Maven/Gradle
+- `application.properties` is required but not included in the repo
+- The S3 bucket is defined in `S3Config.java`
+- Uploads are capped at 50 MB per file by the upload servlet config
+- PDFs are read through presigned S3 URLs
+- OTPs are held temporarily in the HTTP session (5-minute expiry)
+- Remember-Me tokens expire after 7 days
+- Migration versions are tracked in `database_migrations`
 
 ---
 
 ## 🐛 Troubleshooting
 
-### `application.properties not found`
+<details>
+<summary><b><code>application.properties not found</code></b></summary>
+<br>
 
-Create:
+Create `src/main/resources/application.properties` and make sure it's on the application classpath.
 
-```text
-src/main/resources/application.properties
-```
+</details>
 
-and ensure the file is available on the application classpath.
+<details>
+<summary><b>MySQL connection errors</b></summary>
+<br>
 
-### MySQL connection errors
+- MySQL server is running
+- `db.server.url` is correct
+- Username/password are correct
+- The user can create the database and tables
 
-Check:
+</details>
 
-- MySQL server is running.
-- `db.server.url` is correct.
-- Database username/password are correct.
-- The configured user can create the database and tables.
+<details>
+<summary><b>S3 errors</b></summary>
+<br>
 
-### S3 errors
+- AWS credentials are available to the Tomcat runtime
+- The bucket exists
+- The bucket region matches `S3Config`
+- The AWS identity has the required S3 permissions
 
-Check:
+</details>
 
-- AWS credentials are available to the Tomcat runtime.
-- The S3 bucket exists.
-- The bucket region matches `S3Config`.
-- The AWS identity has the required S3 permissions.
+<details>
+<summary><b>Tomcat / Jakarta compatibility</b></summary>
+<br>
 
-### Tomcat/Jakarta compatibility problems
+Use **Tomcat 10.1+**. Older versions that use the legacy `javax.servlet.*` namespace are not supported.
 
-Use **Tomcat 10.1+** with the Jakarta Servlet API used by this project. Older Tomcat versions using the legacy `javax.servlet.*` namespace are not the target runtime.
+</details>
 
-### Git/Eclipse project conflicts
+<details>
+<summary><b>Git / Eclipse project conflicts</b></summary>
+<br>
 
-Because Eclipse metadata such as `.project`, `.classpath`, and `.settings` is tracked, coordinate branch changes carefully when multiple developers are modifying Eclipse project configuration.
+Eclipse metadata (`.project`, `.classpath`, `.settings`) is tracked in Git. Coordinate branch changes carefully when several developers touch project configuration.
+
+</details>
 
 ---
 
 ## 🤝 Contributing
 
-1. Fork or clone the repository.
-2. Create a feature branch.
-3. Make your changes.
-4. Test the application with MySQL, Tomcat, and S3 configured.
-5. Commit with a clear message.
-6. Push the branch and open a pull request.
+1. Fork or clone the repository
+2. Create a feature branch
+3. Make your changes
+4. Test with MySQL, Tomcat, and S3 configured
+5. Commit with a clear message
+6. Push the branch and open a pull request
 
-For team development, avoid committing credentials and avoid unrelated Eclipse metadata changes unless they are intentionally part of the update.
-
----
-
-## 📌 Repository
-
-**GitHub:** https://github.com/aryanshar200507-pixel/E-Library.git
+> Avoid committing credentials or unrelated Eclipse metadata changes.
 
 ---
 
 ## 📄 License
 
-No license file is currently included in the repository. Add an appropriate `LICENSE` file before distributing the project under an open-source license.
+No license file is currently included. Add a `LICENSE` file before distributing the project as open source.
 
 ---
 
-## 👨‍💻 Project
+<div align="center">
 
-**Stories E-Library**  
-A Java/Jakarta EE digital library project focused on practical web application architecture, authentication, database design, cloud object storage, and an interactive online reading experience.
+**📚 Stories E-Library**
+
+*A Java/Jakarta EE project focused on practical web architecture, authentication, database design, cloud storage, and an interactive reading experience.*
+
+[**GitHub Repository →**](https://github.com/aryanshar200507-pixel/E-Library)
+
+</div>
