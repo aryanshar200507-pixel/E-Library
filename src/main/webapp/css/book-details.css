@@ -997,8 +997,7 @@ body {
         var(--theme-primary);
 
     color:
-        #FFFFFF;
-
+        rgb(7, 7, 7);
     border:
         1px solid var(--theme-primary);
 

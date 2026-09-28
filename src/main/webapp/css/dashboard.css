@@ -578,9 +578,13 @@ section h2 {
 ============================================ */
 .book-row {
 	display: flex;
-	gap: 18px;
+	gap: 20px;
 	overflow-x: auto;
-	padding-bottom: 8px;
+	/* padding-bottom: 8px; */
+	background: var(--cream);
+	padding:30px;
+	border-radius:15px;
+	align-item:center;
 }
 
 .book-card {
