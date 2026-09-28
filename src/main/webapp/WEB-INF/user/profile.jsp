@@ -1,14 +1,20 @@
-<%@ page language="java"
-    contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 
 <%@ page import="com.project.elibrary.bean.user.User"%>
+<%@ page import="com.project.elibrary.bean.enums.Role"%>
 
 <%
-    User user = (User) request.getAttribute("user");
+User loggedInUser = (User) session.getAttribute("loggedInUser");
 
-    String success = request.getParameter("success");
-    String error = (String) request.getAttribute("error");
+boolean isAdmin = loggedInUser != null && loggedInUser.getRole() == Role.ADMIN;
+%>
+
+<%
+User user = (User) request.getAttribute("user");
+
+String success = request.getParameter("success");
+String error = (String) request.getAttribute("error");
 %>
 
 <!DOCTYPE html>
@@ -16,817 +22,650 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>My Profile - Stories E-Library</title>
+<title>My Profile - Stories E-Library</title>
 
-    <!-- Google Fonts -->
-    <link rel="preconnect"
-          href="https://fonts.googleapis.com">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
 
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
-          rel="stylesheet">
-    
-    <link rel="stylesheet"
-      href="${pageContext.request.contextPath}/css/background.css">
-      
-    <!-- Dashboard base styling -->
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/css/dashboard.css">
+<link
+	href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+	rel="stylesheet">
 
-    <!-- Profile styling -->
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/css/profile.css">
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/background.css">
 
-    <!-- Lucide -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+<!-- Dashboard base styling -->
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/dashboard.css">
+
+<!-- Profile styling -->
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/profile.css">
+
+<!-- Lucide -->
+<script src="https://unpkg.com/lucide@latest"></script>
 
 </head>
 
 
 <body>
 
-<div class="page-shell">
+	<div class="page-shell">
 
 
-    <!-- =====================================================
+		<!-- =====================================================
          HEADER
     ====================================================== -->
 
-    <header class="site-header">
+		<header class="site-header">
 
-        <div class="header-inner">
+			<div class="header-inner">
 
 
-            <!-- BRAND -->
+				<!-- BRAND -->
 
-            <a class="brand"
-               href="${pageContext.request.contextPath}/user/dashboard">
+				<a class="brand"
+					href="${pageContext.request.contextPath}/user/dashboard"> <span
+					class="brand-icon"> <i data-lucide="library"></i>
+				</span> <span class="brand-text"> <span class="brand-name">
+							Stories </span> <span class="brand-subtitle"> E-LIBRARY </span>
 
-                <span class="brand-icon">
-                    <i data-lucide="library"></i>
-                </span>
+				</span>
 
-                <span class="brand-text">
+				</a>
 
-                    <span class="brand-name">
-                        Stories
-                    </span>
 
-                    <span class="brand-subtitle">
-                        E-LIBRARY
-                    </span>
+				<!-- DESKTOP NAVIGATION -->
 
-                </span>
+				<nav class="desktop-nav">
 
-            </a>
+					<!-- DASHBOARD -->
+					<%
+					if (isAdmin) {
+					%>
 
+					<a href="${pageContext.request.contextPath}/admin/dashboard"> <i
+						data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+					</a>
 
-            <!-- DESKTOP NAVIGATION -->
+					<%
+					} else {
+					%>
 
-            <nav class="desktop-nav">
+					<a href="${pageContext.request.contextPath}/user/dashboard"> <i
+						data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+					</a>
 
+					<%
+					}
+					%>
 
-                <a href="${pageContext.request.contextPath}/user/dashboard">
 
-                    <i data-lucide="layout-dashboard"></i>
+					<!-- COMMON LINK -->
+					<a href="${pageContext.request.contextPath}/books"> <i
+						data-lucide="library"></i> <span>Categories</span>
+					</a>
 
-                    <span>Dashboard</span>
 
-                </a>
+					<!-- USER-ONLY LINKS -->
+					<%
+					if (!isAdmin) {
+					%>
 
+					<a href="${pageContext.request.contextPath}/book-request"> <i
+						data-lucide="book-plus"></i> <span>Book Requests</span>
+					</a> <a href="${pageContext.request.contextPath}/books/bookmark-book">
+						<i data-lucide="bookmark"></i> <span>Bookmarks</span>
+					</a> <a href="${pageContext.request.contextPath}/user/suggestion">
+						<i data-lucide="message-square-plus"></i> <span>Suggestions</span>
+					</a> <a href="${pageContext.request.contextPath}/books/history"> <i
+						data-lucide="history"></i> <span>History</span>
+					</a>
 
-                <a href="${pageContext.request.contextPath}/books">
+					<%
+					}
+					%>
 
-                    <i data-lucide="library"></i>
 
-                    <span>Categories</span>
+					<!-- PROFILE -->
+					<a href="${pageContext.request.contextPath}/profile"> <i
+						data-lucide="user"></i> <span>Profile</span>
+					</a>
 
-                </a>
+				</nav>
 
+				<!-- HEADER ACTIONS -->
 
-                <a href="${pageContext.request.contextPath}/book-request">
+				<div class="header-actions">
 
-                    <i data-lucide="book-plus"></i>
+					<a class="logout-link"
+						href="${pageContext.request.contextPath}/logout"> <i
+						data-lucide="log-out"></i> <span>Logout</span>
 
-                    <span>Book Requests</span>
+					</a>
 
-                </a>
 
+					<!-- MOBILE MENU -->
 
-                <a href="${pageContext.request.contextPath}/books/bookmark-book">
+					<button type="button" class="mobile-menu-button"
+						id="mobileMenuButton" aria-label="Open menu" aria-expanded="false">
 
-                    <i data-lucide="bookmark"></i>
+						<i data-lucide="menu"></i>
 
-                    <span>Bookmarks</span>
+					</button>
 
-                </a>
+				</div>
 
+			</div>
 
-                <a href="${pageContext.request.contextPath}/user/suggestion">
 
-                    <i data-lucide="message-square-plus"></i>
+			<!-- MOBILE NAVIGATION -->
 
-                    <span>Suggestions</span>
+			<nav class="mobile-nav" id="mobileNav">
 
-                </a>
+				<%
+				if (isAdmin) {
+				%>
 
+				<a href="${pageContext.request.contextPath}/admin/dashboard"> <i
+					data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+				</a>
 
-                <a href="${pageContext.request.contextPath}/books/history">
+				<%
+				} else {
+				%>
 
-                    <i data-lucide="history"></i>
+				<a href="${pageContext.request.contextPath}/user/dashboard"> <i
+					data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+				</a>
 
-                    <span>History</span>
+				<%
+				}
+				%>
 
-                </a>
+				<a href="${pageContext.request.contextPath}/books"> <i
+					data-lucide="library"></i> <span>Categories</span>
+				</a>
 
+				<%
+				if (!isAdmin) {
+				%>
 
-                <!-- ACTIVE PROFILE -->
+				<a href="${pageContext.request.contextPath}/book-request"> <i
+					data-lucide="book-plus"></i> <span>Book Requests</span>
+				</a> <a href="${pageContext.request.contextPath}/books/bookmark-book">
+					<i data-lucide="bookmark"></i> <span>Bookmarks</span>
+				</a> <a href="${pageContext.request.contextPath}/user/suggestion"> <i
+					data-lucide="message-square-plus"></i> <span>Suggestions</span>
+				</a> <a href="${pageContext.request.contextPath}/books/history"> <i
+					data-lucide="history"></i> <span>History</span>
+				</a>
 
-                <a href="${pageContext.request.contextPath}/profile"
-                   class="active">
+				<%
+				}
+				%>
 
-                    <i data-lucide="user"></i>
+				<a href="${pageContext.request.contextPath}/profile"> <i
+					data-lucide="user"></i> <span>Profile</span>
+				</a> <a href="${pageContext.request.contextPath}/logout"> <i
+					data-lucide="log-out"></i> <span>Logout</span>
+				</a>
 
-                    <span>Profile</span>
+			</nav>
+		</header>
 
-                </a>
 
-            </nav>
 
-
-            <!-- HEADER ACTIONS -->
-
-            <div class="header-actions">
-
-                <a class="logout-link"
-                   href="${pageContext.request.contextPath}/logout">
-
-                    <i data-lucide="log-out"></i>
-
-                    <span>Logout</span>
-
-                </a>
-
-
-                <!-- MOBILE MENU -->
-
-                <button type="button"
-                        class="mobile-menu-button"
-                        id="mobileMenuButton"
-                        aria-label="Open menu"
-                        aria-expanded="false">
-
-                    <i data-lucide="menu"></i>
-
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- MOBILE NAVIGATION -->
-
-        <nav class="mobile-nav"
-             id="mobileNav">
-
-
-            <a href="${pageContext.request.contextPath}/user/dashboard">
-
-                <i data-lucide="layout-dashboard"></i>
-
-                <span>Dashboard</span>
-
-            </a>
-
-
-            <a href="${pageContext.request.contextPath}/books">
-
-                <i data-lucide="library"></i>
-
-                <span>Categories</span>
-
-            </a>
-
-
-            <a href="${pageContext.request.contextPath}/book-request">
-
-                <i data-lucide="book-plus"></i>
-
-                <span>Book Requests</span>
-
-            </a>
-
-
-            <a href="${pageContext.request.contextPath}/books/bookmark-book">
-
-                <i data-lucide="bookmark"></i>
-
-                <span>Bookmarks</span>
-
-            </a>
-
-
-            <a href="${pageContext.request.contextPath}/user/suggestion">
-
-                <i data-lucide="message-square-plus"></i>
-
-                <span>Suggestions</span>
-
-            </a>
-
-
-            <a href="${pageContext.request.contextPath}/books/history">
-
-                <i data-lucide="history"></i>
-
-                <span>History</span>
-
-            </a>
-
-
-            <a href="${pageContext.request.contextPath}/profile"
-               class="active">
-
-                <i data-lucide="user"></i>
-
-                <span>Profile</span>
-
-            </a>
-
-
-            <a href="${pageContext.request.contextPath}/logout">
-
-                <i data-lucide="log-out"></i>
-
-                <span>Logout</span>
-
-            </a>
-
-        </nav>
-
-    </header>
-
-
-
-    <!-- =====================================================
+		<!-- =====================================================
          PROFILE MAIN
     ====================================================== -->
 
-    <main class="profile-page">
+		<main class="profile-page">
 
 
-        <div class="profile-container">
+			<div class="profile-container">
 
 
-            <!-- PAGE HEADING -->
+				<!-- PAGE HEADING -->
 
-            <div class="profile-heading">
+				<div class="profile-heading">
 
-                <div>
+					<div>
 
-                    <span class="profile-eyebrow">
-                        ACCOUNT
-                    </span>
+						<span class="profile-eyebrow"> ACCOUNT </span>
 
-                    <h1>
-                        My Profile
-                    </h1>
+						<h1>My Profile</h1>
 
-                    <p>
-                        Manage your personal information and account settings.
-                    </p>
+						<p>Manage your personal information and account settings.</p>
 
-                </div>
+					</div>
 
-            </div>
+				</div>
 
 
 
-            <!-- MESSAGES -->
+				<!-- MESSAGES -->
 
-            <% if (success != null) { %>
+				<%
+				if (success != null) {
+				%>
 
-                <div class="profile-message profile-success">
+				<div class="profile-message profile-success">
 
-                    <span class="message-icon">
-                        <i data-lucide="check-circle-2"></i>
-                    </span>
+					<span class="message-icon"> <i data-lucide="check-circle-2"></i>
+					</span> <span> <%=success%>
+					</span>
 
-                    <span>
-                        <%= success %>
-                    </span>
+					<button type="button" class="message-close"
+						aria-label="Close message">
 
-                    <button type="button"
-                            class="message-close"
-                            aria-label="Close message">
+						<i data-lucide="x"></i>
 
-                        <i data-lucide="x"></i>
+					</button>
 
-                    </button>
+				</div>
 
-                </div>
+				<%
+				}
+				%>
 
-            <% } %>
 
+				<%
+				if (error != null) {
+				%>
 
-            <% if (error != null) { %>
+				<div class="profile-message profile-error">
 
-                <div class="profile-message profile-error">
+					<span class="message-icon"> <i data-lucide="alert-circle"></i>
+					</span> <span> <%=error%>
+					</span>
 
-                    <span class="message-icon">
-                        <i data-lucide="alert-circle"></i>
-                    </span>
+					<button type="button" class="message-close"
+						aria-label="Close message">
 
-                    <span>
-                        <%= error %>
-                    </span>
+						<i data-lucide="x"></i>
 
-                    <button type="button"
-                            class="message-close"
-                            aria-label="Close message">
+					</button>
 
-                        <i data-lucide="x"></i>
+				</div>
 
-                    </button>
+				<%
+				}
+				%>
 
-                </div>
 
-            <% } %>
 
+				<!-- PROFILE CARD -->
 
+				<section class="profile-card">
 
-            <!-- PROFILE CARD -->
 
-            <section class="profile-card">
+					<!-- PROFILE HERO -->
 
+					<div class="profile-hero">
 
-                <!-- PROFILE HERO -->
 
-                <div class="profile-hero">
+						<div class="profile-avatar">
 
+							<span> <%
+ String userName = user.getName();
 
-                    <div class="profile-avatar">
+ if (userName != null && !userName.trim().isEmpty()) {
 
-                        <span>
+ 	out.print(userName.trim().substring(0, 1).toUpperCase());
 
-                            <%
-                                String userName = user.getName();
+ } else {
 
-                                if (userName != null
-                                        && !userName.trim().isEmpty()) {
+ 	out.print("U");
 
-                                    out.print(
-                                        userName
-                                            .trim()
-                                            .substring(0, 1)
-                                            .toUpperCase()
-                                    );
+ }
+ %>
 
-                                } else {
+							</span>
 
-                                    out.print("U");
+						</div>
 
-                                }
-                            %>
 
-                        </span>
+						<div class="profile-identity">
 
-                    </div>
+							<div class="profile-identity-top">
 
+								<h2>
+									<%=user.getName()%>
+								</h2>
 
-                    <div class="profile-identity">
+								<span class="profile-status"> <span class="status-dot"></span>
 
-                        <div class="profile-identity-top">
+									<%=user.getStatus()%>
 
-                            <h2>
-                                <%= user.getName() %>
-                            </h2>
+								</span>
 
-                            <span class="profile-status">
+							</div>
 
-                                <span class="status-dot"></span>
 
-                                <%= user.getStatus() %>
+							<p class="profile-email">
 
-                            </span>
+								<i data-lucide="mail"></i>
 
-                        </div>
+								<%=user.getEmail()%>
 
+							</p>
 
-                        <p class="profile-email">
 
-                            <i data-lucide="mail"></i>
+							<p class="profile-description">Your personal library account
 
-                            <%= user.getEmail() %>
+							</p>
 
-                        </p>
+						</div>
 
+					</div>
 
-                        <p class="profile-description">
 
-                            Your personal library account
 
-                        </p>
+					<!-- PROFILE CONTENT -->
 
-                    </div>
+					<div class="profile-content">
 
-                </div>
 
+						<!-- PERSONAL INFORMATION -->
 
+						<div class="profile-section">
 
-                <!-- PROFILE CONTENT -->
 
-                <div class="profile-content">
+							<div class="profile-section-header">
 
+								<div class="profile-section-heading">
 
-                    <!-- PERSONAL INFORMATION -->
+									<span class="section-icon"> <i data-lucide="user-round"></i>
 
-                    <div class="profile-section">
+									</span>
 
+									<div>
 
-                        <div class="profile-section-header">
+										<h3>Personal Information</h3>
 
-                            <div class="profile-section-heading">
+										<p>Update your name and email address.</p>
 
-                                <span class="section-icon">
+									</div>
 
-                                    <i data-lucide="user-round"></i>
+								</div>
 
-                                </span>
 
-                                <div>
+								<button type="button" class="profile-edit-button"
+									id="editButton">
 
-                                    <h3>
-                                        Personal Information
-                                    </h3>
+									<i data-lucide="pencil"></i> <span>Edit Profile</span>
 
-                                    <p>
-                                        Update your name and email address.
-                                    </p>
+								</button>
 
-                                </div>
+							</div>
 
-                            </div>
 
 
-                            <button type="button"
-                                    class="profile-edit-button"
-                                    id="editButton">
+							<!-- FORM -->
 
-                                <i data-lucide="pencil"></i>
+							<form id="profileForm"
+								action="${pageContext.request.contextPath}/profile"
+								method="post">
 
-                                <span>Edit Profile</span>
 
-                            </button>
+								<div class="profile-form-grid">
 
-                        </div>
 
+									<!-- NAME -->
 
+									<div class="profile-field">
 
-                        <!-- FORM -->
+										<label for="name"> Full Name </label>
 
-                        <form id="profileForm"
-                              action="${pageContext.request.contextPath}/profile"
-                              method="post">
+										<div class="profile-input-wrap">
 
+											<i data-lucide="user"></i> <input type="text" id="name"
+												name="name" value="<%=user.getName()%>" readonly required>
 
-                            <div class="profile-form-grid">
+										</div>
 
+									</div>
 
-                                <!-- NAME -->
 
-                                <div class="profile-field">
+									<!-- EMAIL -->
 
-                                    <label for="name">
-                                        Full Name
-                                    </label>
+									<div class="profile-field">
 
-                                    <div class="profile-input-wrap">
+										<label for="email"> Email Address </label>
 
-                                        <i data-lucide="user"></i>
+										<div class="profile-input-wrap">
 
-                                        <input
-                                            type="text"
-                                            id="name"
-                                            name="name"
-                                            value="<%= user.getName() %>"
-                                            readonly
-                                            required>
+											<i data-lucide="mail"></i> <input type="email" id="email"
+												name="email" value="<%=user.getEmail()%>" readonly required>
 
-                                    </div>
+										</div>
 
-                                </div>
+									</div>
 
+								</div>
 
-                                <!-- EMAIL -->
 
-                                <div class="profile-field">
 
-                                    <label for="email">
-                                        Email Address
-                                    </label>
+								<!-- ACCOUNT INFORMATION -->
 
-                                    <div class="profile-input-wrap">
+								<div class="account-section">
 
-                                        <i data-lucide="mail"></i>
 
-                                        <input
-                                            type="email"
-                                            id="email"
-                                            name="email"
-                                            value="<%= user.getEmail() %>"
-                                            readonly
-                                            required>
+									<div class="account-section-heading">
 
-                                    </div>
+										<div>
 
-                                </div>
+											<h3>Account Information</h3>
 
-                            </div>
+											<p>Basic information about your library account.</p>
 
+										</div>
 
+									</div>
 
-                            <!-- ACCOUNT INFORMATION -->
 
-                            <div class="account-section">
+									<div class="account-grid">
 
 
-                                <div class="account-section-heading">
+										<!-- STATUS -->
 
-                                    <div>
+										<div class="account-box">
 
-                                        <h3>
-                                            Account Information
-                                        </h3>
+											<div class="account-box-icon">
 
-                                        <p>
-                                            Basic information about your library account.
-                                        </p>
+												<i data-lucide="shield-check"></i>
 
-                                    </div>
+											</div>
 
-                                </div>
+											<div>
 
+												<span class="account-label"> Account Status </span> <strong
+													class="account-value"> <%=user.getStatus()%>
+												</strong>
 
-                                <div class="account-grid">
+											</div>
 
+										</div>
 
-                                    <!-- STATUS -->
 
-                                    <div class="account-box">
+										<!-- ROLE -->
 
-                                        <div class="account-box-icon">
+										<div class="account-box">
 
-                                            <i data-lucide="shield-check"></i>
+											<div class="account-box-icon">
 
-                                        </div>
+												<i data-lucide="badge-check"></i>
 
-                                        <div>
+											</div>
 
-                                            <span class="account-label">
-                                                Account Status
-                                            </span>
+											<div>
 
-                                            <strong class="account-value">
-                                                <%= user.getStatus() %>
-                                            </strong>
+												<span class="account-label"> Account Type </span> <strong
+													class="account-value"> <%=user.getRole()%>
+												</strong>
 
-                                        </div>
+											</div>
 
-                                    </div>
+										</div>
 
+									</div>
 
-                                    <!-- ROLE -->
+								</div>
 
-                                    <div class="account-box">
 
-                                        <div class="account-box-icon">
 
-                                            <i data-lucide="badge-check"></i>
+								<!-- ACTIONS -->
 
-                                        </div>
+								<div class="profile-actions">
 
-                                        <div>
 
-                                            <span class="account-label">
-                                                Account Type
-                                            </span>
+									<div class="profile-left-actions">
 
-                                            <strong class="account-value">
-                                                <%= user.getRole() %>
-                                            </strong>
 
-                                        </div>
+										<button type="submit" class="profile-save-button"
+											id="saveButton" style="display: none;">
 
-                                    </div>
+											<i data-lucide="save"></i> <span>Save Changes</span>
 
-                                </div>
+										</button>
 
-                            </div>
 
+										<button type="button" class="profile-cancel-button"
+											id="cancelButton" style="display: none;">
 
+											<i data-lucide="rotate-ccw"></i> <span>Cancel</span>
 
-                            <!-- ACTIONS -->
+										</button>
 
-                            <div class="profile-actions">
+									</div>
 
 
-                                <div class="profile-left-actions">
+									<div class="profile-right-actions">
 
+										<button type="button" class="profile-password-button"
+											onclick="window.location.href='${pageContext.request.contextPath}/change-password'">
 
-                                    <button type="submit"
-                                            class="profile-save-button"
-                                            id="saveButton"
-                                            style="display:none;">
+											<i data-lucide="key-round"></i> <span>Change Password</span>
 
-                                        <i data-lucide="save"></i>
+										</button>
 
-                                        <span>Save Changes</span>
+									</div>
 
-                                    </button>
+								</div>
 
 
-                                    <button type="button"
-                                            class="profile-cancel-button"
-                                            id="cancelButton"
-                                            style="display:none;">
+							</form>
 
-                                        <i data-lucide="rotate-ccw"></i>
+						</div>
 
-                                        <span>Cancel</span>
+					</div>
 
-                                    </button>
+				</section>
 
-                                </div>
+			</div>
 
+		</main>
 
-                                <div class="profile-right-actions">
 
-                                    <button type="button"
-                                            class="profile-password-button"
-                                            onclick="window.location.href='${pageContext.request.contextPath}/change-password'">
 
-                                        <i data-lucide="key-round"></i>
-
-                                        <span>Change Password</span>
-
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-
-                        </form>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-        </div>
-
-    </main>
-
-
-
-    <!-- =====================================================
+		<!-- =====================================================
          FOOTER
     ====================================================== -->
 
-    <footer class="site-footer">
+		<footer class="site-footer">
 
 
-        <div class="footer-container">
+			<div class="footer-container">
 
 
-            <!-- FOOTER BRAND -->
+				<!-- FOOTER BRAND -->
 
-            <div class="footer-brand">
+				<div class="footer-brand">
 
-                <div class="footer-brand-title">
+					<div class="footer-brand-title">
 
-                    <span class="footer-brand-icon">
+						<span class="footer-brand-icon"> <i data-lucide="library"></i>
 
-                        <i data-lucide="library"></i>
+						</span> <span> Stories </span>
 
-                    </span>
+					</div>
 
-                    <span>
-                        Stories
-                    </span>
+					<p>Your digital library for discovering, reading, and enjoying
+						great stories.</p>
 
-                </div>
-
-                <p>
-                    Your digital library for discovering,
-                    reading, and enjoying great stories.
-                </p>
-
-            </div>
+				</div>
 
 
-            <!-- QUICK LINKS -->
+				<!-- QUICK LINKS -->
 
-            <div class="footer-column">
+				<div class="footer-column">
 
-                <h3>
-                    Quick Links
-                </h3>
+					<h3>Quick Links</h3>
 
-                <a href="${pageContext.request.contextPath}/user/dashboard">
-                    Dashboard
-                </a>
+					<a href="${pageContext.request.contextPath}/user/dashboard">
+						Dashboard </a> <a href="${pageContext.request.contextPath}/books">
+						Categories </a> <a
+						href="${pageContext.request.contextPath}/books/bookmark-book">
+						Bookmarks </a>
 
-                <a href="${pageContext.request.contextPath}/books">
-                    Categories
-                </a>
-
-                <a href="${pageContext.request.contextPath}/books/bookmark-book">
-                    Bookmarks
-                </a>
-
-            </div>
+				</div>
 
 
-            <!-- SUPPORT -->
+				<!-- SUPPORT -->
 
-            <div class="footer-column">
+				<div class="footer-column">
 
-                <h3>
-                    Support
-                </h3>
+					<h3>Support</h3>
 
-                <a href="${pageContext.request.contextPath}/book-request">
-                    Book Requests
-                </a>
+					<a href="${pageContext.request.contextPath}/book-request"> Book
+						Requests </a> <a
+						href="${pageContext.request.contextPath}/user/suggestion">
+						Suggestions </a> <a
+						href="${pageContext.request.contextPath}/books/history">
+						History </a>
 
-                <a href="${pageContext.request.contextPath}/user/suggestion">
-                    Suggestions
-                </a>
-
-                <a href="${pageContext.request.contextPath}/books/history">
-                    History
-                </a>
-
-            </div>
+				</div>
 
 
-            <!-- ACCOUNT -->
+				<!-- ACCOUNT -->
 
-            <div class="footer-column">
+				<div class="footer-column">
 
-                <h3>
-                    Account
-                </h3>
+					<h3>Account</h3>
 
-                <a href="${pageContext.request.contextPath}/profile">
-                    Profile
-                </a>
+					<a href="${pageContext.request.contextPath}/profile"> Profile </a>
 
-                <a href="${pageContext.request.contextPath}/change-password">
-                    Change Password
-                </a>
+					<a href="${pageContext.request.contextPath}/change-password">
+						Change Password </a> <a
+						href="${pageContext.request.contextPath}/logout"> Logout </a>
 
-                <a href="${pageContext.request.contextPath}/logout">
-                    Logout
-                </a>
+				</div>
 
-            </div>
-
-        </div>
+			</div>
 
 
-        <div class="footer-bottom">
+			<div class="footer-bottom">
 
-            <span>
-                ©️ 2026 Stories E-Library
-            </span>
+				<span> ©️ 2026 Stories E-Library </span> <span> Read.
+					Discover. Enjoy. </span>
 
-            <span>
-                Read. Discover. Enjoy.
-            </span>
+			</div>
 
-        </div>
+		</footer>
 
-    </footer>
-
-</div>
+	</div>
 
 
-<!-- PROFILE JAVASCRIPT -->
+	<!-- PROFILE JAVASCRIPT -->
 
-<script src="${pageContext.request.contextPath}/javascript/profile.js"></script>
+	<script src="${pageContext.request.contextPath}/javascript/profile.js"></script>
 
 </body>
 
