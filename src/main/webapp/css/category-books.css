@@ -681,7 +681,7 @@ body {
 .category-header p {
 	margin: 8px 0 0;
 
-	color: var(--muted);
+	color: var(--surface);
 	font-size: 15px;
 }
 

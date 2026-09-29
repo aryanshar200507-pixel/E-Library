@@ -332,6 +332,15 @@ section {
 section h2 {
 	color: var(--dark-brown);
 	margin: 0 0 14px;
+	 background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.86),
+        rgba(249, 236, 229, 0.70)
+    );
+    border-radius: 7px;
+    padding: 5px 10px;
+      box-shadow: var(--shadow);
+    cursor: pointer;
 }
 
 /* ============================================
@@ -399,6 +408,7 @@ section h2 {
 	align-items: center;
 	justify-content: space-between;
 	margin-bottom: 14px;
+	
 	text-shadow: 0 0 6px rgba(255, 255, 255, 0.95), 0 0 14px rgba(255, 255, 255, 0.85), 0 0 26px rgba(255, 255, 255, 0.6), 0 1px 2px rgba(44, 24, 16, 0.25);
 }
 
@@ -430,6 +440,16 @@ section h2 {
 	font-size: 0.9rem;
 	font-weight: 600;
 	transition: color 0.2s;
+	 background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.86),
+        rgba(249, 236, 229, 0.70)
+    );
+    border-radius: 7px;
+    padding: 5px 10px;
+    box-shadow: var(--shadow);
+    
+	
 }
 
 .view-all-button:hover,
@@ -580,11 +600,13 @@ section h2 {
 	display: flex;
 	gap: 20px;
 	overflow-x: auto;
-	/* padding-bottom: 8px; */
-	background: var(--cream);
-	padding:30px;
-	border-radius:15px;
-	align-item:center;
+	 background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.86),
+        rgba(249, 236, 229, 0.70)
+    );
+	padding:55px 65px;
+	border-radius:30px;
 }
 
 .book-card {
@@ -693,6 +715,7 @@ section h2 {
 .category-section h2 {
 	color: var(--warm-brown);
 	font-size: 1.15rem;
+	
 }
 
 /* ============================================

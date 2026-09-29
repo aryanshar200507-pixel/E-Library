@@ -553,6 +553,7 @@ a {
     margin-top: 18px;
     font-size: 15px;
     line-height: 1.8;
+    color: var(--paper);
 }
 
 /* HISTORY SUMMARY */
@@ -633,7 +634,7 @@ a {
 .section-label {
     display: block;
     margin-bottom: 5px;
-    color: var(--primary);
+    color: var(--secondary);
     font-size: 10px;
     font-weight: 800;
     letter-spacing: 1.8px;

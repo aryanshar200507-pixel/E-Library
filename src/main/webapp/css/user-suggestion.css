@@ -983,7 +983,7 @@ svg {
 
     margin-bottom: 24px;
 
-    color: var(--muted);
+    color: var(--white);
     font-size: 13px;
     text-shadow: 0 0 6px rgba(255, 255, 255, 0.95), 0 0 14px rgba(255, 255, 255, 0.85), 0 0 26px rgba(255, 255, 255, 0.6), 0 1px 2px rgba(255, 255, 255, 0.25);
 }
@@ -995,7 +995,7 @@ svg {
 
     color: var(--warm-brown);
     font-weight: 600;
-
+	text-shadow: 0 0 6px rgba(255, 255, 255, 0.95), 0 0 14px rgba(255, 255, 255, 0.85), 0 0 26px rgba(255, 255, 255, 0.6), 0 1px 2px rgba(255, 255, 255, 0.25);
     transition: color 0.2s ease;
 }
 

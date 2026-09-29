@@ -39,6 +39,10 @@ int totalRequests = requestCount != null ? requestCount : 0;
 int remainingRequests = Math.max(0, 10 - totalRequests);
 
 BookRequestVoteService voteService = new BookRequestVoteService();
+
+String dashboardUrl = isAdmin ? "/admin/dashboard" : "/user/dashboard";
+
+String suggestionUrl = isAdmin ? "/admin/suggestions" : "/user/suggestion";
 %>
 
 <!DOCTYPE html>
@@ -69,9 +73,9 @@ BookRequestVoteService voteService = new BookRequestVoteService();
 
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/css/confirm-modal.css">
-	
-	<link rel="stylesheet"
-      href="${pageContext.request.contextPath}/css/background.css">
+
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/css/background.css">
 
 <!-- Book Request CSS -->
 <link rel="stylesheet"
@@ -91,11 +95,10 @@ BookRequestVoteService voteService = new BookRequestVoteService();
 
 			<div class="header-inner">
 
-				<!-- BRAND -->
 
 				<!-- BRAND -->
 
-				<a href="${pageContext.request.contextPath}/user/dashboard"
+				<a href="${pageContext.request.contextPath}<%=dashboardUrl%>"
 					class="brand"> <span class="brand-icon"> <i
 						data-lucide="library"></i>
 				</span> <span class="brand-text"> <span class="brand-name">
@@ -110,25 +113,47 @@ BookRequestVoteService voteService = new BookRequestVoteService();
 
 				<nav class="desktop-nav">
 
-					<a href="${pageContext.request.contextPath}/user/dashboard"> <i
-						data-lucide="layout-dashboard"></i> <span>Dashboard</span>
+					<a href="${pageContext.request.contextPath}<%=dashboardUrl%>">
+						<i data-lucide="layout-dashboard"></i> <span>Dashboard</span>
 					</a> <a href="${pageContext.request.contextPath}/books"> <i
 						data-lucide="library"></i> <span>Categories</span>
-					</a> <a href="${pageContext.request.contextPath}/book-request"
-						class="active"> <i data-lucide="book-plus"></i> <span>Book
-							Requests</span>
-					</a> <a href="${pageContext.request.contextPath}/books/bookmark-book">
+					</a> <a href="${pageContext.request.contextPath}/book-request"> <i
+						data-lucide="book-plus"></i> <span>Book Requests</span>
+					</a>
+
+					<%
+					if (!isAdmin) {
+					%>
+
+					<a href="${pageContext.request.contextPath}/books/bookmark-book">
 						<i data-lucide="bookmark"></i> <span>Bookmarks</span>
-					</a> <a href="${pageContext.request.contextPath}/user/suggestion">
+					</a>
+
+					<%
+					}
+					%>
+
+					<a href="${pageContext.request.contextPath}<%=suggestionUrl%>">
 						<i data-lucide="message-square-plus"></i> <span>Suggestions</span>
-					</a> <a href="${pageContext.request.contextPath}/books/history"> <i
+					</a>
+
+					<%
+					if (!isAdmin) {
+					%>
+
+					<a href="${pageContext.request.contextPath}/books/history"> <i
 						data-lucide="history"></i> <span>History</span>
-					</a> <a href="${pageContext.request.contextPath}/profile"> <i
+					</a>
+
+					<%
+					}
+					%>
+
+					<a href="${pageContext.request.contextPath}/profile"> <i
 						data-lucide="user"></i> <span>Profile</span>
 					</a>
 
 				</nav>
-
 
 				<!-- RIGHT SIDE -->
 
@@ -155,23 +180,46 @@ BookRequestVoteService voteService = new BookRequestVoteService();
 
 			<nav class="mobile-nav" id="mobileNav">
 
-				<a href="${pageContext.request.contextPath}/user/dashboard"> <i
-					data-lucide="layout-dashboard"></i> Dashboard
+				<a href="${pageContext.request.contextPath}<%=dashboardUrl%>"> <i
+					data-lucide="layout-dashboard"></i> <span>Dashboard</span>
 				</a> <a href="${pageContext.request.contextPath}/books"> <i
-					data-lucide="library"></i> Categories
-				</a> <a href="${pageContext.request.contextPath}/book-request"
-					class="active"> <i data-lucide="book-plus"></i> Book Requests
-				</a> <a href="${pageContext.request.contextPath}/books/bookmark-book">
-					<i data-lucide="bookmark"></i> Bookmarks
-				</a> <a href="${pageContext.request.contextPath}/user/suggestion"> <i
-					data-lucide="message-square-plus"></i> Suggestions
-				</a> <a href="${pageContext.request.contextPath}/books/history"> <i
-					data-lucide="history"></i> History
-				</a> <a href="${pageContext.request.contextPath}/profile"> <i
-					data-lucide="user"></i> Profile
-				</a> <a href="${pageContext.request.contextPath}/logout"> <i
-					data-lucide="log-out"></i> Logout
+					data-lucide="library"></i> <span>Categories</span>
+				</a> <a href="${pageContext.request.contextPath}/book-request"> <i
+					data-lucide="book-plus"></i> <span>Book Requests</span>
 				</a>
+
+				<%
+				if (!isAdmin) {
+				%>
+
+				<a href="${pageContext.request.contextPath}/books/bookmark-book">
+					<i data-lucide="bookmark"></i> <span>Bookmarks</span>
+				</a>
+
+				<%
+				}
+				%>
+
+				<a href="${pageContext.request.contextPath}<%=suggestionUrl%>">
+					<i data-lucide="message-square-plus"></i> <span>Suggestions</span>
+				</a>
+
+				<%
+				if (!isAdmin) {
+				%>
+
+				<a href="${pageContext.request.contextPath}/books/history"> <i
+					data-lucide="history"></i> <span>History</span>
+				</a>
+
+				<%
+				}
+				%>
+
+				<a href="${pageContext.request.contextPath}/profile"> <i
+					data-lucide="user"></i> <span>Profile</span>
+				</a>
+
 
 			</nav>
 
